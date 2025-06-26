@@ -2,21 +2,130 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MedXplore - Events</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact MedXplore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(to bottom right, #0e0e11, #1c1c21);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    .contact-container {
+      background: rgba(26, 32, 44, 0.9);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 0 25px rgba(74, 124, 116, 0.5);
+      animation: popUp 0.8s ease-out;
+    }
+
+    h1 {
+      color: #4a7c74;
+      margin-bottom: 10px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    p {
+      color: #a0aec0;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: none;
+      background: #2d3748;
+      color: #fff;
+      font-size: 14px;
+      transition: 0.3s ease;
+    }
+
+    form input:focus,
+    form textarea:focus {
+      outline: none;
+      background: #4a7c74;
+    }
+
+    form button {
+      width: 100%;
+      padding: 14px;
+      background-color: #4a7c74;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #395f59;
+    }
+
+    .back-home {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      color: #4a7c74;
+      text-decoration: none;
+      font-size: 14px;
+      border: 1px solid #4a7c74;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .back-home:hover {
+      background-color: #4a7c74;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popUp {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
+  <div class="contact-container">
+    <h1>Contact Us</h1>
+    <p>We’d love to hear from you! Whether it's a question, idea, or feedback, just drop us a message.</p>
+    <form action="https://formspree.io/f/xqkrvavj" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Your Email" required />
+      <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
 
-  <header>
-    <h1>MedXplore</h1>
-  </header>
-
-  <section class="page-content">
-    <h2>Events Page</h2>
-    <p>This is where you’ll show upcoming events.</p>
-    <a href="index.html" class="btn">← Back to Home</a>
-  </section>
-
+  <a href="index.html" class="back-home">← Back to Home</a>
 </body>
 </html>
+
