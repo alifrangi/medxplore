@@ -4,85 +4,79 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MedXplore Events</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --main-color: #4a7c74;
+      --bg-dark: #0f1113;
+      --text-light: #ffffff;
+      --card-bg: #0a0a0a;
+      --card-hover: #1a1a1a;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background-color: #000;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #eaeaea;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
-      padding: 40px 20px;
-      position: relative;
-      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.6s ease;
     }
 
-    .dot {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: #4a7c74;
-      opacity: 0.6;
-      animation: float 10s infinite ease-in-out;
+    body.fade-in {
+      opacity: 1;
     }
 
-    @keyframes float {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0.6;
-      }
-      50% {
-        transform: translateY(-200px) scale(1.2);
-        opacity: 0.3;
-      }
-      100% {
-        transform: translateY(0) scale(1);
-        opacity: 0.6;
-      }
-    }
-
-    .header-card {
-      background: linear-gradient(145deg, #4a7c74, #3a615a);
-      border-radius: 0px;
-      padding: 30px;
+    header {
+      width: 100%;
       text-align: center;
-      width: 90%;
-      max-width: 800px;
-      box-shadow: 0 0 20px #4a7c74;
-      margin-bottom: 40px;
-      z-index: 1;
+      padding: 60px 20px 30px;
     }
 
-    .header-card h1 {
+    header h1 {
+      font-size: 2.8rem;
+      color: var(--main-color);
       margin: 0;
-      font-size: 2.5rem;
-      color: #fff;
+      font-weight: 700;
+      animation: glowTitle 3s ease-in-out infinite alternate;
     }
 
-    .header-card p {
+    @keyframes glowTitle {
+      0% { text-shadow: 0 0 5px rgba(74,124,116,0.5); opacity: 0.8; }
+      100% { text-shadow: 0 0 20px rgba(74,124,116,0.9); opacity: 1; }
+    }
+
+    header p {
       font-size: 1.1rem;
-      color: #e0e0e0;
+      color: #ccc;
       margin-top: 10px;
     }
 
+    .event-container {
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
     .event-card {
-      background-color: #0a0a0a;
-      border-radius: 0px;
+      background-color: var(--card-bg);
+      border-radius: 0;
       padding: 25px;
       text-align: center;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 30px 3px #4a7c74;
-      z-index: 1;
+      width: 100%;
+      box-shadow: 0 0 25px var(--main-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .event-card h2 {
-      color: #4a7c74;
+      color: var(--main-color);
       margin-bottom: 15px;
       font-size: 1.8rem;
     }
@@ -100,78 +94,73 @@
     .socials span {
       display: block;
       margin-top: 10px;
-      color: #4a7c74;
+      color: var(--main-color);
     }
 
-    .back-button {
+    .back-home-btn {
       position: fixed;
-      bottom: 30px;
-      left: 30px;
-      z-index: 1;
-    }
-
-    .back-button a {
-      text-decoration: none;
-      color: #fff;
+      bottom: 20px;
+      left: 20px;
       background-color: transparent;
+      color: var(--main-color);
       padding: 10px 20px;
-      border-radius: 0px;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
+      border: 2px solid var(--main-color);
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      z-index: 10;
     }
 
-    .back-button a:hover {
-      background-color: #4a7c74;
-      color: #fff;
-      border-color: #4a7c74;
+    .back-home-btn:hover {
+      background-color: var(--main-color);
+      color: white;
+      transform: translateY(-2px);
     }
 
     footer {
-      margin-top: auto;
       text-align: center;
-      font-size: 0.9rem;
+      padding: 40px 20px;
       color: #777;
-      z-index: 1;
-      padding: 30px 0 10px;
+      font-size: 0.9rem;
+      background-color: #121416;
+      margin-top: auto;
+    }
+
+    footer::after {
+      content: " | Founder: Yazan Alafrangi";
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <script>
-    // Generate moving light dots
-    for (let i = 0; i < 40; i++) {
-      const dot = document.createElement('div');
-      dot.classList.add('dot');
-      dot.style.left = Math.random() * 100 + 'vw';
-      dot.style.top = Math.random() * 100 + 'vh';
-      dot.style.animationDelay = Math.random() * 5 + 's';
-      dot.style.animationDuration = 8 + Math.random() * 5 + 's';
-      document.body.appendChild(dot);
-    }
-  </script>
-
-  <div class="header-card">
-    <h1>Welcome to MedXplore Events</h1>
+  <header>
+    <h1>MedXplore Events</h1>
     <p>Swipe through our events and stay updated with everything from immersive simulations to national workshops.</p>
-  </div>
+  </header>
 
-  <div class="event-card">
-    <h2>No Upcoming Events</h2>
-    <p>We’re currently brewing something exciting!<br>Follow our socials and stay tuned.</p>
-    <div class="socials">
-      <span>WhatsApp: Medxplore_nsa</span>
-      <span>Instagram: Coming Soon!</span>
+  <section class="event-container">
+    <div class="event-card">
+      <h2>No Upcoming Events</h2>
+      <p>We’re currently brewing something exciting!<br>Follow our socials and stay tuned.</p>
+      <div class="socials">
+        <span>WhatsApp: Medxplore_nsa</span>
+        <span>Instagram: Coming Soon!</span>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="back-button">
-    <a href="/">Back to Home</a>
-  </div>
+  <a href="index.html" class="back-home-btn">← Back to Home</a>
 
   <footer>
-    © 2025 MedXplore. All rights reserved. | Founder: Yazan Alafrangi
+    &copy; 2025 MedXplore. All rights reserved.
   </footer>
+
+  <script>
+    window.addEventListener('load', () => {
+      document.body.classList.add('fade-in');
+    });
+  </script>
 </body>
 </html>
-
-
