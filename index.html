@@ -47,6 +47,7 @@
     .intro-container {
       height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       font-family: 'Le Jour Serif', serif;
@@ -55,6 +56,31 @@
       position: relative;
       z-index: 2;
       text-shadow: 0 0 20px rgba(74, 124, 116, 0.8);
+    }
+
+    .slogan {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.35em;
+      color: var(--text-light);
+      margin-top: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 3s steps(30, end) forwards, blink 0.75s step-end 3.5 alternate;
+      border-right: 2px solid var(--text-light);
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 13em; }
+    }
+
+    @keyframes blink {
+      0%, 100% { border-color: var(--text-light); }
+      50% { border-color: transparent; }
+    }
+
+    .slogan.finished {
+      border-right: none;
     }
 
     .intro-container::after {
@@ -150,6 +176,7 @@
   <div id="vanta-bg"></div>
   <div class="intro-container">
     MedXplore
+    <div class="slogan" id="slogan">Experience. Explore. Excel.</div>
   </div>
 
   <div class="content-section">
@@ -198,6 +225,12 @@
       } else {
         console.error("VANTA.GLOBE not available. Check script loading.");
       }
+
+      // Remove cursor after typing
+      setTimeout(() => {
+        const slogan = document.getElementById('slogan');
+        slogan.classList.add('finished');
+      }, 3000);
     });
   </script>
 </body>
