@@ -20,7 +20,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       overflow-x: hidden;
       position: relative;
@@ -64,12 +63,8 @@
     }
 
     @keyframes scrollDots {
-      from {
-        background-position: 0 0;
-      }
-      to {
-        background-position: 1000px 1000px;
-      }
+      from { background-position: 0 0; }
+      to { background-position: 1000px 1000px; }
     }
 
     .glow-bg {
@@ -95,10 +90,10 @@
     .info-card {
       background-color: #121212;
       padding: 30px;
-      border-radius: 12px;
-      width: 100%;
+      border-radius: 0;
+      width: calc(100% - 40px);
       max-width: 480px;
-      margin-bottom: 30px;
+      margin: 50px 0 30px 0;
       box-shadow: 0 0 20px #4a7c74;
       text-align: center;
       color: #bce1dc;
@@ -115,10 +110,10 @@
     .form-container {
       background-color: #16181d;
       padding: 40px;
-      border-radius: 12px;
+      border-radius: 0;
       box-shadow: 0 0 30px #4a7c74;
       max-width: 480px;
-      width: 90%;
+      width: calc(100% - 40px);
       text-align: center;
       position: relative;
       z-index: 1;
@@ -142,7 +137,7 @@
       padding: 12px;
       margin-bottom: 15px;
       border: none;
-      border-radius: 6px;
+      border-radius: 0;
       background-color: #22252b;
       color: white;
       font-size: 14px;
@@ -159,7 +154,7 @@
       padding: 12px;
       background-color: #4a7c74;
       border: none;
-      border-radius: 6px;
+      border-radius: 0;
       font-size: 15px;
       color: white;
       font-weight: bold;
@@ -178,27 +173,28 @@
       margin-top: 20px;
       background-color: #1e242c;
       border-left: 4px solid #4a7c74;
-      border-radius: 6px;
+      border-radius: 0;
     }
 
     .back-home-btn {
       position: fixed;
       bottom: 20px;
       left: 20px;
-      background-color: #4a7c74;
-      color: white;
+      background: transparent;
+      color: #4a7c74;
       padding: 10px 16px;
-      border-radius: 8px;
+      border: 2px solid #4a7c74;
+      border-radius: 0;
       font-size: 14px;
       text-decoration: none;
       font-weight: 500;
-      box-shadow: 0 0 12px #4a7c74aa;
-      transition: background 0.3s ease, transform 0.3s ease;
+      transition: background 0.3s ease, transform 0.3s ease, color 0.3s ease;
       z-index: 10;
     }
 
     .back-home-btn:hover {
-      background-color: #3b625d;
+      background-color: #4a7c74;
+      color: white;
       transform: translateY(-2px);
     }
   </style>
