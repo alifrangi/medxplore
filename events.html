@@ -17,17 +17,45 @@
       justify-content: flex-start;
       min-height: 100vh;
       padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #4a7c74;
+      opacity: 0.6;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+      }
+      50% {
+        transform: translateY(-200px) scale(1.2);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+      }
     }
 
     .header-card {
       background: linear-gradient(145deg, #4a7c74, #3a615a);
-      border-radius: 16px;
+      border-radius: 0px;
       padding: 30px;
       text-align: center;
       width: 90%;
       max-width: 800px;
       box-shadow: 0 0 20px #4a7c74;
       margin-bottom: 40px;
+      z-index: 1;
     }
 
     .header-card h1 {
@@ -44,12 +72,13 @@
 
     .event-card {
       background-color: #0a0a0a;
-      border-radius: 12px;
+      border-radius: 0px;
       padding: 25px;
       text-align: center;
       width: 90%;
       max-width: 500px;
       box-shadow: 0 0 30px 3px #4a7c74;
+      z-index: 1;
     }
 
     .event-card h2 {
@@ -75,24 +104,51 @@
     }
 
     .back-button {
-      margin-top: 40px;
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      z-index: 1;
     }
 
     .back-button a {
       text-decoration: none;
       color: #fff;
-      background-color: #4a7c74;
+      background-color: transparent;
       padding: 10px 20px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
+      border-radius: 0px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
     }
 
     .back-button a:hover {
-      background-color: #3a615a;
+      background-color: #4a7c74;
+      color: #fff;
+      border-color: #4a7c74;
+    }
+
+    footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+      z-index: 1;
+      padding: 30px 0 10px;
     }
   </style>
 </head>
 <body>
+  <script>
+    // Generate moving light dots
+    for (let i = 0; i < 40; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      dot.style.left = Math.random() * 100 + 'vw';
+      dot.style.top = Math.random() * 100 + 'vh';
+      dot.style.animationDelay = Math.random() * 5 + 's';
+      dot.style.animationDuration = 8 + Math.random() * 5 + 's';
+      document.body.appendChild(dot);
+    }
+  </script>
 
   <div class="header-card">
     <h1>Welcome to MedXplore Events</h1>
@@ -112,6 +168,10 @@
     <a href="/">Back to Home</a>
   </div>
 
+  <footer>
+    © 2025 MedXplore. All rights reserved. | Founder: Yazan Alafrangi
+  </footer>
 </body>
 </html>
+
 
