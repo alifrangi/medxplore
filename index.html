@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MedXplore - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Le+Jour+Serif&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --scrub-green: #4a7c74;
+      --text-light: #ffffff;
+      --bg-dark: #0f1113;
+      --card-bg: #1b1f23;
+      --btn-bg: #4a7c74;
+      --btn-hover: #3a635e;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      overflow-x: hidden;
+      position: relative;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    body.fade-in {
+      opacity: 1;
+    }
+
+    .text-header {
+      text-align: center;
+      padding: 60px 20px 30px;
+      animation: fadeInDown 1.2s ease;
+    }
+
+    .text-header h1 {
+      font-family: 'Le Jour Serif', serif;
+      font-size: 3em;
+      color: var(--scrub-green);
+      margin-bottom: 10px;
+    }
+
+    .text-header .subtagline {
+      font-size: 1.1em;
+      color: #ccc;
+    }
+
+    .home-section {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 30px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .home-section h2 {
+      font-size: 2em;
+      color: var(--scrub-green);
+      margin-bottom: 15px;
+    }
+
+    .home-aim {
+      font-size: 1em;
+      color: #ccc;
+    }
+
+    .home-credit {
+      margin-top: 20px;
+      color: #88a6a1;
+      font-style: italic;
+    }
+
+    .info-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 40px 20px;
+      gap: 30px;
+      animation: fadeInUp 1.8s ease;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      max-width: 300px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: pulseCard 2s ease-in-out infinite alternate;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 0 25px rgba(74, 124, 116, 0.5);
+      animation: none;
+    }
+
+    .card h3 {
+      color: var(--scrub-green);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #ccc;
+      font-size: 0.95em;
+    }
+
+    .nav-buttons {
+      text-align: center;
+      margin-bottom: 60px;
+      animation: fadeInUp 2s ease;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 25px;
+      font-weight: 600;
+      color: var(--text-light);
+      background-color: var(--btn-bg);
+      border: none;
+      border-radius: 25px;
+      text-decoration: none;
+      transition: background 0.3s ease, transform 0.2s;
+    }
+
+    .btn:hover {
+      background-color: var(--btn-hover);
+      transform: scale(1.05);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 0.85em;
+      color: #888;
+      background-color: #121416;
+      animation: fadeIn 2s ease;
+    }
+
+    .glow-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: rgba(74,124,116,0.2);
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(74,124,116,0.3);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes floatFree {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(40px, -25px); }
+      50% { transform: translate(-30px, 30px); }
+      75% { transform: translate(25px, -35px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseCard {
+      from { box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+      to { box-shadow: 0 0 25px rgba(74, 124, 116, 0.4); }
+    }
+  </style>
+</head>
+<body>
+  <div class="text-header">
+    <h1>MedXplore</h1>
+    <p class="subtagline">Empower your medical journey with immersive experiences and real-world exploration.</p>
+  </div>
+
+  <section class="home-section">
+    <h2>Our Mission</h2>
+    <p class="home-aim">
+      MedXplore is a platform built to bridge the gap between theory and practice in medical education. Our mission is to empower Jordanian medical students with real-world exposure, hands-on learning, and international opportunities that prepare them to lead in a global healthcare system.
+    </p>
+    <div class="home-credit">— Created by Yazan Alafrangi —</div>
+  </section>
+
+  <section class="info-cards">
+    <div class="card">
+      <h3>Our Vision</h3>
+      <p>To become a leading force in redefining medical education by fostering curiosity, innovation, and global-minded healthcare professionals across Jordan and beyond.</p>
+    </div>
+    <div class="card">
+      <h3>Our Values</h3>
+      <p>Integrity, collaboration, hands-on experience, inclusivity, and an unwavering commitment to student empowerment are the core values that shape every step we take.</p>
+    </div>
+    <div class="card">
+      <h3>Why MedXplore</h3>
+      <p>Because we believe in learning beyond textbooks — through real-world exposure, community engagement, and opportunities that shape tomorrow’s healthcare leaders.</p>
+    </div>
+  </section>
+
+  <section class="nav-buttons">
+    <a href="events.html" class="btn">Events</a>
+    <a href="news.html" class="btn">News</a>
+    <a href="passport.html" class="btn">Passport</a>
+    <a href="contact.html" class="btn">Contact</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 MedXplore. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Fade in when page loads
+    window.addEventListener('load', () => {
+      document.body.classList.add('fade-in');
+    });
+
+    // Floating dots background
+    const dotCount = 75;
+    for (let i = 0; i < dotCount; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('glow-dot');
+      dot.style.left = `${Math.random() * 100}vw`;
+      dot.style.top = `${Math.random() * 100}vh`;
+      const duration = 6 + Math.random() * 6;
+      dot.style.animation = `floatFree ${duration}s ease-in-out infinite`;
+      dot.style.animationDelay = `${Math.random() * 10}s`;
+      document.body.appendChild(dot);
+    }
+
+    // Fade out on link click before page change
+    document.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('mailto:')) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.body.classList.remove('fade-in');
+          document.body.classList.add('fade-out');
+          setTimeout(() => {
+            window.location.href = this.href;
+          }, 600); // match transition time
+        });
+      }
+    });
+  </script>
+</body>
+</html>

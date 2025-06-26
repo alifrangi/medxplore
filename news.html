@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedXplore News</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-color: #4a7c74;
+      --bg-dark: #0f1113;
+      --text-light: #ffffff;
+      --card-bg: #1c1e22;
+      --card-hover: #263238;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    body.fade-in {
+      opacity: 1;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      padding: 60px 20px 30px;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      color: var(--main-color);
+      margin: 0;
+      font-weight: 700;
+      animation: glowTitle 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowTitle {
+      0% { text-shadow: 0 0 5px rgba(74,124,116,0.5); opacity: 0.8; }
+      100% { text-shadow: 0 0 20px rgba(74,124,116,0.9); opacity: 1; }
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #ccc;
+      margin-top: 10px;
+    }
+
+    .news-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      padding: 40px 20px;
+      max-width: 1200px;
+    }
+
+    .news-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 350px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .news-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 25px var(--main-color);
+      background-color: var(--card-hover);
+    }
+
+    .news-card h3 {
+      color: var(--main-color);
+      margin-bottom: 10px;
+    }
+
+    .news-card p {
+      font-size: 0.95rem;
+      color: #ccc;
+    }
+
+    .news-date {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #777;
+      font-size: 0.9rem;
+      background-color: #121416;
+      margin-top: auto;
+    }
+
+    .back-home-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: var(--main-color);
+      color: var(--text-light);
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      box-shadow: 0 0 12px #4a7c74aa;
+      transition: background 0.3s ease, transform 0.3s ease;
+      z-index: 10;
+    }
+
+    .back-home-btn:hover {
+      background-color: #3a635e;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MedXplore News</h1>
+    <p>Stay updated with the latest happenings, achievements, and opportunities from the MedXplore community.</p>
+  </header>
+
+  <section class="news-container">
+    <div class="news-card">
+      <h3>Launch of MedXperience Passport</h3>
+      <p>We're excited to introduce the MedXperience Passport — your personalized tracker for activities and milestones!</p>
+      <div class="news-date">June 20, 2025</div>
+    </div>
+
+    <div class="news-card">
+      <h3>MedXplore Joins Forces with NSA</h3>
+      <p>We’re proud to announce our official collaboration with the NSA. MedXplore is now part of the NSA team, working together to bring more opportunities to students. NSA will also start posting updates about MedXplore events and initiatives across their platforms.</p>
+      <div class="news-date">June 26, 2025</div>
+    </div>
+  </section>
+
+  <a href="index.html" class="back-home-btn">← Back to Home</a>
+
+  <footer>
+    &copy; 2025 MedXplore. All rights reserved.
+  </footer>
+
+  <script>
+    // Smooth fade-in on page load
+    window.addEventListener('load', () => {
+      document.body.classList.add('fade-in');
+    });
+
+    // Optional: Add fade-out effect when navigating (future links)
+    document.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('mailto:')) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.body.classList.remove('fade-in');
+          document.body.classList.add('fade-out');
+          setTimeout(() => {
+            window.location.href = this.href;
+          }, 600);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
