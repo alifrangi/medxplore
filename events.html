@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedXplore Events</title>
+  <style>
+    :root {
+      --green: #4a7c74;
+      --dark: #000;
+      --card-bg: #1a1a1a;
+      --text: #fff;
+      --text-muted: #ccc;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--dark);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    body.fade-in {
+      opacity: 1;
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    .floating-dots {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .dot {
+      position: absolute;
+      border-radius: 50%;
+      background-color: var(--green);
+      opacity: 0.5;
+      box-shadow: 0 0 10px var(--green), 0 0 20px #4a7c74aa;
+      animation: floatRandom 20s linear infinite;
+    }
+
+    @keyframes floatRandom {
+      0% { transform: translateY(0) translateX(0); opacity: 0.4; }
+      50% { opacity: 0.8; }
+      100% { transform: translateY(-200px) translateX(100px); opacity: 0.4; }
+    }
+
+    header {
+      background-color: var(--green);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 25px #4a7c74aa;
+      z-index: 1;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    header p {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: #dcdcdc;
+    }
+
+    .event-section {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 25px #4a7c74aa;
+      z-index: 1;
+    }
+
+    .event-section h2 {
+      color: var(--green);
+      margin-bottom: 1rem;
+    }
+
+    .event-section p {
+      color: var(--text-muted);
+    }
+
+    .socials {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+    }
+
+    .socials span {
+      display: block;
+      margin: 0.3rem 0;
+      color: var(--green);
+    }
+
+    .back-home-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: var(--green);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+      box-shadow: 0 0 12px #4a7c74aa;
+      transition: background 0.3s ease, transform 0.3s ease;
+      z-index: 10;
+    }
+
+    .back-home-btn:hover {
+      background-color: #3a635e;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-dots" id="dotContainer"></div>
+
+  <header>
+    <h1>Welcome to the MedXplore Events Page</h1>
+    <p>
+      Here you can stay up to date with all our exciting workshops, guest talks,
+      conferences, and interactive sessions aimed at helping you explore the medical world.
+    </p>
+  </header>
+
+  <div class="event-section">
+    <h2>No Upcoming Events</h2>
+    <p>
+      Currently, there are no upcoming events. But don’t worry — when something is planned,
+      you’ll be notified via our social media!
+    </p>
+    <div class="socials">
+      <span>📸 Instagram: <strong>@Medxplore_nsa</strong></span>
+      <span>💬 WhatsApp Community: <strong>Medxplore_nsa</strong></span>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-home-btn">← Back to Home</a>
+
+  <script>
+    // Fade-in on load
+    window.addEventListener('load', () => {
+      document.body.classList.add('fade-in');
+    });
+
+    // Floating dots
+    const container = document.getElementById('dotContainer');
+    const numDots = 80;
+
+    for (let i = 0; i < numDots; i++) {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      dot.style.left = `${Math.random() * 100}vw`;
+      dot.style.top = `${Math.random() * 100}vh`;
+      const size = 4 + Math.random() * 4;
+      dot.style.width = `${size}px`;
+      dot.style.height = `${size}px`;
+      dot.style.animationDuration = `${15 + Math.random() * 20}s`;
+      dot.style.animationDelay = `${Math.random() * 10}s`;
+      container.appendChild(dot);
+    }
+
+    // Fade-out on navigation click
+    document.querySelectorAll('a[href]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('mailto:')) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.body.classList.remove('fade-in');
+          document.body.classList.add('fade-out');
+          setTimeout(() => {
+            window.location.href = this.href;
+          }, 600);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
