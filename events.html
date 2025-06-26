@@ -5,221 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MedXplore Events</title>
   <style>
-    :root {
-      --green: #4a7c74;
-      --dark: #0a0a0a;
-      --card-bg: #1a1a1a;
-      --text: #fff;
-      --text-muted: #ccc;
-      --glow: #4a7c74aa;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
+    body {
       margin: 0;
       padding: 0;
+      background-color: #000;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--dark);
-      color: var(--text);
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    body {
+      color: #eaeaea;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
-      opacity: 0;
-      transition: opacity 0.8s ease;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
     }
 
-    body.fade-in {
-      opacity: 1;
-    }
-
-    .floating-dots {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .dot {
-      position: absolute;
-      border-radius: 50%;
-      background-color: var(--green);
-      opacity: 0.4;
-      box-shadow: 0 0 12px var(--glow), 0 0 22px var(--glow);
-      animation: floatRandom 25s linear infinite;
-    }
-
-    @keyframes floatRandom {
-      0% { transform: translateY(0) translateX(0); opacity: 0.3; }
-      50% { opacity: 0.9; }
-      100% { transform: translateY(-200px) translateX(200px); opacity: 0.3; }
-    }
-
-    header {
-      background: linear-gradient(135deg, var(--green), #2d5a52);
-      padding: 2.5rem;
+    .header-card {
+      background: linear-gradient(145deg, #4a7c74, #3a615a);
       border-radius: 16px;
-      max-width: 800px;
-      width: 100%;
+      padding: 30px;
       text-align: center;
-      margin-bottom: 2rem;
-      box-shadow: 0 0 30px var(--glow);
-      animation: fadeInDown 1s ease-out;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 0 20px #4a7c74;
+      margin-bottom: 40px;
     }
 
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    header h1 {
+    .header-card h1 {
       margin: 0;
-      font-size: 2.8rem;
-      letter-spacing: 1px;
+      font-size: 2.5rem;
+      color: #fff;
     }
 
-    header p {
-      margin-top: 1rem;
-      font-size: 1.15rem;
-      color: #dcdcdc;
-    }
-
-    .carousel {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      gap: 20px;
-      max-width: 100%;
-      padding-bottom: 1rem;
-    }
-
-    .carousel::-webkit-scrollbar {
-      display: none;
+    .header-card p {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      margin-top: 10px;
     }
 
     .event-card {
-      flex: 0 0 90%;
-      background-color: var(--card-bg);
-      border-radius: 14px;
-      padding: 2rem;
-      box-shadow: 0 0 30px var(--glow);
-      scroll-snap-align: center;
+      background-color: #0a0a0a;
+      border-radius: 12px;
+      padding: 25px;
       text-align: center;
-      min-width: 300px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 30px 3px #4a7c74;
     }
 
     .event-card h2 {
-      color: var(--green);
-      font-size: 2rem;
+      color: #4a7c74;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
     }
 
     .event-card p {
-      color: var(--text-muted);
-      font-size: 1.05rem;
+      color: #ccc;
+      font-size: 1rem;
     }
 
     .socials {
-      margin-top: 2rem;
+      margin-top: 20px;
       font-size: 1rem;
     }
 
     .socials span {
       display: block;
-      margin: 0.4rem 0;
-      color: var(--green);
-      font-weight: bold;
-      font-size: 1.05rem;
-    }
-
-    .back-home-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background-color: var(--green);
-      color: var(--text);
-      padding: 12px 22px;
-      border-radius: 30px;
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 1rem;
-      box-shadow: 0 0 16px var(--glow);
-      transition: background 0.3s ease, transform 0.3s ease;
-      z-index: 100;
-    }
-
-    .back-home-btn:hover {
-      background-color: #3a635e;
-      transform: scale(1.08);
+      margin-top: 10px;
+      color: #4a7c74;
     }
   </style>
 </head>
 <body>
-  <div class="floating-dots" id="dotContainer"></div>
 
-  <header>
+  <div class="header-card">
     <h1>Welcome to MedXplore Events</h1>
     <p>Swipe through our events and stay updated with everything from immersive simulations to national workshops.</p>
-  </header>
-
-  <div class="carousel">
-    <div class="event-card">
-      <h2>No Upcoming Events</h2>
-      <p>We’re currently brewing something exciting!<br>Follow our socials and stay tuned.</p>
-      <div class="socials">
-        <span>📸 Instagram: <strong>@Medxplore_nsa</strong></span>
-        <span>💬 WhatsApp: <strong>Medxplore_nsa</strong></span>
-      </div>
-    </div>
-    <!-- Add more .event-card blocks for future events -->
   </div>
 
-  <a href="index.html" class="back-home-btn">← Back to Home</a>
+  <div class="event-card">
+    <h2>No Upcoming Events</h2>
+    <p>We’re currently brewing something exciting!<br>Follow our socials and stay tuned.</p>
+    <div class="socials">
+      <span>🟢 WhatsApp: Medxplore_nsa</span>
+      <span>📷 Instagram: Coming Soon!</span>
+    </div>
+  </div>
 
-  <script>
-    window.addEventListener('load', () => {
-      document.body.classList.add('fade-in');
-
-      const container = document.getElementById('dotContainer');
-      const numDots = 100;
-
-      for (let i = 0; i < numDots; i++) {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        dot.style.left = `${Math.random() * 100}vw`;
-        dot.style.top = `${Math.random() * 100}vh`;
-        const size = 3 + Math.random() * 5;
-        dot.style.width = `${size}px`;
-        dot.style.height = `${size}px`;
-        dot.style.animationDuration = `${18 + Math.random() * 15}s`;
-        dot.style.animationDelay = `${Math.random() * 8}s`;
-        container.appendChild(dot);
-      }
-    });
-
-    document.querySelectorAll('a[href]').forEach(link => {
-      const href = link.getAttribute('href');
-      if (href && !href.startsWith('#') && !href.startsWith('mailto:')) {
-        link.addEventListener('click', function (e) {
-          e.preventDefault();
-          document.body.classList.remove('fade-in');
-          document.body.classList.add('fade-out');
-          setTimeout(() => {
-            window.location.href = this.href;
-          }, 600);
-        });
-      }
-    });
-  </script>
 </body>
 </html>
