@@ -45,28 +45,48 @@
     }
 
     .intro-container {
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       font-family: 'Le Jour Serif', serif;
-      font-size: 4em;
+      font-size: 8vw;
       color: var(--scrub-green);
       position: relative;
       z-index: 2;
+      text-align: center;
       text-shadow: 0 0 20px rgba(74, 124, 116, 0.8);
+      padding: 0 20px;
     }
 
     .slogan {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.35em;
+      font-size: 3vw;
       color: var(--text-light);
       margin-top: 12px;
       white-space: nowrap;
       overflow: hidden;
       animation: typing 3s steps(30, end) forwards, blink 0.75s step-end 3.5 alternate;
       border-right: 2px solid var(--text-light);
+    }
+
+    @media (max-width: 768px) {
+      .intro-container {
+        font-size: 12vw;
+      }
+      .slogan {
+        font-size: 5vw;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .intro-container {
+        font-size: 4em;
+      }
+      .slogan {
+        font-size: 1.2em;
+      }
     }
 
     @keyframes typing {
@@ -226,7 +246,6 @@
         console.error("VANTA.GLOBE not available. Check script loading.");
       }
 
-      // Remove cursor after typing
       setTimeout(() => {
         const slogan = document.getElementById('slogan');
         slogan.classList.add('finished');
