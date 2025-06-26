@@ -45,48 +45,28 @@
     }
 
     .intro-container {
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       font-family: 'Le Jour Serif', serif;
-      font-size: 8vw;
+      font-size: 4em;
       color: var(--scrub-green);
       position: relative;
       z-index: 2;
-      text-align: center;
       text-shadow: 0 0 20px rgba(74, 124, 116, 0.8);
-      padding: 0 20px;
     }
 
     .slogan {
       font-family: 'Montserrat', sans-serif;
-      font-size: 3vw;
+      font-size: 0.35em;
       color: var(--text-light);
       margin-top: 12px;
       white-space: nowrap;
       overflow: hidden;
       animation: typing 3s steps(30, end) forwards, blink 0.75s step-end 3.5 alternate;
       border-right: 2px solid var(--text-light);
-    }
-
-    @media (max-width: 768px) {
-      .intro-container {
-        font-size: 12vw;
-      }
-      .slogan {
-        font-size: 5vw;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .intro-container {
-        font-size: 4em;
-      }
-      .slogan {
-        font-size: 1.2em;
-      }
     }
 
     @keyframes typing {
@@ -190,6 +170,14 @@
       background-color: var(--btn-hover);
       transform: scale(1.05);
     }
+
+    footer {
+      margin-top: 80px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #aaa;
+      padding-bottom: 30px;
+    }
   </style>
 </head>
 <body>
@@ -224,6 +212,10 @@
     </div>
   </div>
 
+  <footer>
+    © 2025 MedXplore. All rights reserved. | Founder: Yazan Alafrangi
+  </footer>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
   <script>
@@ -246,6 +238,7 @@
         console.error("VANTA.GLOBE not available. Check script loading.");
       }
 
+      // Remove cursor after typing
       setTimeout(() => {
         const slogan = document.getElementById('slogan');
         slogan.classList.add('finished');
