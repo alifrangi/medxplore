@@ -19,6 +19,13 @@ const News = () => {
       date: "June 26, 2025",
       category: "Partnership",
     },
+    {
+      id: 3,
+      title: "Join Our Team: Outreach & Partnerships Officer Position Available",
+      content: "MedXplore is seeking a passionate and dedicated Outreach & Partnerships Officer (OAPO) to join our growing team. We're looking for someone who can help us build meaningful connections and expand our impact in the medical education community. Required: Contact information, current year of study, compelling statement on why this position suits you, name, email, and phone number. Experience in outreach or partnerships is preferred but not mandatory. To apply, please send your application to registration@medxplore.net with the subject line 'OAPO Application - [Your Name]'. Join us in shaping the future of medical education!",
+      date: "June 29, 2025",
+      category: "Career Opportunity",
+    },
   ];
 
   return (
