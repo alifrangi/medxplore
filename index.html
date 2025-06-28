@@ -1,249 +1,339 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MedXplore - Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Le+Jour+Serif&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --scrub-green: #4a7c74;
-      --text-light: #ffffff;
-      --bg-dark: #0f1113;
-      --card-bg: #1b1f23;
-      --btn-bg: #4a7c74;
-      --btn-hover: #3a635e;
-    }
 
-    * {
-      box-sizing: border-box;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Le+Jour+Serif&family=Montserrat:wght@400;600&display=swap');
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Montserrat', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      overflow-x: hidden;
-      transition: background 0.6s ease;
-      opacity: 0;
-      animation: fadeInBody 2s ease forwards;
-    }
+/* Base */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0d0d0d;
+  font-family: 'Montserrat', sans-serif;
+  color: #e0e0e0;
+  scroll-behavior: smooth;
+}
 
-    @keyframes fadeInBody {
-      to { opacity: 1; }
-    }
+/* Elegant Text Header */
+.text-header {
+  background-color: #0d0d0d;
+  padding: 80px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #1a1a1a;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  border-radius: 0 0 16px 16px;
+}
 
-    #vanta-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
+.text-header h1 {
+  font-family: 'Le Jour Serif', serif;
+  font-size: 52px;
+  color: #69a8d3;
+  margin: 0;
+  letter-spacing: 1.2px;
+}
 
-    .intro-container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Le Jour Serif', serif;
-      font-size: 4em;
-      color: var(--scrub-green);
-      position: relative;
-      z-index: 2;
-      text-shadow: 0 0 20px rgba(74, 124, 116, 0.8);
-    }
+.subtagline {
+  font-family: 'Le Jour Serif', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: #c0c0c0;
+  margin-top: 14px;
+}
 
-    .slogan {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.35em;
-      color: var(--text-light);
-      margin-top: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      animation: typing 3s steps(30, end) forwards, blink 0.75s step-end 3.5 alternate;
-      border-right: 2px solid var(--text-light);
-    }
+/* Mission Section */
+.home-section {
+  background: #1a1a1a;
+  padding: 50px 30px;
+  max-width: 800px;
+  margin: 40px auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
 
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 13em; }
-    }
+.home-section h2 {
+  font-family: 'Le Jour Serif', serif;
+  font-size: 28px;
+  color: #69a8d3;
+  margin-bottom: 20px;
+}
 
-    @keyframes blink {
-      0%, 100% { border-color: var(--text-light); }
-      50% { border-color: transparent; }
-    }
+.home-aim {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #cccccc;
+}
 
-    .slogan.finished {
-      border-right: none;
-    }
+.home-credit {
+  margin-top: 30px;
+  font-style: italic;
+  font-weight: 500;
+  color: #69a8d3;
+  font-size: 16px;
+}
 
-    .intro-container::after {
-      content: '';
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.2), transparent);
-      animation: explode 2.5s ease-out forwards;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
+/* Navigation Buttons */
+.nav-buttons {
+  text-align: center;
+  padding: 30px 0;
+  animation: fadeIn 1s ease forwards;
+}
 
-    @keyframes explode {
-      0% { width: 0; height: 0; opacity: 1; }
-      100% { width: 300px; height: 300px; opacity: 0; }
-    }
+.btn {
+  display: inline-block;
+  margin: 12px;
+  padding: 14px 28px;
+  background-color: #69a8d3;
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(105, 168, 211, 0.2);
+  transition: all 0.3s ease;
+}
 
-    .content-section {
-      padding: 80px 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
+.btn:hover {
+  background-color: #3c7bb0;
+  transform: translateY(-2px);
+}
 
-    .content-section h2 {
-      font-size: 2.5em;
-      color: var(--scrub-green);
-      text-align: center;
-      margin-bottom: 40px;
-    }
+/* Footer */
+footer {
+  background-color: #0d0d0d;
+  color: #69a8d3;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  border-top: 1px solid #1a1a1a;
+}
 
-    .info-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      align-items: center;
-    }
+/* Other Pages */
+.page-content {
+  max-width: 800px;
+  background: #1a1a1a;
+  padding: 60px 30px;
+  margin: 50px auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
 
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 0px;
-      padding: 25px;
-      max-width: 700px;
-      width: 100%;
-      box-shadow: 0 0 25px rgba(74, 124, 116, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Info Cards */
+.info-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 30px rgba(74, 124, 116, 0.5);
-    }
+.card {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  flex: 1 1 280px;
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.05);
+  border: 1px solid #333;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
 
-    .card h3 {
-      color: var(--scrub-green);
-      margin-bottom: 12px;
-    }
+.card h3 {
+  font-family: 'Le Jour Serif', serif;
+  font-size: 24px;
+  color: #69a8d3;
+  margin-bottom: 15px;
+}
 
-    .card p {
-      color: #ccc;
-      line-height: 1.6;
-      font-size: 1em;
-    }
+.card p {
+  font-size: 16px;
+  line-height: 1.6;
+}
 
-    .nav-buttons {
-      margin-top: 50px;
-      text-align: center;
-    }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(105, 168, 211, 0.2);
+}
+.mouse-light {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 140px;
+  height: 140px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(105, 168, 211, 0.15) 0%, transparent 80%);
+  border-radius: 50%;
+  z-index: 9999;
+}
+/* Meet the Team Section */
+.team-section {
+  padding: 100px 30px;
+  background-color: #0d0d0d;
+  text-align: center;
+  position: relative;
+  overflow-x: hidden;
+}
 
-    .btn {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 28px;
-      font-weight: 600;
-      color: var(--text-light);
-      background-color: var(--btn-bg);
-      border: none;
-      border-radius: 0px;
-      text-decoration: none;
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
+.team-title {
+  font-size: 3rem;
+  font-family: 'Le Jour Serif', serif;
+  color: #ffffff;
+  text-shadow: 0 0 10px #4a7c74;
+  margin-bottom: 60px;
+}
 
-    .btn:hover {
-      background-color: var(--btn-hover);
-      transform: scale(1.05);
-    }
+.team-line {
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, transparent 10%, #4a7c74, transparent 90%);
+  margin-bottom: 60px;
+  position: relative;
+  animation: glowLine 2s infinite alternate;
+}
 
-    footer {
-      margin-top: 80px;
-      text-align: center;
-      font-size: 0.9em;
-      color: #aaa;
-      padding-bottom: 30px;
-    }
-  </style>
-</head>
-<body>
-  <div id="vanta-bg"></div>
-  <div class="intro-container">
-    MedXplore
-    <div class="slogan" id="slogan">Experience. Explore. Excel.</div>
-  </div>
+@keyframes glowLine {
+  0% { box-shadow: 0 0 10px #4a7c74; }
+  100% { box-shadow: 0 0 30px #4a7c74; }
+}
 
-  <div class="content-section">
-    <h2>Our Mission & Vision</h2>
-    <div class="info-cards">
-      <div class="card">
-        <h3>Our Vision</h3>
-        <p>To become a leading force in redefining medical education by fostering curiosity, innovation, and global-minded healthcare professionals across Jordan and beyond.</p>
-      </div>
-      <div class="card">
-        <h3>Our Values</h3>
-        <p>Integrity, collaboration, hands-on experience, inclusivity, and an unwavering commitment to student empowerment are the core values that shape every step we take.</p>
-      </div>
-      <div class="card">
-        <h3>Why MedXplore</h3>
-        <p>Because we believe in learning beyond textbooks — through real-world exposure, community engagement, and opportunities that shape tomorrow’s healthcare leaders.</p>
-      </div>
-    </div>
+.team-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  position: relative;
+}
 
-    <div class="nav-buttons">
-      <a href="events.html" class="btn">Events</a>
-      <a href="news.html" class="btn">News</a>
-      <a href="passport.html" class="btn">Passport</a>
-      <a href="contact.html" class="btn">Contact</a>
-    </div>
-  </div>
+.team-card {
+  background-color: #1b1f23;
+  border: 1px solid #4a7c74;
+  padding: 30px 20px;
+  width: 300px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 0 10px rgba(74, 124, 116, 0.2);
+  text-align: left;
+}
 
-  <footer>
-    2025 MedXplore | Founder Yazan Alafrangi
-  </footer>
+.team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 20px #4a7c74;
+}
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.VANTA && VANTA.GLOBE) {
-        VANTA.GLOBE({
-          el: "#vanta-bg",
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200.00,
-          minWidth: 200.00,
-          scale: 1.00,
-          scaleMobile: 1.00,
-          color: 0x4a7c74,
-          size: 1.3,
-          backgroundColor: 0x0f1113
-        });
-      } else {
-        console.error("VANTA.GLOBE not available. Check script loading.");
-      }
+.glow {
+  color: #4a7c74;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px #4a7c74;
+}
 
-      // Remove cursor after typing
-      setTimeout(() => {
-        const slogan = document.getElementById('slogan');
-        slogan.classList.add('finished');
-      }, 3000);
-    });
-  </script>
-</body>
-</html>
+.name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.desc {
+  font-size: 0.95rem;
+  color: #cccccc;
+}
+/* Meet the Team – Fixed and Synced */
+.meet-team {
+  padding: 100px 30px;
+  background-color: #0d0d0d;
+  text-align: center;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.meet-team h2 {
+  font-size: 3rem;
+  font-family: 'Le Jour Serif', serif;
+  color: #ffffff;
+  text-shadow: 0 0 15px #ffffff;
+  margin-bottom: 60px;
+}
+
+.team-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 50px;
+}
+
+.team-member {
+  background-color: #1a1a1a;
+  border: 2px solid #4a7c74;
+  border-radius: 16px;
+  padding: 40px 25px;
+  width: 300px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(74, 124, 116, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: left;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px #4a7c74;
+}
+
+.team-member h3 {
+  color: #4a7c74;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-shadow: 0 0 8px #4a7c74;
+}
+
+.team-member .name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.team-member .desc {
+  font-size: 1rem;
+  color: #cccccc;
+  line-height: 1.6;
+}
+
+/* Circular Profile Image */
+.circle-img {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid #4a7c74;
+  box-shadow: 0 0 12px #4a7c74;
+  object-fit: cover;
+  background-color: #111;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+  .team-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.role {
+  font-size: 0.85rem;
+  font-family: 'Montserrat', sans-serif;
+  color: #aaaaaa;
+  margin-top: -8px;
+  margin-bottom: 10px;
+} 
