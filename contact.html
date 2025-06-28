@@ -116,6 +116,15 @@
       transform: translateY(-2px);
     }
 
+    .thank-you {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      color: #4a7c74;
+      font-size: 16px;
+      animation: fadeIn 1s ease-out;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(40px); }
       to { opacity: 1; transform: translateY(0); }
@@ -128,10 +137,10 @@
   </style>
 </head>
 <body>
-  <div class="contact-container">
+  <div class="contact-container" id="form-box">
     <h1>Contact Us</h1>
     <p>We’d love to hear from you! Whether it's a question, idea, or feedback, just drop us a message.</p>
-    <form action="https://formspree.io/f/xqkrvavj" method="POST">
+    <form id="contact-form" action="https://formspree.io/f/xpwrkbgy" method="POST">
       <input type="text" name="name" placeholder="Your Name" required />
       <input type="email" name="email" placeholder="Your Email" required />
       <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
@@ -144,8 +153,41 @@
     </div>
   </div>
 
+  <div class="thank-you" id="thank-you">
+    <h1>Thank you for submitting your feedback!</h1>
+    <p>We’ll review it and get back to you within 2–3 business days.</p>
+  </div>
+
   <a href="index.html" class="back-home">← Back to Home</a>
+
+  <script>
+    const form = document.getElementById("contact-form");
+    const formBox = document.getElementById("form-box");
+    const thankYou = document.getElementById("thank-you");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (response.ok) {
+          formBox.style.display = "none";
+          thankYou.style.display = "block";
+        } else {
+          alert("Oops! Something went wrong. Please try again.");
+        }
+      } catch (error) {
+        alert("Error submitting the form. Please try again later.");
+      }
+    });
+  </script>
 </body>
 </html>
-
-
