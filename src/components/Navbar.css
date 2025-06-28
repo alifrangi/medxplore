@@ -37,11 +37,15 @@
   transform: scale(1.02);
 }
 
-.navbar__logo-icon {
-  color: var(--accent-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.navbar__logo-container:hover .navbar__logo-image {
+  transform: scale(1.05);
+}
+
+.navbar__logo-image {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  transition: transform var(--transition-speed) ease;
 }
 
 .navbar__logo-text {
@@ -142,6 +146,10 @@
   
   .navbar__logo-text {
     font-size: 1.5rem;
+  }
+  
+  .navbar__logo-image {
+    height: 32px;
   }
   
   .navbar {
