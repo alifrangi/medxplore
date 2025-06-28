@@ -162,6 +162,7 @@
   padding-top: 1rem;
   border-top: 1px solid rgba(169, 211, 216, 0.2);
   font-family: 'Inter', sans-serif;
+  opacity: 0.7;
 }
 
 .back-home-btn {
@@ -208,6 +209,199 @@
     left: 1rem;
     font-size: 0.85rem;
     padding: 0.75rem 1.25rem;
+  }
+}
+
+/* OAPO Form Styles */
+.apply-btn {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.apply-btn:hover {
+  background: #8bc5cb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(169, 211, 216, 0.3);
+}
+
+.oapo-form {
+  background: rgba(169, 211, 216, 0.05);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(169, 211, 216, 0.2);
+  margin-top: 1rem;
+}
+
+.oapo-form h4 {
+  font-family: 'Cormorant Garamond', serif;
+  color: var(--accent-color);
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.oapo-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.oapo-form .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+}
+
+.oapo-form .form-group input,
+.oapo-form .form-group select,
+.oapo-form .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color var(--transition-speed) ease;
+  background: white;
+}
+
+.oapo-form .form-group input:focus,
+.oapo-form .form-group select:focus,
+.oapo-form .form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.oapo-form .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.oapo-form .submit-btn {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.oapo-form .submit-btn:hover:not(:disabled) {
+  background: #8bc5cb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(169, 211, 216, 0.3);
+}
+
+.oapo-form .submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.875rem 1.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.cancel-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.oapo-form .success-message {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(169, 211, 216, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(169, 211, 216, 0.2);
+}
+
+.oapo-form .success-message h4 {
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.oapo-form .success-message p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.new-application-btn {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+
+.new-application-btn:hover {
+  background: #8bc5cb;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .oapo-form {
+    padding: 1.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .oapo-form .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
