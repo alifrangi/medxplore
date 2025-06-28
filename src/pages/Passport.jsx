@@ -21,7 +21,7 @@ const Passport = () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch('https://formspree.io/f/xpwrkbgy', {
+      const response = await fetch('https://formspree.io/f/xblyqdjg', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
