@@ -35,12 +35,11 @@ const Navbar = () => {
         <div className="navbar__content">
           <Link to="/" className="navbar__logo">
             <div className="navbar__logo-container">
-              <div className="navbar__logo-icon">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                  <circle cx="20" cy="20" r="18" stroke="currentColor" strokeWidth="2"/>
-                  <path d="M12 20h16M20 12v16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="MedXplore Logo" 
+                className="navbar__logo-image"
+              />
               <span className="navbar__logo-text">MedXplore</span>
             </div>
           </Link>

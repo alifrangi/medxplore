@@ -1,17 +1,49 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './Home.css'
 
 const Home = () => {
+  const heroRef = useRef(null)
+
+  useEffect(() => {
+    let vantaEffect = null
+    
+    const initVanta = () => {
+      if (window.VANTA && heroRef.current) {
+        vantaEffect = window.VANTA.FOG({
+          el: heroRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          highlightColor: 0xfaf8f1,
+          midtoneColor: 0xa9d3d8,
+          lowlightColor: 0xfaf8f1,
+          baseColor: 0xfaf8f1,
+          blurFactor: 0.6,
+          speed: 1.10,
+          zoom: 1.10
+        })
+      }
+    }
+
+    // Initialize Vanta after a short delay to ensure scripts are loaded
+    const timer = setTimeout(initVanta, 100)
+
+    return () => {
+      clearTimeout(timer)
+      if (vantaEffect) {
+        vantaEffect.destroy()
+      }
+    }
+  }, [])
+
   return (
     <div className="home">
       {/* Hero Section */}
-      <section className="hero">
-        <div className="hero__background">
-          <div className="hero__gradient"></div>
-          <div className="hero__pattern"></div>
-        </div>
+      <section className="hero" ref={heroRef}>
         
         <div className="container">
           <div className="hero__content">
@@ -62,25 +94,40 @@ const Home = () => {
             className="features__header"
           >
             <h2>What We Offer</h2>
-            <p>Comprehensive solutions for modern healthcare challenges</p>
+            <p>We help medical students unlock their potential, expand their knowledge, and achieve excellence in their healthcare journey</p>
           </motion.div>
 
           <div className="features__grid">
             {[
               {
-                title: "Innovation",
-                description: "Pioneering the future of medical technology and healthcare solutions.",
-                icon: "🚀"
+                title: "Excellence",
+                description: "Empowering medical students to excel in their studies and develop into exceptional healthcare professionals.",
+                icon: (
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a9d3d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12,2 15.09,8.26 22,9 17,14.74 18.18,21.02 12,17.77 5.82,21.02 7,14.74 2,9 8.91,8.26 12,2"/>
+                  </svg>
+                )
               },
               {
-                title: "Education", 
-                description: "Providing comprehensive resources and training for medical professionals.",
-                icon: "📚"
+                title: "Growth", 
+                description: "Providing hands-on experiences and advanced learning opportunities to accelerate your medical education journey.",
+                icon: (
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a9d3d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="20" x2="12" y2="10"/>
+                    <line x1="18" y1="20" x2="18" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="16"/>
+                  </svg>
+                )
               },
               {
-                title: "Community",
-                description: "Building a global network of healthcare innovators and practitioners.",
-                icon: "🤝"
+                title: "Achievement",
+                description: "Supporting medical students in reaching their academic goals and building successful healthcare careers.",
+                icon: (
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a9d3d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="8" r="6"/>
+                    <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+                  </svg>
+                )
               }
             ].map((feature, index) => (
               <motion.div
@@ -111,45 +158,123 @@ const Home = () => {
             viewport={{ once: true }}
             className="team__header"
           >
-            <h2>Meet the Team</h2>
-            <p>Passionate individuals driving innovation in healthcare</p>
+            <h1 className="team__title">
+              MedX<span className="team__title-accent">plore</span>
+              <span className="team__title-script">Team</span>
+            </h1>
           </motion.div>
 
           <motion.div 
             className="team__content"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            <div className="team-member">
-              <div className="team-member__info">
-                <h3>Yazan Al Afrangi</h3>
-                <p className="team-member__role">Founder & Medical Technology Innovator</p>
-                <p className="team-member__description">
-                  Passionate about revolutionizing healthcare through technology and innovation. 
-                  Leading the charge in bridging medical expertise with cutting-edge solutions.
-                </p>
-              </div>
+            {/* Divider line like hero */}
+            <div className="team__divider">
+              <div className="team__divider-line"></div>
+            </div>
+
+            {/* Team Members List */}
+            <div className="team__members-list">
+              {[
+                {
+                  id: 1,
+                  name: "Yazan Al Afrangi",
+                  role: "FOUNDER",
+                  description: "A medical student with a tendency to turn ideas into full-scale projects. I created MedXplore to bridge the gap between education and experience — and maybe also because I can't sit still when something can be done better. I don't have all the answers, but I know how to start asking the right questions.",
+                  image: "/yazan.png"
+                },
+                {
+                  id: 2,
+                  name: "Ammar Ashour",
+                  role: "HEAD OF ACADEMIC DEVELOPMENT",
+                  description: "Designing, overseeing, and presenting educational content to ensure that the program aligns with Evidence-based worldwide medical standards.",
+                  image: "/hoad.jpg"
+                },
+                {
+                  id: 3,
+                  name: "Rahma Alyabroudi",
+                  role: "FOUNDATIONS & READINESS DIRECTOR",
+                  description: "Strong foundations don't just support growth — they shape its direction. At MedXplore, I ensure readiness is never an afterthought, but the starting point of every journey.",
+                  image: "/fard.jpg"
+                },
+                {
+                  id: 4,
+                  name: "About to come!",
+                  role: "OUTREACH & PARTNERSHIPS OFFICER",
+                  description: "Coming soon to help build partnerships and create opportunities for community engagement and outreach programs.",
+                  image: null
+                },
+                {
+                  id: 5,
+                  name: "Shahad Samarat",
+                  role: "MEDIA & COMMUNICATIONS LEAD",
+                  description: "Motivated by the value of shared knowledge, I aim to guide students with care, precision, and a spirit of collaboration.",
+                  image: "/macl.jpg"
+                },
+                {
+                  id: 6,
+                  name: "Yazan Jarrar",
+                  role: "WEBSITE & TECH MANAGER",
+                  description: "I make the website work, look cool, and break only on Mondays. German efficiency? Yes. But also German sarcasm, so beware. If the button doesn't work — it's probably your fault. Also, I don't just fix code, I judge your font choices too.",
+                  image: "/watm.jpg"
+                },
+                {
+                  id: 7,
+                  name: "Sedra Jibreen",
+                  role: "STUDENT ENGAGEMENT LEAD",
+                  description: "A passionate dental student dedicated to volunteer work and enhancing the student experience through active listening and meaningful communication. 'Real change begins when we listen with our hearts, not just our ears.'",
+                  image: "/sel.jpg"
+                }
+              ].map((member, index) => (
+                <motion.div
+                  key={member.id}
+                  className="team__member"
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="team__member-circle">
+                    {member.image ? (
+                      <img 
+                        src={member.image} 
+                        alt={member.name}
+                        className="team__member-image"
+                      />
+                    ) : (
+                      <div className="team__avatar-placeholder"></div>
+                    )}
+                  </div>
+                  <div className="team__member-info">
+                    <h3 className="team__member-role">{member.role}</h3>
+                    <h4 className="team__member-name">{member.name}</h4>
+                    <p className="team__member-description">{member.description}</p>
+                    <div className="team__member-divider"></div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="cta">
+      {/* Contact Section */}
+      <section className="contact-cta">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="cta__content"
+            className="contact-cta__content"
           >
-            <h2>Ready to Explore?</h2>
-            <p>Join us in revolutionizing the future of healthcare</p>
+            <h2>Contact Us</h2>
+            <p>Have questions or ready to get started? We'd love to hear from you</p>
             <Link to="/contact" className="btn btn--primary btn--large">
-              Get Started Today
+              Get in Touch
             </Link>
           </motion.div>
         </div>
