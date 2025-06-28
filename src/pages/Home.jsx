@@ -159,7 +159,7 @@ const Home = () => {
             className="team__header"
           >
             <h1 className="team__title">
-              MedX<span className="team__title-accent">plore</span>
+              Med<span className="team__title-accent">X</span><span className="team__title-accent">plore</span>
               <span className="team__title-script">Team</span>
             </h1>
           </motion.div>
