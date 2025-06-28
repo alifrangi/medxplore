@@ -267,9 +267,6 @@ const News = () => {
         ))}
       </div>
 
-      <Link to="/" className="back-home-btn">
-        ← Back to Home
-      </Link>
     </div>
   );
 };

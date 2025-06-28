@@ -1,5 +1,5 @@
 .home {
-  padding-top: var(--navbar-height);
+  padding-top: 0;
 }
 
 /* Hero Section */
@@ -10,6 +10,7 @@
   position: relative;
   overflow: hidden;
   background: var(--bg-primary);
+  padding-top: var(--navbar-height);
 }
 
 .hero__content {
@@ -447,8 +448,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero {
-    min-height: 80vh;
-    padding: 2rem 0;
+    min-height: 100vh;
+    padding-top: var(--navbar-height);
   }
   
   .hero__actions {
@@ -491,33 +492,122 @@
   }
   
   .team__members-list {
-    padding-left: 6rem;
+    padding-left: 0;
+    max-width: 100%;
   }
   
   .team__members-list::before {
-    left: 4rem;
+    display: none;
+  }
+  
+  .team__member {
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 1rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(169, 211, 216, 0.2);
   }
   
   .team__member-circle {
-    left: -6rem;
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0 auto 1.5rem auto;
+    width: 120px;
+    height: 120px;
+  }
+  
+  .team__member-image,
+  .team__avatar-placeholder {
     width: 100px;
     height: 100px;
   }
   
-  .team__avatar-placeholder {
-    width: 80px;
-    height: 80px;
+  .team__member-info {
+    padding-top: 0;
   }
   
   .team__member-role {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+  }
+  
+  .team__member-name {
+    font-size: 1.4rem;
+  }
+  
+  .team__member-description {
+    font-size: 0.95rem;
+    max-width: none;
+  }
+  
+  .team__member-divider {
+    margin: 0 auto;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .hero {
+    min-height: 100vh;
+    padding-top: 60px; /* Mobile navbar height */
+  }
+  
+  .hero__title {
+    font-size: clamp(2.5rem, 10vw, 4rem);
+  }
+  
+  .hero__subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .hero__actions {
+    gap: 0.75rem;
+  }
+  
+  .btn {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+  
+  .features__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .feature-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .team__member {
+    padding: 1.5rem 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .team__member-circle {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .team__member-image,
+  .team__avatar-placeholder {
+    width: 80px;
+    height: 80px;
   }
   
   .team__member-name {
     font-size: 1.3rem;
   }
   
+  .team__member-role {
+    font-size: 1rem;
+  }
+  
   .team__member-description {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
   }
 }

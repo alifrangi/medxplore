@@ -79,7 +79,7 @@
   margin: 0 auto;
   padding: 0 2rem 4rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
 }
 
@@ -204,11 +204,50 @@
     padding: 2rem 1.5rem;
   }
   
+  .apply-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    min-height: 48px;
+  }
+  
   .back-home-btn {
     bottom: 1rem;
     left: 1rem;
     font-size: 0.85rem;
     padding: 0.75rem 1.25rem;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 0.75rem 2rem;
+  }
+  
+  .news-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .news-card-title {
+    font-size: 1.3rem;
+  }
+  
+  .news-card-content {
+    font-size: 0.95rem;
+  }
+  
+  .oapo-form {
+    padding: 1.5rem;
+  }
+  
+  .oapo-form .form-group input,
+  .oapo-form .form-group select,
+  .oapo-form .form-group textarea {
+    padding: 1rem;
+    font-size: 1rem;
   }
 }
 

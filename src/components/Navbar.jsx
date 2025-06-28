@@ -63,7 +63,7 @@ const Navbar = () => {
           </div>
 
           <button 
-            className="navbar__mobile-toggle"
+            className={`navbar__mobile-toggle ${isMobileMenuOpen ? 'navbar__mobile-toggle--active' : ''}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
           >
@@ -74,6 +74,16 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <motion.div 
+            className="navbar__mobile-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+        
         <motion.div 
           className={`navbar__mobile ${isMobileMenuOpen ? 'navbar__mobile--open' : ''}`}
           initial={false}
@@ -81,7 +91,7 @@ const Navbar = () => {
             height: isMobileMenuOpen ? 'auto' : 0,
             opacity: isMobileMenuOpen ? 1 : 0
           }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
           <div className="navbar__mobile-content">
             {navItems.map((item, index) => (

@@ -160,9 +160,6 @@ const Contact = () => {
         </motion.div>
       </div>
 
-      <Link to="/" className="back-home-btn">
-        ← Back to Home
-      </Link>
     </div>
   )
 }

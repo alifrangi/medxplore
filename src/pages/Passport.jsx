@@ -198,7 +198,7 @@ const Passport = () => {
               </form>
             ) : (
               <div className="success-message">
-                <h2>Welcome to MedXplore! 🎉</h2>
+                <h2>Welcome to MedXplore!</h2>
                 <p>
                   Your passport application has been submitted successfully. 
                   You'll receive a confirmation email shortly with next steps and exclusive access information.
@@ -212,7 +212,6 @@ const Passport = () => {
         </motion.section>
       </div>
 
-      <Link to="/" className="back-home-btn">← Back to Home</Link>
     </div>
   )
 }

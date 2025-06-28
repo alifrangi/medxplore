@@ -101,38 +101,99 @@
   cursor: pointer;
   padding: 0.5rem;
   gap: 4px;
+  z-index: 1001;
+  position: relative;
 }
 
 .navbar__mobile-toggle span {
   width: 24px;
   height: 2px;
   background: var(--text-primary);
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+/* Hamburger to X animation */
+.navbar__mobile-toggle--active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.navbar__mobile-toggle--active span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.navbar__mobile-toggle--active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.navbar__mobile-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  backdrop-filter: blur(4px);
 }
 
 .navbar__mobile {
+  background: rgba(250, 248, 241, 0.98);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(169, 211, 216, 0.2);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 20px 20px;
   overflow: hidden;
-  background: var(--bg-primary);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .navbar__mobile-content {
-  padding: 1rem 0;
+  padding: 1.5rem;
 }
 
 .navbar__mobile-link {
-  display: block;
+  display: flex;
+  align-items: center;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-primary);
-  padding: 0.75rem 0;
-  transition: color var(--transition-speed) ease;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.5rem;
+  transition: all var(--transition-speed) ease;
+  min-height: 48px;
+  border-radius: 12px;
+  position: relative;
 }
 
 .navbar__mobile-link:hover,
 .navbar__mobile-link--active {
   color: var(--accent-color);
+  background: rgba(169, 211, 216, 0.1);
+  transform: translateX(8px);
+}
+
+.navbar__mobile-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 20px;
+  background: var(--accent-color);
+  border-radius: 0 2px 2px 0;
+  transition: width var(--transition-speed) ease;
+}
+
+.navbar__mobile-link:hover::before,
+.navbar__mobile-link--active::before {
+  width: 4px;
 }
 
 @media (max-width: 768px) {

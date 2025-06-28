@@ -45,7 +45,6 @@ const Events = () => {
         </motion.section>
       </div>
 
-      <Link to="/" className="back-home-btn">← Back to Home</Link>
 
       <footer className="events-footer">
         2025 MedXplore | Founder Yazan Alafrangi
