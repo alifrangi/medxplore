@@ -20,8 +20,8 @@ const Navbar = () => {
   const navItems = [
     { name: 'Events', path: '/events' },
     { name: 'News', path: '/news' },
-    { name: 'Passport', path: '/passport' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Contact', path: '/contact' },
+    { name: 'Portal', path: '/passport', isPortal: true }
   ]
 
   return (
@@ -54,7 +54,7 @@ const Navbar = () => {
               >
                 <Link 
                   to={item.path}
-                  className={`navbar__link ${location.pathname === item.path ? 'navbar__link--active' : ''}`}
+                  className={`navbar__link ${location.pathname === item.path ? 'navbar__link--active' : ''} ${item.isPortal ? 'navbar__link--portal' : ''}`}
                 >
                   {item.name}
                 </Link>
@@ -106,7 +106,7 @@ const Navbar = () => {
               >
                 <Link 
                   to={item.path}
-                  className={`navbar__mobile-link ${location.pathname === item.path ? 'navbar__mobile-link--active' : ''}`}
+                  className={`navbar__mobile-link ${location.pathname === item.path ? 'navbar__mobile-link--active' : ''} ${item.isPortal ? 'navbar__mobile-link--portal' : ''}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
