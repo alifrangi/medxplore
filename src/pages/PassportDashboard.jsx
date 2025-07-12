@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { getStudentEvents, TIER_DEFINITIONS } from '../services/database';
+import TierProgressBar from '../components/TierProgressBar';
 import './PassportDashboard.css';
 
 const PassportDashboard = () => {
@@ -11,10 +12,56 @@ const PassportDashboard = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState('all');
+  const [vantaEffect, setVantaEffect] = useState(null);
+  const vantaRef = useRef(null);
 
   useEffect(() => {
     loadStudentEvents();
   }, [studentData]);
+
+  // Vanta.js initialization for Pioneer tier
+  useEffect(() => {
+    const currentTier = studentData?.tier || 'Explorer';
+    
+    // Clean up any existing effect
+    if (vantaEffect) {
+      vantaEffect.destroy();
+      setVantaEffect(null);
+    }
+    
+    // Initialize Vanta for Pioneer tier
+    if (currentTier === 'Pioneer' && window.VANTA && window.VANTA.WAVES && vantaRef.current) {
+      setTimeout(() => {
+        try {
+          const effect = window.VANTA.WAVES({
+            el: vantaRef.current,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x1a1a1a,
+            shininess: 50.00,
+            waveHeight: 20.00,
+            waveSpeed: 0.50,
+            zoom: 0.85
+          });
+          setVantaEffect(effect);
+          // Vanta effect initialized successfully
+        } catch (error) {
+          // Error initializing Vanta effect
+        }
+      }, 100); // Small delay to ensure DOM is ready
+    }
+    
+    return () => {
+      if (vantaEffect) {
+        vantaEffect.destroy();
+      }
+    };
+  }, [studentData?.tier]); // Remove vantaEffect from dependencies to avoid loops
 
   const loadStudentEvents = async () => {
     if (studentData?.passportNumber) {
@@ -30,22 +77,22 @@ const PassportDashboard = () => {
   };
 
   const getTierProgress = () => {
-    const currentTier = studentData?.tier || 'Bronze';
+    const currentTier = studentData?.tier || 'Explorer';
     const totalEvents = studentData?.totalEvents || 0;
     const tierDef = TIER_DEFINITIONS[currentTier];
     
     let nextTier = null;
     let eventsToNext = 0;
     
-    if (currentTier === 'Bronze' && totalEvents < 5) {
-      nextTier = 'Silver';
+    if (currentTier === 'Explorer' && totalEvents < 5) {
+      nextTier = 'Scholar';
       eventsToNext = 5 - totalEvents;
-    } else if (currentTier === 'Silver' && totalEvents < 10) {
-      nextTier = 'Gold';
-      eventsToNext = 10 - totalEvents;
-    } else if (currentTier === 'Gold' && totalEvents < 20) {
-      nextTier = 'Platinum';
+    } else if (currentTier === 'Scholar' && totalEvents < 20) {
+      nextTier = 'Mentor';
       eventsToNext = 20 - totalEvents;
+    } else if (currentTier === 'Mentor' && totalEvents < 30) {
+      nextTier = 'Pioneer';
+      eventsToNext = 30 - totalEvents;
     }
     
     return { currentTier, nextTier, eventsToNext, totalEvents };
@@ -66,7 +113,12 @@ const PassportDashboard = () => {
   }
 
   return (
-    <div className="passport-dashboard">
+    <div className={`passport-dashboard theme-${currentTier.toLowerCase()}`}>
+      {currentTier === 'Pioneer' && (
+        <div ref={vantaRef} className="vanta-background" style={{
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
+        }} />
+      )}
       <div className="dashboard-header">
         <div className="header-content">
           <h1>Welcome back, {studentData?.fullName}</h1>
@@ -111,39 +163,84 @@ const PassportDashboard = () => {
             </div>
 
             <div className="tier-section">
-              <div 
-                className="current-tier"
-                style={{ backgroundColor: TIER_DEFINITIONS[currentTier]?.color }}
-              >
-                <span className="tier-label">Current Tier</span>
-                <span className="tier-name">{currentTier}</span>
+              <div className="tier-header">
+                <h3>Tier Status</h3>
+                <span className="event-count">{totalEvents} Events Completed</span>
               </div>
               
-              {nextTier && (
-                <div className="tier-progress">
-                  <p className="progress-text">
-                    {eventsToNext} more event{eventsToNext !== 1 ? 's' : ''} to reach {nextTier}
-                  </p>
-                  <div className="progress-bar">
+              <div className="tier-timeline">
+                {Object.entries(TIER_DEFINITIONS).map(([tierName, tierDef], index) => (
+                  <div 
+                    key={tierName} 
+                    className={`timeline-item ${tierName === currentTier ? 'active' : ''} ${totalEvents >= tierDef.min ? 'completed' : ''}`}
+                  >
                     <div 
-                      className="progress-fill"
+                      className="timeline-icon"
                       style={{ 
-                        width: `${((totalEvents - (TIER_DEFINITIONS[currentTier]?.min || 0)) / 
-                                  ((TIER_DEFINITIONS[nextTier]?.min || 5) - (TIER_DEFINITIONS[currentTier]?.min || 0))) * 100}%` 
+                        backgroundColor: totalEvents >= tierDef.min ? tierDef.color : '#e0e0e0',
+                        color: totalEvents >= tierDef.min ? 'white' : '#999'
                       }}
-                    />
+                    >
+                      <span className="material-icons-outlined">
+                        {tierDef.icon}
+                      </span>
+                    </div>
+                    <span className="timeline-label">{tierName}</span>
+                    {index < Object.keys(TIER_DEFINITIONS).length - 1 && (
+                      <div className={`timeline-connector ${totalEvents >= TIER_DEFINITIONS[Object.keys(TIER_DEFINITIONS)[index + 1]].min ? 'completed' : ''}`} />
+                    )}
                   </div>
+                ))}
+              </div>
+              
+              <div className="current-tier">
+                <div className="tier-icon-wrapper">
+                  <span className="material-icons-outlined tier-icon">
+                    {TIER_DEFINITIONS[currentTier]?.icon}
+                  </span>
                 </div>
-              )}
+                <div className="tier-info">
+                  <span className="tier-label">Current Tier</span>
+                  <span className="tier-name">{currentTier}</span>
+                </div>
+              </div>
+              
+              <p className="tier-description">{TIER_DEFINITIONS[currentTier]?.description}</p>
+              
+              {/* Enhanced Tier Progress Bar */}
+              <div className="tier-progress-container">
+                <TierProgressBar 
+                  currentTier={currentTier} 
+                  totalEvents={totalEvents} 
+                />
+              </div>
             </div>
 
             <div className="tier-benefits">
-              <h4>Your Benefits:</h4>
+              <h4>Your Current Benefits:</h4>
               <ul>
-                {TIER_DEFINITIONS[currentTier]?.benefits.map((benefit, index) => (
-                  <li key={index}>{benefit}</li>
-                ))}
+                {TIER_DEFINITIONS[currentTier]?.benefits && TIER_DEFINITIONS[currentTier].benefits.length > 0 ? (
+                  TIER_DEFINITIONS[currentTier].benefits.map((benefit, index) => (
+                    <li key={index}>{benefit}</li>
+                  ))
+                ) : (
+                  <li>No benefits data available</li>
+                )}
               </ul>
+              
+              {nextTier && (
+                <div className="next-tier-preview">
+                  <h5>Unlock at {nextTier} Tier:</h5>
+                  <ul className="preview-benefits">
+                    {TIER_DEFINITIONS[nextTier]?.benefits.slice(0, 2).map((benefit, index) => (
+                      <li key={index}>{benefit}</li>
+                    ))}
+                    {TIER_DEFINITIONS[nextTier]?.benefits.length > 2 && (
+                      <li className="more-benefits">...and {TIER_DEFINITIONS[nextTier]?.benefits.length - 2} more benefits!</li>
+                    )}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
@@ -201,7 +298,31 @@ const PassportDashboard = () => {
                   <div className="event-header">
                     <h3>{participation.event?.name || 'Event'}</h3>
                     <span className="event-date">
-                      {participation.event?.date ? new Date(participation.event.date).toLocaleDateString() : 'Date TBD'}
+                      {(() => {
+                        const date = participation.event?.date;
+                        if (!date) return 'Date TBD';
+                        
+                        try {
+                          let dateObj;
+                          if (date.toDate && typeof date.toDate === 'function') {
+                            dateObj = date.toDate();
+                          } else if (date.seconds) {
+                            dateObj = new Date(date.seconds * 1000);
+                          } else if (typeof date === 'string' || typeof date === 'number') {
+                            dateObj = new Date(date);
+                          } else {
+                            return 'Date TBD';
+                          }
+                          
+                          if (isNaN(dateObj.getTime())) {
+                            return 'Date TBD';
+                          }
+                          
+                          return dateObj.toLocaleDateString();
+                        } catch (error) {
+                          return 'Date TBD';
+                        }
+                      })()}
                     </span>
                   </div>
                   

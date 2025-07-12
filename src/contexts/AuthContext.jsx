@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: result.error };
       }
     } catch (error) {
-      console.error('Login error:', error);
+      // Login error
       return { success: false, error: 'Failed to login' };
     } finally {
       setLoading(false);
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true };
     } catch (error) {
-      console.error('Admin login error:', error);
+      // Admin login error
       let errorMessage = 'Failed to login';
       
       if (error.code === 'auth/user-not-found') {
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true };
     } catch (error) {
-      console.error('Logout error:', error);
+      // Logout error
       return { success: false, error: 'Failed to logout' };
     }
   };

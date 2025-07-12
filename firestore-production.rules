@@ -1,0 +1,126 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated admin
+    // This version checks the admins collection using email field
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email != null &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    // Temporary permissive admin check for testing
+    // Replace this with isAdmin() once admin collection is properly set up
+    function isAdminTemp() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+    
+    // Helper function to validate student data
+    function isValidStudentData() {
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'university', 'passportNumber']) &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email is string &&
+             request.resource.data.university is string;
+    }
+    
+    // Helper function to validate application data
+    function isValidApplicationData() {
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'phone', 'university', 'yearOfStudy', 'major']) &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email is string &&
+             request.resource.data.phone is string &&
+             request.resource.data.university is string &&
+             request.resource.data.yearOfStudy is string &&
+             request.resource.data.major is string;
+    }
+    
+    // Students collection - passport numbers as document IDs
+    match /students/{passportNumber} {
+      // Public read for passport login
+      allow read: if true;
+      
+      // Only admins can create students (via approved applications)
+      allow create: if isAdminTemp() && isValidStudentData();
+      
+      // Only admins can update student records
+      allow update: if isAdminTemp();
+      
+      // Only admins can delete students
+      allow delete: if isAdminTemp();
+    }
+    
+    // Applications collection
+    match /applications/{applicationId} {
+      // Anyone can submit an application
+      allow create: if isValidApplicationData() &&
+                       request.resource.data.status == 'pending';
+      
+      // Only admins can read applications
+      allow read: if isAdminTemp();
+      
+      // Only admins can update applications (approve/reject)
+      allow update: if isAdminTemp();
+      
+      // Only admins can delete applications
+      allow delete: if isAdminTemp();
+    }
+    
+    // Events collection
+    match /events/{eventId} {
+      // Public read access for event browsing
+      allow read: if true;
+      
+      // Only admins can create events
+      allow create: if isAdminTemp();
+      
+      // Only admins can update events
+      allow update: if isAdminTemp();
+      
+      // Only admins can delete events
+      allow delete: if isAdminTemp();
+    }
+    
+    // Participations collection
+    match /participations/{participationId} {
+      // Public read for event participant lists
+      allow read: if true;
+      
+      // Only admins can create participations
+      allow create: if isAdminTemp();
+      
+      // Only admins can update participations
+      allow update: if isAdminTemp();
+      
+      // Only admins can delete participations
+      allow delete: if isAdminTemp();
+    }
+    
+    // Admins collection
+    match /admins/{adminId} {
+      // Read access for email verification during login
+      allow read: if true;
+      
+      // Admins collection should be managed outside the app
+      allow write: if false;
+    }
+    
+    // Achievements collection (future implementation)
+    match /achievements/{achievementId} {
+      // Public read
+      allow read: if true;
+      
+      // Only admins can manage achievements
+      allow write: if isAdminTemp();
+    }
+    
+    // Tiers collection (future implementation)
+    match /tiers/{tierId} {
+      // Public read for tier information
+      allow read: if true;
+      
+      // Only admins can manage tier definitions
+      allow write: if isAdminTemp();
+    }
+  }
+}

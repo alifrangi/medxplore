@@ -1,0 +1,30 @@
+# Security Headers for Production Deployment
+# This file is for Netlify deployment
+/*
+  # Content Security Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://*.firebase.com; frame-src 'none'; object-src 'none'; base-uri 'self';
+  
+  # Security Headers
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  
+  # HSTS (if using HTTPS)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  
+  # Performance
+  Cache-Control: public, max-age=31536000, immutable
+
+# Static assets caching
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service worker
+/sw.js
+  Cache-Control: no-cache
+
+# API routes
+/api/*
+  Cache-Control: no-cache
