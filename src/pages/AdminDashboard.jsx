@@ -47,7 +47,7 @@ const AdminDashboard = () => {
         recentActivity
       });
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      // Error loading dashboard data
     } finally {
       setLoading(false);
     }

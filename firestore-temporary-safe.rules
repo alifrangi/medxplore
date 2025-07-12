@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // TEMPORARY admin check - restrict to specific email domains
+    // Replace 'yourdomain.com' with your actual admin email domain
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email != null &&
+             (request.auth.token.email.matches('.*@medxplore\\.com') ||
+              request.auth.token.email.matches('.*@yourdomain\\.com'));
+    }
+    
+    // Helper function to validate student data
+    function isValidStudentData() {
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'university', 'passportNumber']) &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email is string &&
+             request.resource.data.university is string;
+    }
+    
+    // Helper function to validate application data
+    function isValidApplicationData() {
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'phone', 'university', 'yearOfStudy', 'major']) &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email is string &&
+             request.resource.data.phone is string &&
+             request.resource.data.university is string &&
+             request.resource.data.yearOfStudy is string &&
+             request.resource.data.major is string;
+    }
+    
+    // Students collection
+    match /students/{passportNumber} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Applications collection
+    match /applications/{applicationId} {
+      allow create: if isValidApplicationData();
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // Events collection
+    match /events/{eventId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Participations collection
+    match /participations/{participationId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Admins collection
+    match /admins/{adminId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Other collections
+    match /achievements/{achievementId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /tiers/{tierId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}

@@ -1,6 +1,9 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm run build:prod"
+
+[build.environment]
+  NODE_VERSION = "18"
 
 [[redirects]]
   from = "/*"
@@ -8,16 +11,38 @@
   status = 200
 
 [[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.firebaseapp.com https://*.googleapis.com https://*.firebase.com; frame-src 'none'; object-src 'none'; base-uri 'self';"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+[[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "max-age=31536000"
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "*.js"
+  for = "/*.js"
   [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "application/javascript"
 
 [[headers]]
-  for = "*.mjs"
+  for = "/*.mjs"
   [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "application/javascript"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

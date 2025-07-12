@@ -27,7 +27,7 @@ const AdminApplications = () => {
       const apps = await getApplications();
       setApplications(apps);
     } catch (error) {
-      console.error('Error loading applications:', error);
+      // Error loading applications
     } finally {
       setLoading(false);
     }

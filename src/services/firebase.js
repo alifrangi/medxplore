@@ -7,13 +7,13 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC7Bv6KjQVEf54iokEtE6VF7vpmv5r1424",
-  authDomain: "medxplore-21fbf.firebaseapp.com",
-  projectId: "medxplore-21fbf",
-  storageBucket: "medxplore-21fbf.firebasestorage.app",
-  messagingSenderId: "12654805338",
-  appId: "1:12654805338:web:876d33d026ca1687903363",
-  measurementId: "G-8FLR4KQ23N"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyC7Bv6KjQVEf54iokEtE6VF7vpmv5r1424",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "medxplore-21fbf.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "medxplore-21fbf",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medxplore-21fbf.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "12654805338",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:12654805338:web:876d33d026ca1687903363",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-8FLR4KQ23N"
 };
 
 // Initialize Firebase

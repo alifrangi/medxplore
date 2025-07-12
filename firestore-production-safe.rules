@@ -1,0 +1,146 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // PRODUCTION-SAFE admin check
+    // Only users in the admins collection can perform admin operations
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.email != null &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    // Alternative: Check by email if admin collection uses email as document ID
+    function isAdminByEmail() {
+      return request.auth != null && 
+             request.auth.token.email != null &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.token.email.replace('.', '_').replace('@', '_')));
+    }
+    
+    // Helper function to validate student data
+    function isValidStudentData() {
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'university', 'passportNumber']) &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email is string &&
+             request.resource.data.university is string &&
+             request.resource.data.passportNumber is string &&
+             request.resource.data.fullName.size() >= 2 &&
+             request.resource.data.fullName.size() <= 100 &&
+             request.resource.data.email.matches('.*@.*\\..*');
+    }
+    
+    // Helper function to validate application data
+    function isValidApplicationData() {
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'phone', 'university', 'yearOfStudy', 'major']) &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email is string &&
+             request.resource.data.phone is string &&
+             request.resource.data.university is string &&
+             request.resource.data.yearOfStudy is string &&
+             request.resource.data.major is string &&
+             request.resource.data.fullName.size() >= 2 &&
+             request.resource.data.fullName.size() <= 100 &&
+             request.resource.data.email.matches('.*@.*\\..*') &&
+             request.resource.data.phone.size() >= 8 &&
+             request.resource.data.phone.size() <= 20;
+    }
+    
+    // Students collection - passport numbers as document IDs
+    match /students/{passportNumber} {
+      // Public read for passport login
+      allow read: if true;
+      
+      // Only verified admins can create students
+      allow create: if isAdmin() && isValidStudentData();
+      
+      // Only verified admins can update student records
+      allow update: if isAdmin();
+      
+      // Only verified admins can delete students
+      allow delete: if isAdmin();
+    }
+    
+    // Applications collection
+    match /applications/{applicationId} {
+      // Anyone can submit an application (with validation)
+      allow create: if isValidApplicationData() &&
+                       request.resource.data.status == 'pending' &&
+                       request.resource.data.submittedAt == request.time;
+      
+      // Only verified admins can read applications
+      allow read: if isAdmin();
+      
+      // Only verified admins can update applications
+      allow update: if isAdmin() &&
+                       request.resource.data.reviewedAt == request.time &&
+                       request.resource.data.reviewedBy == request.auth.uid;
+      
+      // Only verified admins can delete applications
+      allow delete: if isAdmin();
+    }
+    
+    // Events collection
+    match /events/{eventId} {
+      // Public read access for event browsing
+      allow read: if true;
+      
+      // Only verified admins can create events
+      allow create: if isAdmin() &&
+                       request.resource.data.createdBy == request.auth.uid &&
+                       request.resource.data.createdAt == request.time;
+      
+      // Only verified admins can update events
+      allow update: if isAdmin() &&
+                       request.resource.data.updatedAt == request.time;
+      
+      // Only verified admins can delete events
+      allow delete: if isAdmin();
+    }
+    
+    // Participations collection
+    match /participations/{participationId} {
+      // Students can read their own participations, public can read for event lists
+      allow read: if true;
+      
+      // Only verified admins can create participations
+      allow create: if isAdmin() &&
+                       request.resource.data.keys().hasAll(['studentId', 'eventId', 'participationType']) &&
+                       request.resource.data.addedAt == request.time;
+      
+      // Only verified admins can update participations
+      allow update: if isAdmin();
+      
+      // Only verified admins can delete participations
+      allow delete: if isAdmin();
+    }
+    
+    // Admins collection - CRITICAL SECURITY
+    match /admins/{adminId} {
+      // Limited read access for admin verification
+      allow read: if request.auth != null && 
+                     (request.auth.uid == adminId || 
+                      request.auth.token.email != null);
+      
+      // NO write access from client - manage via Firebase Admin SDK only
+      allow write: if false;
+    }
+    
+    // Achievements collection
+    match /achievements/{achievementId} {
+      // Public read
+      allow read: if true;
+      
+      // Only verified admins can manage achievements
+      allow write: if isAdmin();
+    }
+    
+    // Tiers collection
+    match /tiers/{tierId} {
+      // Public read for tier information
+      allow read: if true;
+      
+      // Only verified admins can manage tier definitions
+      allow write: if isAdmin();
+    }
+  }
+}

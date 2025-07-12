@@ -1,7 +1,362 @@
 .passport-dashboard {
   min-height: 100vh;
-  background-color: var(--bg-primary);
-  padding-top: var(--navbar-height);
+  padding-top: var(--navbar-height, 80px);
+  position: relative;
+  width: 100%;
+}
+
+/* ===== TIER THEMES ===== */
+
+/* Default theme variables (fallback) */
+.passport-dashboard {
+  --tier-primary: #A9D3D8;
+  --tier-secondary: #8BC5CB;
+  --tier-light: #D1E7EA;
+  --tier-bg: #F0F8FF;
+  --tier-text: #2C5F66;
+  --tier-card-bg: rgba(169, 211, 216, 0.05);
+  --tier-border: rgba(169, 211, 216, 0.2);
+}
+
+/* Explorer Theme - Light Blue */
+.theme-explorer {
+  --tier-primary: #A9D3D8;
+  --tier-secondary: #8BC5CB;
+  --tier-light: #D1E7EA;
+  --tier-bg: #F0F8FF;
+  --tier-text: #2C5F66;
+  --tier-card-bg: rgba(169, 211, 216, 0.05);
+  --tier-border: rgba(169, 211, 216, 0.2);
+  background-color: #F0F8FF; /* Very light blue background */
+}
+
+/* Scholar Theme - Silver */
+.theme-scholar {
+  --tier-primary: #C0C0C0;
+  --tier-secondary: #A8A8A8;
+  --tier-light: #E8E8E8;
+  --tier-bg: #F5F5F5;
+  --tier-text: #4A4A4A;
+  --tier-card-bg: rgba(192, 192, 192, 0.05);
+  --tier-border: rgba(192, 192, 192, 0.2);
+  background-color: #F5F5F5; /* Very light gray background */
+}
+
+/* Mentor Theme - Elegant Sage Green */
+.theme-mentor {
+  --tier-primary: #9CAF88;
+  --tier-secondary: #8FBC8F;
+  --tier-light: #E8F5E8;
+  --tier-bg: #F5F8F5;
+  --tier-text: #556B2F;
+  --tier-card-bg: rgba(156, 175, 136, 0.08);
+  --tier-border: rgba(156, 175, 136, 0.25);
+  background-color: #F5F8F5; /* Very light sage green background */
+}
+
+/* Tier Progress Bar Container */
+.tier-progress-container {
+  margin: 20px 0;
+  padding: 0;
+}
+
+/* Tier Progress Card */
+.tier-progress-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  margin-top: 16px;
+}
+
+/* Progress Header */
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.current-tier-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tier-icon {
+  font-size: 24px;
+}
+
+.tier-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.tier-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.2;
+}
+
+.events-count {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.2;
+}
+
+.next-tier-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.next-label {
+  font-size: 12px;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.next-tier-details {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.next-tier-icon {
+  font-size: 20px;
+}
+
+.next-tier-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: 16px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-markers {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+/* Progress Info */
+.progress-info {
+  text-align: center;
+}
+
+.events-needed,
+.ready-message {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments for progress bar */
+@media (max-width: 768px) {
+  .tier-progress-container {
+    margin: 15px 0;
+  }
+  
+  .tier-progress-card {
+    padding: 20px;
+    margin-top: 12px;
+  }
+  
+  .progress-header {
+    margin-bottom: 16px;
+  }
+  
+  .tier-icon {
+    font-size: 20px;
+  }
+  
+  .tier-name {
+    font-size: 15px;
+  }
+  
+  .events-count {
+    font-size: 13px;
+  }
+  
+  .next-tier-icon {
+    font-size: 18px;
+  }
+  
+  .next-tier-name {
+    font-size: 13px;
+  }
+}
+
+/* Pioneer Theme - Dark */
+.theme-pioneer {
+  --tier-primary: #404040;
+  --tier-secondary: #606060;
+  --tier-light: #808080;
+  --tier-bg: #1a1a1a;
+  --tier-text: #FFFFFF;
+  --tier-card-bg: rgba(255, 255, 255, 0.08);
+  --tier-border: rgba(255, 255, 255, 0.3);
+  background-color: #1a1a1a; /* Dark gray background */
+}
+
+/* Vanta.js background for Pioneer tier */
+.vanta-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.theme-pioneer .dashboard-header {
+  background: rgba(26, 26, 26, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-pioneer .header-content h1 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .passport-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.theme-pioneer .passport-header-section h2 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .passport-number {
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-pioneer .tier-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-pioneer .tier-header h3 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .tier-description {
+  color: #E0E0E0;
+}
+
+.theme-pioneer .events-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.theme-pioneer .section-header h2 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .event-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-pioneer .event-card:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 5px 20px rgba(255, 255, 255, 0.1);
+}
+
+.theme-pioneer .event-header h3 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .event-date,
+.theme-pioneer .event-location,
+.theme-pioneer .event-description {
+  color: #E0E0E0;
+}
+
+.theme-pioneer .export-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.theme-pioneer .export-section h3 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .no-events p {
+  color: #E0E0E0;
+}
+
+.theme-pioneer .stat-item {
+  color: #E0E0E0;
+}
+
+.theme-pioneer .tier-benefits {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-pioneer .tier-benefits h4 {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .tier-benefits li {
+  color: #E0E0E0;
+}
+
+.theme-pioneer .next-tier-preview h5 {
+  color: #B0B0B0;
+}
+
+.theme-pioneer .preview-benefits li {
+  color: #B0B0B0;
 }
 
 .dashboard-loading {
@@ -9,7 +364,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding-top: var(--navbar-height);
+  padding-top: var(--navbar-height, 80px);
 }
 
 .loading-spinner {
@@ -27,12 +382,12 @@
 }
 
 .dashboard-header {
-  background-color: white;
-  border-bottom: 1px solid #e0e0e0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(169, 211, 216, 0.2);
   padding: 1.5rem 0;
-  position: sticky;
-  top: var(--navbar-height);
-  z-index: 10;
+  position: relative;
+  z-index: 100;
 }
 
 .header-content {
@@ -53,22 +408,32 @@
 
 .logout-button {
   padding: 0.5rem 1.5rem;
-  background-color: transparent;
-  color: var(--text-secondary);
-  border: 1px solid #e0e0e0;
+  background-color: var(--tier-primary);
+  color: white !important;
+  border: 1px solid var(--tier-primary);
   border-radius: 8px;
   cursor: pointer;
   transition: all var(--transition-speed);
+  font-weight: 600;
 }
 
 .logout-button:hover {
-  background-color: #f5f5f5;
+  background-color: var(--tier-secondary);
+  border-color: var(--tier-secondary);
 }
 
 .dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure all content is above Vanta background */
+.passport-dashboard > * {
+  position: relative;
+  z-index: 1;
 }
 
 .passport-overview {
@@ -76,10 +441,12 @@
 }
 
 .passport-card {
-  background: white;
+  background: var(--tier-card-bg);
   border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--tier-border);
+  backdrop-filter: blur(10px);
 }
 
 .passport-header-section {
@@ -102,92 +469,450 @@
   font-family: 'Monaco', 'Courier New', monospace;
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--accent-color);
-  background-color: rgba(169, 211, 216, 0.1);
+  color: var(--tier-primary);
+  background-color: transparent;
   padding: 0.5rem 1rem;
   border-radius: 8px;
+  border: 2px solid var(--tier-primary);
 }
 
 .passport-info {
   margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+/* Default/Explorer theme info section */
+.theme-explorer .passport-info {
+  background: linear-gradient(135deg, #E3F2FD 0%, #F0F8FF 50%, #E3F2FD 100%);
+  border: 2px solid #A9D3D8;
+  box-shadow: 
+    0 8px 32px rgba(169, 211, 216, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(169, 211, 216, 0.2);
+}
+
+.theme-explorer .passport-info .info-item label {
+  color: #2C5F66;
+}
+
+.theme-explorer .passport-info .info-item p {
+  color: #1A4A52;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Scholar theme info section */
+.theme-scholar .passport-info {
+  background: linear-gradient(135deg, #F5F5F5 0%, #FAFAFA 50%, #F5F5F5 100%);
+  border: 2px solid #C0C0C0;
+  box-shadow: 
+    0 8px 32px rgba(192, 192, 192, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(192, 192, 192, 0.2);
+}
+
+.theme-scholar .passport-info .info-item label {
+  color: #666;
+}
+
+.theme-scholar .passport-info .info-item p {
+  color: #333;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Mentor theme info section */
+.theme-mentor .passport-info {
+  background: linear-gradient(135deg, #E8F5E8 0%, #F5F8F5 50%, #E8F5E8 100%);
+  border: 2px solid #9CAF88;
+  box-shadow: 
+    0 8px 32px rgba(156, 175, 136, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(156, 175, 136, 0.2);
+}
+
+.theme-mentor .passport-info .info-item label {
+  color: #556B2F;
+}
+
+.theme-mentor .passport-info .info-item p {
+  color: #3C5F1A;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Pioneer theme info section */
+.theme-pioneer .passport-info {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.theme-pioneer .passport-info .info-item label {
+  color: #B0B0B0;
+}
+
+.theme-pioneer .passport-info .info-item p {
+  color: #FFFFFF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Tier-specific shine effects */
+.theme-explorer .passport-info::before,
+.theme-scholar .passport-info::before,
+.theme-mentor .passport-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shine 4s infinite;
+}
+
+.theme-pioneer .passport-info::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .info-item label {
   display: block;
   font-size: 0.875rem;
-  color: #666;
   margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  transition: color 0.5s ease;
 }
 
 .info-item p {
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--text-primary);
   margin: 0;
+  transition: color 0.5s ease, text-shadow 0.5s ease;
 }
 
 .tier-section {
   margin-bottom: 2rem;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 16px;
+  border: 1px solid #e0e0e0;
+}
+
+.tier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.tier-header h3 {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--tier-text);
+  font-weight: 600;
+}
+
+.event-count {
+  background: var(--tier-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.tier-timeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem 0;
+  padding: 1rem 0;
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  flex: 1;
+}
+
+.timeline-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 2;
+  position: relative;
+}
+
+.timeline-item.active .timeline-icon {
+  transform: scale(1.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.timeline-icon .material-icons-outlined {
+  font-size: 24px !important;
+}
+
+.timeline-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.timeline-item.completed .timeline-label {
+  color: var(--text-primary);
+}
+
+.timeline-connector {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: #e0e0e0;
+  z-index: 1;
+}
+
+.timeline-connector.completed {
+  background: var(--tier-primary);
 }
 
 .current-tier {
-  display: inline-block;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
   margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Tier-specific current tier styling */
+.theme-explorer .current-tier {
+  color: white;
+  background-color: #A9D3D8;
+}
+
+.theme-scholar .current-tier {
+  color: white;
+  background-color: #C0C0C0;
+}
+
+.theme-mentor .current-tier {
+  color: white;
+  background-color: #9CAF88;
+}
+
+.theme-pioneer .current-tier {
+  color: white;
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tier-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+}
+
+.tier-icon {
+  font-size: 32px !important;
+  color: white;
+  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tier-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .tier-label {
-  display: block;
   font-size: 0.875rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tier-name-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.tier-name-icon {
+  font-size: 1.5rem !important;
   opacity: 0.9;
 }
 
 .tier-name {
-  display: block;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
 }
 
+.tier-description {
+  font-style: italic;
+  color: var(--tier-text);
+  margin: 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .tier-progress {
-  margin-top: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e9e9e9;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .progress-text {
-  font-size: 0.95rem;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.next-tier-icon {
+  font-size: 24px !important;
+  vertical-align: middle;
+}
+
+.progress-count {
+  font-size: 0.875rem;
   color: var(--text-secondary);
-  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 .progress-bar {
-  height: 10px;
-  background-color: #f0f0f0;
+  height: 20px;
+  background-color: #e9ecef;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
 }
 
 .progress-fill {
   height: 100%;
   background-color: var(--accent-color);
   transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.max-tier-reached {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.max-tier-reached p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .tier-benefits {
-  background-color: #f8f9fa;
-  padding: 1.5rem;
-  border-radius: 12px;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-top: 2rem;
+  border: 2px solid var(--tier-border);
+  background: var(--tier-card-bg);
 }
 
 .tier-benefits h4 {
-  margin: 0 0 1rem 0;
-  color: var(--text-primary);
+  margin: 0 0 1.5rem 0;
+  color: var(--tier-text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .tier-benefits ul {
@@ -197,25 +922,78 @@
 }
 
 .tier-benefits li {
-  padding: 0.5rem 0;
-  padding-left: 1.5rem;
+  padding: 0.75rem 0;
+  padding-left: 2rem;
   position: relative;
+  line-height: 1.6;
+  color: var(--text-primary);
 }
 
 .tier-benefits li::before {
   content: '✓';
   position: absolute;
   left: 0;
-  color: var(--accent-color);
+  color: var(--tier-primary);
   font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.next-tier-preview {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9e9e9;
+}
+
+.next-tier-preview h5 {
+  margin: 0 0 1rem 0;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.preview-benefits {
+  opacity: 0.7;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.preview-benefits li {
+  padding: 0.5rem 0;
+  padding-left: 2rem;
+  font-size: 0.95rem;
+  position: relative;
+  line-height: 1.5;
+}
+
+.preview-benefits li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--tier-primary);
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+.more-benefits {
+  font-style: italic;
+  color: var(--tier-primary);
+}
+
+.more-benefits::before {
+  content: '•';
+  color: var(--tier-primary);
+  margin-right: 0.5rem;
 }
 
 .events-section {
-  background: white;
+  background: var(--tier-card-bg);
   border-radius: 20px;
   padding: 2.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
+  border: 2px solid var(--tier-border);
+  backdrop-filter: blur(10px);
 }
 
 .section-header {
@@ -229,7 +1007,8 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: 2rem;
   margin: 0;
-  color: var(--text-primary);
+  color: var(--tier-text);
+  font-weight: 600;
 }
 
 .event-stats {
@@ -259,10 +1038,125 @@
   font-weight: 500;
 }
 
-.filter-buttons button.active,
-.filter-buttons button:hover {
-  background-color: var(--accent-color);
-  color: white;
+.passport-dashboard .filter-buttons button.active,
+.passport-dashboard .filter-buttons button:hover {
+  background-color: var(--tier-primary) !important;
+  color: white !important;
+}
+
+/* Tier-specific overrides for filter buttons */
+.theme-explorer .filter-buttons button.active,
+.theme-explorer .filter-buttons button:hover {
+  background-color: #A9D3D8 !important;
+}
+
+.theme-scholar .filter-buttons button.active,
+.theme-scholar .filter-buttons button:hover {
+  background-color: #C0C0C0 !important;
+}
+
+.theme-mentor .filter-buttons button.active,
+.theme-mentor .filter-buttons button:hover {
+  background-color: #9CAF88 !important;
+}
+
+.theme-pioneer .filter-buttons button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #E0E0E0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-pioneer .filter-buttons button.active,
+.theme-pioneer .filter-buttons button:hover {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #FFFFFF !important;
+}
+
+/* Ensure all tier-themed elements use proper colors */
+.passport-dashboard .logout-button {
+  background-color: var(--tier-primary) !important;
+  border-color: var(--tier-primary) !important;
+}
+
+.passport-dashboard .logout-button:hover {
+  background-color: var(--tier-secondary) !important;
+  border-color: var(--tier-secondary) !important;
+}
+
+/* Pioneer specific button overrides */
+.theme-pioneer .logout-button {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #FFFFFF !important;
+}
+
+.theme-pioneer .logout-button:hover {
+  background-color: #FFFFFF !important;
+  border-color: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+.passport-dashboard .event-count {
+  background-color: var(--tier-primary) !important;
+}
+
+.passport-dashboard .participation-type {
+  background-color: var(--tier-primary) !important;
+}
+
+.passport-dashboard .export-button {
+  background-color: var(--tier-primary) !important;
+}
+
+.passport-dashboard .export-button:hover:not(:disabled) {
+  background-color: var(--tier-secondary) !important;
+}
+
+/* Pioneer specific overrides for remaining elements */
+.theme-pioneer .event-count {
+  background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%) !important;
+  color: #000000 !important;
+}
+
+.theme-pioneer .participation-type {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.theme-pioneer .export-button {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.theme-pioneer .export-button:hover:not(:disabled) {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+  border-color: #FFFFFF !important;
+}
+
+.theme-pioneer .certificate-link {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .tier-progress {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-pioneer .progress-text {
+  color: #FFFFFF;
+}
+
+.theme-pioneer .progress-count {
+  color: #B0B0B0;
+}
+
+.theme-pioneer .progress-bar {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .events-grid {
@@ -327,7 +1221,7 @@
 }
 
 .participation-type {
-  background-color: var(--accent-color);
+  background-color: var(--tier-primary);
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
@@ -335,7 +1229,7 @@
 }
 
 .certificate-link {
-  color: var(--accent-color);
+  color: var(--tier-primary);
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
@@ -352,17 +1246,20 @@
 }
 
 .export-section {
-  background: white;
+  background: var(--tier-card-bg);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--tier-border);
+  backdrop-filter: blur(10px);
 }
 
 .export-section h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
-  color: var(--text-primary);
+  color: var(--tier-text);
+  font-weight: 600;
 }
 
 .export-buttons {
@@ -373,7 +1270,7 @@
 
 .export-button {
   padding: 0.75rem 1.5rem;
-  background-color: var(--accent-color);
+  background-color: var(--tier-primary);
   color: white;
   border: none;
   border-radius: 10px;
@@ -383,8 +1280,9 @@
 }
 
 .export-button:hover:not(:disabled) {
+  background-color: var(--tier-secondary);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(169, 211, 216, 0.4);
+  box-shadow: 0 5px 15px var(--tier-border);
 }
 
 .export-button:disabled {
@@ -405,6 +1303,48 @@
 
   .info-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .tier-timeline {
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .timeline-item {
+    min-width: 80px;
+  }
+  
+  .timeline-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .timeline-icon .material-icons-outlined {
+    font-size: 20px !important;
+  }
+  
+  .timeline-label {
+    font-size: 0.75rem;
+  }
+  
+  .tier-icon-wrapper {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .tier-icon {
+    font-size: 28px !important;
+  }
+  
+  .current-tier {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .tier-info {
+    margin-top: 0.5rem;
   }
 
   .event-header {
