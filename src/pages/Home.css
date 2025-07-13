@@ -276,6 +276,45 @@
   border-radius: 2px;
 }
 
+.team__teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+}
+
+.team__team-group {
+  position: relative;
+}
+
+.team__team-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  color: var(--text-primary);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0 2.5rem 0;
+  position: relative;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, rgba(169, 211, 216, 0.1) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(169, 211, 216, 0.1) 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(169, 211, 216, 0.2);
+  border: 1px solid rgba(169, 211, 216, 0.3);
+}
+
+.team__team-title::after {
+  content: '';
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  border-radius: 2px;
+}
+
 .team__members-list {
   position: relative;
   padding-left: 10rem;
@@ -491,6 +530,21 @@
     padding: 4rem 0;
   }
   
+  .team__teams-list {
+    gap: 4rem;
+  }
+  
+  .team__team-title {
+    font-size: clamp(1.3rem, 4vw, 1.8rem);
+    margin-bottom: 2rem;
+    padding: 1.5rem 1rem 2rem 1rem;
+  }
+  
+  .team__team-title::after {
+    width: 80px;
+    bottom: 0.8rem;
+  }
+  
   .team__members-list {
     padding-left: 0;
     max-width: 100%;
@@ -580,6 +634,21 @@
   
   .feature-card {
     padding: 2rem 1.5rem;
+  }
+  
+  .team__teams-list {
+    gap: 3rem;
+  }
+  
+  .team__team-title {
+    font-size: clamp(1.1rem, 5vw, 1.4rem);
+    margin-bottom: 1.5rem;
+    padding: 1.2rem 0.8rem 1.8rem 0.8rem;
+  }
+  
+  .team__team-title::after {
+    width: 60px;
+    bottom: 0.6rem;
   }
   
   .team__member {
