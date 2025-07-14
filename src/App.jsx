@@ -16,6 +16,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminApplications from './pages/AdminApplications'
 import AdminStudents from './pages/AdminStudents'
 import AdminEvents from './pages/AdminEvents'
+import AdminNews from './pages/AdminNews'
 
 function App() {
   return (
@@ -68,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute requireAdmin>
                 <AdminEvents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/news" 
+            element={
+              <ProtectedRoute requireAdmin>
+                <AdminNews />
               </ProtectedRoute>
             } 
           />
