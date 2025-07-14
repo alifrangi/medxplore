@@ -137,6 +137,12 @@ const AdminDashboard = () => {
               <h3>Manage Events</h3>
               <p>Create events and track attendance</p>
             </Link>
+
+            <Link to="/admin/news" className="action-card">
+              <div className="action-icon">📰</div>
+              <h3>Manage News</h3>
+              <p>Create and manage news posts</p>
+            </Link>
           </div>
         </motion.div>
 
