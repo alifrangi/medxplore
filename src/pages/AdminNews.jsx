@@ -142,15 +142,22 @@ const AdminNews = () => {
         </div>
       </div>
 
-      <div className="news-container">
-        {showForm && (
+      {showForm && (
+        <div className="modal-overlay" onClick={handleCancel}>
           <motion.div 
-            className="news-form-container"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="news-form-modal"
+            initial={{ opacity: 0, scale: 0.9, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -20 }}
             transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <h2>{editingNews ? 'Edit News' : 'Add New News'}</h2>
+            <button className="modal-close" onClick={handleCancel}>
+              <span className="material-icons-outlined">close</span>
+            </button>
+            <h2 className={editingNews ? 'form-title edit-title' : 'form-title add-title'}>
+              {editingNews ? 'Edit News' : 'Add News Post'}
+            </h2>
             <form onSubmit={handleSubmit} className="news-form">
               <div className="form-group">
                 <label htmlFor="title">Title *</label>
@@ -214,8 +221,10 @@ const AdminNews = () => {
               </div>
             </form>
           </motion.div>
-        )}
+        </div>
+      )}
 
+      <div className="news-container">
         {news.length > 0 && (
           <div className="news-grid">
             {news.map((newsItem) => (

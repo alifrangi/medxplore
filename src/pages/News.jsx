@@ -58,27 +58,26 @@ const News = () => {
         <div className="news-page__gradient"></div>
         <div className="news-page__pattern"></div>
       </div>
-
-      <div className="news-header">
-        <motion.h1 
-          className="news-title"
+      
+      <div className="container">
+        <motion.header 
+          className="news-header"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          MedXplore News
-        </motion.h1>
-        <motion.p 
-          className="news-subtitle"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          Stay updated with the latest happenings, achievements, and opportunities from the MedXplore community.
-        </motion.p>
-      </div>
+          <h1 className="news-title">MedXplore News</h1>
+          <p className="news-subtitle">
+            Stay updated with the latest happenings, achievements, and opportunities from the MedXplore community.
+          </p>
+        </motion.header>
 
-      <div className="news-container">
+        <motion.section 
+          className="news-container"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
         {newsItems.length === 0 ? (
           <div className="no-news">
             <p>No news items available at the moment.</p>
@@ -111,8 +110,8 @@ const News = () => {
             </motion.article>
           ))
         )}
+        </motion.section>
       </div>
-
     </div>
   );
 };

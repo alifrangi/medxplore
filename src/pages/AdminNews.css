@@ -1,6 +1,6 @@
 .admin-news {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: var(--bg-primary);
   padding-top: var(--navbar-height);
 }
 
@@ -45,30 +45,99 @@
 }
 
 .back-link:hover {
-  color: #3b82f6;
+  color: var(--accent-color);
 }
 
 .admin-header h1 {
   margin: 0;
   font-size: 2rem;
-  color: #111827;
+  color: var(--text-primary);
+  font-family: 'Cormorant Garamond', serif;
 }
 
-.news-form-container {
-  background: white;
-  border-radius: 12px;
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
   padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.news-form-container h2 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 1.5rem;
+.news-form-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Custom scrollbar for modal */
+.news-form-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.news-form-modal::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.news-form-modal::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+
+.news-form-modal::-webkit-scrollbar-thumb:hover {
+  background: #93c5cc;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f5f5;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: rotate(90deg);
+}
+
+.modal-close .material-icons-outlined {
+  font-size: 20px;
+}
+
+.form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.form-title.add-title {
+  color: var(--accent-color);
 }
 
 .news-form {
@@ -103,7 +172,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--accent-color);
 }
 
 .checkbox-group {
@@ -142,12 +211,14 @@
 }
 
 .submit-button {
-  background-color: #3b82f6;
+  background-color: var(--accent-color);
   color: white;
 }
 
 .submit-button:hover {
-  background-color: #2563eb;
+  background-color: #93c5cc;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(169, 211, 216, 0.4);
 }
 
 .cancel-button {
@@ -160,21 +231,21 @@
 }
 
 .create-news-btn {
-  background-color: #3b82f6;
+  background-color: var(--accent-color);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-speed);
 }
 
 .create-news-btn:hover {
-  background-color: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  background-color: #93c5cc;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(169, 211, 216, 0.4);
 }
 
 .news-container {
@@ -212,16 +283,15 @@
 
 .news-item {
   background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: all var(--transition-speed);
 }
 
 .news-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 .news-header {
@@ -232,46 +302,13 @@
 }
 
 .news-category {
+  background-color: var(--accent-color);
+  color: white;
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.news-category.announcement {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-
-.news-category.event {
-  background-color: #fce7f3;
-  color: #be185d;
-}
-
-.news-category.partnership {
-  background-color: #ede9fe;
-  color: #7c3aed;
-}
-
-.news-category.product-launch {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.news-category.career-opportunity {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-
-.news-category.achievement {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-
-.news-category.update {
-  background-color: #e5e7eb;
-  color: #374151;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
 }
 
 .news-status {
@@ -292,15 +329,15 @@
 }
 
 .news-item h3 {
-  font-size: 1.25rem;
-  color: #111827;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
   margin: 0 0 0.75rem 0;
+  color: var(--text-primary);
   line-height: 1.4;
-  font-weight: 600;
 }
 
 .news-content {
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1rem;
   display: -webkit-box;
@@ -335,12 +372,12 @@
 }
 
 .edit-button {
-  border-color: #3b82f6;
-  color: #3b82f6;
+  border-color: var(--accent-color);
+  color: var(--accent-color);
 }
 
 .edit-button:hover {
-  background-color: #3b82f6;
+  background-color: var(--accent-color);
   color: white;
 }
 
@@ -373,6 +410,29 @@
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
+  }
+  
+  .news-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .news-item {
+    padding: 1.5rem;
+  }
+  
+  .modal-overlay {
+    padding: 1rem;
+  }
+  
+  .news-form-modal {
+    padding: 1.5rem;
+    max-height: 95vh;
+  }
+  
+  .modal-close {
+    top: 0.5rem;
+    right: 0.5rem;
   }
   
   .news-grid {
