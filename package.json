@@ -26,6 +26,7 @@
     "serve": "npm run build && npm run preview"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.53",
     "canvas-confetti": "^1.9.3",
     "firebase": "^11.10.0",
     "framer-motion": "^10.16.16",

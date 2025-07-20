@@ -15,6 +15,7 @@ import {
   startAfter
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { hashPassword, encryptEmail, decryptEmail, generateProfileColor } from '../utils/crypto';
 
 // Collection names
 const COLLECTIONS = {
@@ -24,7 +25,10 @@ const COLLECTIONS = {
   PARTICIPATIONS: 'participations',
   ADMINS: 'admins',
   ACHIEVEMENTS: 'achievements',
-  TIERS: 'tiers'
+  TIERS: 'tiers',
+  DEPARTMENTS: 'departments',
+  NEWS: 'news',
+  WORKERS: 'workers'
 };
 
 // Helper function to generate passport numbers
@@ -666,6 +670,355 @@ export const TIER_DEFINITIONS = {
   }
 };
 
+// Department functions
+export const getDepartmentAccess = async (userId, departmentId) => {
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.DEPARTMENTS),
+      where('id', '==', departmentId)
+    );
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      return { success: false, error: 'Department not found' };
+    }
+    
+    const department = snapshot.docs[0].data();
+    
+    // Check if user has access (admins have access to all departments)
+    const hasAccess = department.members?.includes(userId) || 
+                     department.admins?.includes(userId);
+    
+    return { success: hasAccess, data: department };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Secure department code verification
+export const verifyDepartmentCode = async (departmentId, inputCode) => {
+  try {
+    // Rate limiting - store attempts in sessionStorage
+    const attemptKey = `dept_attempts_${departmentId}`;
+    const attempts = JSON.parse(sessionStorage.getItem(attemptKey) || '[]');
+    const now = Date.now();
+    
+    // Remove attempts older than 15 minutes
+    const recentAttempts = attempts.filter(time => now - time < 15 * 60 * 1000);
+    
+    // Check if too many attempts
+    if (recentAttempts.length >= 3) {
+      return { success: false, error: 'Too many attempts. Please wait 15 minutes.' };
+    }
+    
+    // Get department codes from secure collection
+    const codeDoc = await getDoc(doc(db, 'departmentCodes', departmentId));
+    
+    if (!codeDoc.exists()) {
+      return { success: false, error: 'Department not found' };
+    }
+    
+    const codeData = codeDoc.data();
+    
+    // Verify code
+    if (codeData.code === inputCode) {
+      // Clear attempts on success
+      sessionStorage.removeItem(attemptKey);
+      
+      // Store successful access in sessionStorage (expires in 24 hours)
+      const accessKey = `dept_access_${departmentId}`;
+      const accessData = {
+        timestamp: now,
+        expires: now + (24 * 60 * 60 * 1000) // 24 hours
+      };
+      sessionStorage.setItem(accessKey, JSON.stringify(accessData));
+      
+      return { success: true, data: codeData };
+    } else {
+      // Record failed attempt
+      recentAttempts.push(now);
+      sessionStorage.setItem(attemptKey, JSON.stringify(recentAttempts));
+      
+      return { success: false, error: 'Invalid code' };
+    }
+  } catch (error) {
+    return { success: false, error: 'Verification failed' };
+  }
+};
+
+// Check if user has valid department access
+export const checkDepartmentAccess = async (departmentId) => {
+  try {
+    const accessKey = `dept_access_${departmentId}`;
+    const accessData = JSON.parse(sessionStorage.getItem(accessKey) || 'null');
+    
+    if (!accessData) {
+      return { success: false, error: 'No access found' };
+    }
+    
+    const now = Date.now();
+    if (now > accessData.expires) {
+      sessionStorage.removeItem(accessKey);
+      return { success: false, error: 'Access expired' };
+    }
+    
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: 'Access check failed' };
+  }
+};
+
+// Predefined department codes (admin can change these)
+const DEFAULT_DEPARTMENT_CODES = {
+  research: '123456',
+  academic: '234567',
+  'global-outreach': '345678'
+};
+
+// Update department code (admin only)
+export const updateDepartmentCode = async (departmentId, newCode) => {
+  try {
+    // Validate code format (6 digits)
+    if (!/^\d{6}$/.test(newCode)) {
+      return { success: false, error: 'Code must be exactly 6 digits' };
+    }
+
+    await setDoc(doc(db, 'departmentCodes', departmentId), {
+      code: newCode,
+      updatedAt: serverTimestamp(),
+      updatedBy: 'admin'
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Get all department codes (admin only)
+export const getAllDepartmentCodes = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, 'departmentCodes'));
+    const codes = {};
+    
+    snapshot.docs.forEach(doc => {
+      codes[doc.id] = { id: doc.id, ...doc.data() };
+    });
+    
+    return { success: true, codes };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Initialize department codes with default values (run once)
+export const initializeDepartmentCodes = async () => {
+  try {
+    const departments = [
+      { id: 'research', name: 'Research', code: DEFAULT_DEPARTMENT_CODES.research },
+      { id: 'academic', name: 'Academic', code: DEFAULT_DEPARTMENT_CODES.academic },
+      { id: 'global-outreach', name: 'Global Outreach', code: DEFAULT_DEPARTMENT_CODES['global-outreach'] }
+    ];
+    
+    for (const dept of departments) {
+      await setDoc(doc(db, 'departmentCodes', dept.id), {
+        code: dept.code,
+        name: dept.name,
+        createdAt: serverTimestamp(),
+        createdBy: 'system'
+      });
+    }
+    
+    return { success: true, departments };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const createDepartment = async (departmentData) => {
+  try {
+    const docRef = await addDoc(collection(db, COLLECTIONS.DEPARTMENTS), {
+      ...departmentData,
+      createdAt: serverTimestamp(),
+      members: [],
+      admins: []
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// News functions
+export const createNews = async (newsData) => {
+  try {
+    const docRef = await addDoc(collection(db, COLLECTIONS.NEWS), {
+      ...newsData,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllNews = async () => {
+  try {
+    const q = query(collection(db, COLLECTIONS.NEWS), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    return [];
+  }
+};
+
+export const updateNews = async (newsId, updates) => {
+  try {
+    await updateDoc(doc(db, COLLECTIONS.NEWS, newsId), {
+      ...updates,
+      updatedAt: serverTimestamp()
+    });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteNews = async (newsId) => {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.NEWS, newsId));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
+// Worker management functions
+export const createWorker = async (workerData) => {
+  try {
+    // Check if email already exists
+    const workersRef = collection(db, COLLECTIONS.WORKERS);
+    const workersSnapshot = await getDocs(workersRef);
+    
+    for (const workerDoc of workersSnapshot.docs) {
+      const existingWorker = workerDoc.data();
+      if (decryptEmail(existingWorker.email) === workerData.email.toLowerCase()) {
+        return { success: false, error: 'Email already exists' };
+      }
+    }
+
+    // Hash password
+    const { hash, salt } = await hashPassword(workerData.password);
+    
+    // Create worker document
+    const newWorker = {
+      firstName: workerData.firstName,
+      lastName: workerData.lastName,
+      email: encryptEmail(workerData.email.toLowerCase()),
+      passwordHash: hash,
+      salt: salt,
+      departments: workerData.departments,
+      profileColor: generateProfileColor(),
+      isActive: true,
+      createdAt: serverTimestamp(),
+      lastLogin: null,
+      sessionToken: null,
+      tokenExpiry: null
+    };
+
+    const docRef = await addDoc(collection(db, COLLECTIONS.WORKERS), newWorker);
+    
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error creating worker:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllWorkers = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTIONS.WORKERS));
+    const workers = [];
+    
+    snapshot.docs.forEach(doc => {
+      const workerData = doc.data();
+      workers.push({
+        id: doc.id,
+        firstName: workerData.firstName,
+        lastName: workerData.lastName,
+        email: decryptEmail(workerData.email),
+        departments: workerData.departments,
+        profileColor: workerData.profileColor,
+        isActive: workerData.isActive,
+        createdAt: workerData.createdAt,
+        lastLogin: workerData.lastLogin
+      });
+    });
+    
+    // Sort by creation date
+    workers.sort((a, b) => {
+      const dateA = a.createdAt?.toDate?.() || new Date(0);
+      const dateB = b.createdAt?.toDate?.() || new Date(0);
+      return dateB - dateA;
+    });
+    
+    return { success: true, workers };
+  } catch (error) {
+    console.error('Error getting workers:', error);
+    return { success: false, error: error.message, workers: [] };
+  }
+};
+
+export const updateWorker = async (workerId, updates) => {
+  try {
+    const updateData = {
+      firstName: updates.firstName,
+      lastName: updates.lastName,
+      departments: updates.departments,
+      updatedAt: serverTimestamp()
+    };
+
+    // Update email if changed
+    if (updates.email) {
+      updateData.email = encryptEmail(updates.email.toLowerCase());
+    }
+
+    // Update password if provided
+    if (updates.password) {
+      const { hash, salt } = await hashPassword(updates.password);
+      updateData.passwordHash = hash;
+      updateData.salt = salt;
+    }
+
+    // Update active status if provided
+    if (typeof updates.isActive !== 'undefined') {
+      updateData.isActive = updates.isActive;
+      // Clear session if deactivating
+      if (!updates.isActive) {
+        updateData.sessionToken = null;
+        updateData.tokenExpiry = null;
+      }
+    }
+
+    await updateDoc(doc(db, COLLECTIONS.WORKERS, workerId), updateData);
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating worker:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteWorker = async (workerId) => {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.WORKERS, workerId));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting worker:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 export default {
   submitApplication,
   getApplications,
@@ -687,5 +1040,20 @@ export default {
   deleteStudent,
   updateStudentTier,
   addEventToStudent,
-  removeEventFromStudent
+  removeEventFromStudent,
+  getDepartmentAccess,
+  createDepartment,
+  createNews,
+  getAllNews,
+  updateNews,
+  deleteNews,
+  verifyDepartmentCode,
+  checkDepartmentAccess,
+  updateDepartmentCode,
+  getAllDepartmentCodes,
+  initializeDepartmentCodes,
+  createWorker,
+  getAllWorkers,
+  updateWorker,
+  deleteWorker
 };

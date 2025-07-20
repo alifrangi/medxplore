@@ -5,6 +5,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { getApplications, getAllEvents } from '../services/database';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import DepartmentWorkerManager from '../components/DepartmentWorkerManager';
+import DepartmentCodeManager from '../components/DepartmentCodeManager';
+import { setupCodes } from '../utils/setupDepartmentCodes';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -17,6 +20,7 @@ const AdminDashboard = () => {
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
+  const [setupMessage, setSetupMessage] = useState('');
 
   useEffect(() => {
     loadDashboardData();
@@ -58,6 +62,7 @@ const AdminDashboard = () => {
     navigate('/admin');
   };
 
+
   if (loading) {
     return (
       <div className="admin-loading">
@@ -74,9 +79,11 @@ const AdminDashboard = () => {
             <h1>Admin Dashboard</h1>
             <p>Welcome back, {adminData?.name || 'Admin'}</p>
           </div>
-          <button onClick={handleLogout} className="logout-button">
-            Logout
-          </button>
+          <div className="header-actions">
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+          </div>
         </div>
       </div>
 
@@ -113,7 +120,7 @@ const AdminDashboard = () => {
         </motion.div>
 
         <motion.div 
-          className="quick-actions"
+          className="quick-actions-section"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -144,6 +151,84 @@ const AdminDashboard = () => {
               <p>Create and manage news posts</p>
             </Link>
           </div>
+        </motion.div>
+
+        <motion.div 
+          className="department-dashboards"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <h2>Department Dashboards</h2>
+          <div className="departments-grid">
+            <Link to="/departments/research" className="department-card research">
+              <div className="department-icon">🧬</div>
+              <h3>Research</h3>
+              <p>Advancing medical knowledge through innovative research</p>
+            </Link>
+
+            <Link to="/departments/academic" className="department-card academic">
+              <div className="department-icon">📚</div>
+              <h3>Academic</h3>
+              <p>Excellence in medical education and academic development</p>
+            </Link>
+
+            <Link to="/departments/global-outreach" className="department-card global-outreach">
+              <div className="department-icon">🌍</div>
+              <h3>Global Outreach</h3>
+              <p>Connecting medical professionals worldwide for global health impact</p>
+            </Link>
+
+            <Link to="/departments/student-engagement" className="department-card student-engagement">
+              <div className="department-icon">🤝</div>
+              <h3>Student Engagement</h3>
+              <p>Building strong communities and fostering student participation</p>
+            </Link>
+
+            <Link to="/departments/media-communications" className="department-card media-communications">
+              <div className="department-icon">📢</div>
+              <h3>Media & Communications</h3>
+              <p>Managing outreach, content creation, and external communications</p>
+            </Link>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          className="department-worker-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <DepartmentWorkerManager />
+        </motion.div>
+
+        <motion.div 
+          className="department-code-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+        >
+          <DepartmentCodeManager />
+          {adminData?.email === 'admin@medxplore.com' && (
+            <div className="setup-codes-section">
+              <button 
+                onClick={async () => {
+                  setSetupMessage('Initializing codes...');
+                  const result = await setupCodes();
+                  if (result) {
+                    setSetupMessage('✅ Department codes initialized successfully!');
+                  } else {
+                    setSetupMessage('❌ Failed to initialize codes');
+                  }
+                  setTimeout(() => setSetupMessage(''), 5000);
+                }}
+                className="setup-codes-button"
+              >
+                Initialize Department Codes (First Time Setup)
+              </button>
+              {setupMessage && <p className="setup-message">{setupMessage}</p>}
+            </div>
+          )}
         </motion.div>
 
         <motion.div 
