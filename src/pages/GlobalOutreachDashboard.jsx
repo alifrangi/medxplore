@@ -179,7 +179,12 @@ const GlobalOutreachDashboard = () => {
   }
 
   if (!hasAccess) {
-    return null;
+    return (
+      <div className="dashboard-loading">
+        <div className="loading-spinner"></div>
+        <p>Redirecting...</p>
+      </div>
+    );
   }
 
   return (

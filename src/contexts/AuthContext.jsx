@@ -134,9 +134,8 @@ export const AuthProvider = ({ children }) => {
           setAdminData(adminCheck.data);
           setAuthType('admin');
         }
-      }
-      
-      if (!user || sessionStorage.getItem('authType') !== 'admin') {
+        setLoading(false);
+      } else {
         checkSession();
       }
     });
@@ -160,7 +159,25 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          backgroundColor: '#f8f9fa'
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1rem'
+          }}>
+            <div className="loading-spinner"></div>
+            <p style={{ color: '#666', fontSize: '0.875rem' }}>Loading...</p>
+          </div>
+        </div>
+      ) : children}
     </AuthContext.Provider>
   );
 };
