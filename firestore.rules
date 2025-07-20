@@ -74,15 +74,6 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
-    // Department codes collection (security-critical)
-    match /departmentCodes/{departmentId} {
-      // Allow public read for code verification
-      allow read: if true;
-      
-      // Only admins can create, update, or delete codes
-      allow create, update, delete: if isAdmin();
-    }
-    
     // Department collections
     match /departments/{departmentId} {
       // Public read for department info

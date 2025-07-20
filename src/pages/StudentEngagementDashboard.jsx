@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useWorkerAuth } from '../contexts/WorkerAuthContext';
-import { checkDepartmentAccess } from '../services/database';
 import DepartmentDashboardLayout from '../components/DepartmentDashboardLayout';
 import UpcomingEvents from '../components/UpcomingEvents';
 import DepartmentChat from '../components/DepartmentChat';
@@ -37,13 +36,8 @@ const StudentEngagementDashboard = () => {
       return;
     }
     
-    // Check department code access
-    const accessResult = await checkDepartmentAccess('student-engagement');
-    if (accessResult.success) {
-      setHasAccess(true);
-    } else {
-      navigate('/admin');
-    }
+    // No access - redirect to admin page
+    navigate('/admin');
     setLoading(false);
   };
 
