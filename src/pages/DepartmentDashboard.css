@@ -1,0 +1,265 @@
+/* Department Dashboard Styles */
+:root {
+  --primary-color: #2D9CDB;
+  --primary-color-dark: #2684C3;
+}
+
+.nav-button,
+.logout-button {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.logout-button {
+  background: white !important;
+  color: black !important;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logout-button:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* User Info Card */
+.user-info-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 1rem;
+}
+
+.user-avatar {
+  width: 60px;
+  height: 60px;
+  background: #f0f0f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.user-avatar .material-icons-outlined {
+  font-size: 32px;
+  color: #666;
+}
+
+.user-info-card h4 {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+  color: #333;
+}
+
+.user-info-card p {
+  margin: 0;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+/* Dashboard Navigation */
+.dashboard-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.nav-item:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.nav-item.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.nav-item .material-icons-outlined {
+  font-size: 20px;
+}
+
+/* Department Info */
+.department-info {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.department-info h5 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.department-info p {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.department-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+/* Dashboard Overview */
+.dashboard-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.welcome-section {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.welcome-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.welcome-section p {
+  margin: 0;
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.action-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  border: 1px solid #f0f0f0;
+}
+
+.action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.action-card .material-icons-outlined {
+  font-size: 48px;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.action-card h4 {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  color: #333;
+}
+
+.action-card p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-info-card,
+  .department-info,
+  .welcome-section {
+    padding: 1.5rem;
+  }
+  
+  .action-card {
+    padding: 2rem;
+  }
+  
+  .nav-item {
+    padding: 0.75rem 1rem;
+  }
+  
+  .quick-actions {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .department-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dashboard-overview {
+    gap: 2rem;
+  }
+}

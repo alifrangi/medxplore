@@ -65,21 +65,21 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
-    // Workers collection (department workers - no Firebase Auth)
-    match /workers/{workerId} {
-      // Allow public read for worker authentication
-      allow read: if true;
+    // Department codes collection (security-critical)
+    match /departmentCodes/{departmentId} {
+      // Allow read for code verification (but not list)
+      allow read: if request.auth != null;
       
-      // Only admins can create, update, or delete workers
+      // Only admins can create, update, or delete codes
       allow create, update, delete: if isAdmin();
     }
     
-    // Department codes collection (security-critical)
-    match /departmentCodes/{departmentId} {
-      // Allow public read for code verification
-      allow read: if true;
+    // Workers collection (department workers - no Firebase Auth)
+    match /workers/{workerId} {
+      // Workers are read by the worker auth system and admin
+      allow read: if isAdmin();
       
-      // Only admins can create, update, or delete codes
+      // Only admins can create, update, or delete workers
       allow create, update, delete: if isAdmin();
     }
     
@@ -93,25 +93,17 @@ service cloud.firestore {
       
       // Department messages
       match /messages/{messageId} {
-        // Allow anyone to read and create messages (access controlled at app level)
-        allow read, create: if true;
-        allow update, delete: if isAdmin();
+        allow read, create, update, delete: if isAdmin();
       }
       
       // Department ideas
       match /ideas/{ideaId} {
-        // Allow anyone to read and create ideas (access controlled at app level)
-        allow read, create: if true;
-        // Allow users to update/delete their own ideas or admins
-        allow update, delete: if isAdmin();
+        allow read, create, update, delete: if isAdmin();
       }
       
       // Department files
       match /files/{fileId} {
-        // Allow anyone to read and create files (access controlled at app level)
-        allow read, create: if true;
-        // Allow users to delete their own files or admins
-        allow update, delete: if isAdmin();
+        allow read, create, update, delete: if isAdmin();
       }
     }
     
