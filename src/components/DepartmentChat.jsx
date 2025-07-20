@@ -8,6 +8,8 @@ import {
   orderBy, 
   limit, 
   onSnapshot,
+  deleteDoc,
+  doc,
   serverTimestamp 
 } from 'firebase/firestore';
 import { db } from '../services/firebase';
@@ -97,6 +99,17 @@ const DepartmentChat = ({ departmentId, departmentName }) => {
     return date.toLocaleDateString();
   };
 
+  const handleDeleteMessage = async (messageId) => {
+    if (!window.confirm('Are you sure you want to delete this message?')) return;
+    
+    try {
+      await deleteDoc(doc(db, `departments/${departmentId}/messages`, messageId));
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      alert('Failed to delete message. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="department-chat-loading">
@@ -136,6 +149,15 @@ const DepartmentChat = ({ departmentId, departmentName }) => {
                 <span className="message-author">{message.userName}</span>
                 <span className="message-role">{message.userRole}</span>
                 <span className="message-time">{formatMessageTime(message.timestamp)}</span>
+                {message.userId === userInfo?.id && (
+                  <button 
+                    onClick={() => handleDeleteMessage(message.id)}
+                    className="message-delete-button"
+                    title="Delete message"
+                  >
+                    <span className="material-icons-outlined">delete</span>
+                  </button>
+                )}
               </div>
               <div className="message-content">{message.text}</div>
             </motion.div>
