@@ -179,7 +179,12 @@ const ResearchDashboard = () => {
   }
 
   if (!hasAccess) {
-    return null; // Will redirect to admin page
+    return (
+      <div className="dashboard-loading">
+        <div className="loading-spinner"></div>
+        <p>Redirecting...</p>
+      </div>
+    );
   }
 
   return (
