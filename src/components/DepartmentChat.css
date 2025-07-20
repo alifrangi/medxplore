@@ -104,6 +104,31 @@
   color: #999;
 }
 
+.message-delete-button {
+  margin-left: 0.5rem;
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s;
+  color: #999;
+}
+
+.chat-message:hover .message-delete-button {
+  opacity: 1;
+}
+
+.message-delete-button:hover {
+  background: rgba(244, 67, 54, 0.1);
+  color: #f44336;
+}
+
+.message-delete-button .material-icons-outlined {
+  font-size: 16px;
+}
+
 .message-content {
   background: #f5f5f5;
   padding: 0.75rem 1rem;
