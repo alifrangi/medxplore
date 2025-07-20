@@ -6,8 +6,6 @@ import { getApplications, getAllEvents } from '../services/database';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import DepartmentWorkerManager from '../components/DepartmentWorkerManager';
-import DepartmentCodeManager from '../components/DepartmentCodeManager';
-import { setupCodes } from '../utils/setupDepartmentCodes';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -20,7 +18,6 @@ const AdminDashboard = () => {
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
-  const [setupMessage, setSetupMessage] = useState('');
 
   useEffect(() => {
     loadDashboardData();
@@ -202,34 +199,6 @@ const AdminDashboard = () => {
           <DepartmentWorkerManager />
         </motion.div>
 
-        <motion.div 
-          className="department-code-section"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-        >
-          <DepartmentCodeManager />
-          {adminData?.email === 'admin@medxplore.com' && (
-            <div className="setup-codes-section">
-              <button 
-                onClick={async () => {
-                  setSetupMessage('Initializing codes...');
-                  const result = await setupCodes();
-                  if (result) {
-                    setSetupMessage('✅ Department codes initialized successfully!');
-                  } else {
-                    setSetupMessage('❌ Failed to initialize codes');
-                  }
-                  setTimeout(() => setSetupMessage(''), 5000);
-                }}
-                className="setup-codes-button"
-              >
-                Initialize Department Codes (First Time Setup)
-              </button>
-              {setupMessage && <p className="setup-message">{setupMessage}</p>}
-            </div>
-          )}
-        </motion.div>
 
         <motion.div 
           className="recent-activity"

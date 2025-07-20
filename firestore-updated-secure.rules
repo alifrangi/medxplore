@@ -65,14 +65,6 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
-    // Department codes collection (security-critical)
-    match /departmentCodes/{departmentId} {
-      // Allow read for code verification (but not list)
-      allow read: if request.auth != null;
-      
-      // Only admins can create, update, or delete codes
-      allow create, update, delete: if isAdmin();
-    }
     
     // Workers collection (department workers - no Firebase Auth)
     match /workers/{workerId} {
