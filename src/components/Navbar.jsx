@@ -6,7 +6,6 @@ import './Navbar.css'
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isDepartmentsOpen, setIsDepartmentsOpen] = useState(false)
   const location = useLocation()
 
   useEffect(() => {
@@ -21,16 +20,10 @@ const Navbar = () => {
   const navItems = [
     { name: 'Events', path: '/events' },
     { name: 'News', path: '/news' },
-    { name: 'Departments', path: '#', isDepartments: true },
     { name: 'Contact', path: '/contact' },
     { name: 'Portal', path: '/passport', isPortal: true }
   ]
 
-  const departments = [
-    { name: 'Research', path: '/departments/research', icon: '🧬' },
-    { name: 'Academic', path: '/departments/academic', icon: '📚' },
-    { name: 'Global Outreach', path: '/departments/global-outreach', icon: '🌍' }
-  ]
 
   return (
     <motion.nav 
@@ -60,55 +53,12 @@ const Navbar = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 + 0.2 }}
               >
-                {item.isDepartments ? (
-                  <div className="navbar__dropdown">
-                    <button 
-                      className={`navbar__link navbar__link--dropdown ${isDepartmentsOpen ? 'navbar__link--active' : ''}`}
-                      onClick={() => setIsDepartmentsOpen(!isDepartmentsOpen)}
-                    >
-                      {item.name}
-                      <span className="material-icons-outlined dropdown-icon">
-                        {isDepartmentsOpen ? 'expand_less' : 'expand_more'}
-                      </span>
-                    </button>
-                    {isDepartmentsOpen && (
-                      <motion.div 
-                        className="navbar__dropdown-menu"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                      >
-                        {departments.map(dept => (
-                          <Link 
-                            key={dept.path}
-                            to={dept.path} 
-                            className="navbar__dropdown-item"
-                            onClick={() => setIsDepartmentsOpen(false)}
-                          >
-                            <span className="dept-icon">{dept.icon}</span>
-                            {dept.name}
-                          </Link>
-                        ))}
-                        <div className="navbar__dropdown-divider"></div>
-                        <Link 
-                          to="/worker-login" 
-                          className="navbar__dropdown-item navbar__dropdown-item--worker"
-                          onClick={() => setIsDepartmentsOpen(false)}
-                        >
-                          <span className="material-icons-outlined">badge</span>
-                          Worker Login
-                        </Link>
-                      </motion.div>
-                    )}
-                  </div>
-                ) : (
-                  <Link 
-                    to={item.path}
-                    className={`navbar__link ${location.pathname === item.path ? 'navbar__link--active' : ''} ${item.isPortal ? 'navbar__link--portal' : ''}`}
-                  >
-                    {item.name}
-                  </Link>
-                )}
+                <Link 
+                  to={item.path}
+                  className={`navbar__link ${location.pathname === item.path ? 'navbar__link--active' : ''} ${item.isPortal ? 'navbar__link--portal' : ''}`}
+                >
+                  {item.name}
+                </Link>
               </motion.div>
             ))}
           </div>
