@@ -1,0 +1,32 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Department files storage rules - SECURED
+    match /departments/{departmentId}/{fileName} {
+      // Allow public read for department files (since workers don't use Firebase Auth)
+      allow read: if true;
+      
+      // Allow write with strict file type and size restrictions
+      allow write: if request.resource != null
+        && request.resource.size < 100 * 1024 * 1024 // 100MB limit
+        && request.resource.size > 0 // Must have content
+        && (
+          request.resource.contentType == 'application/pdf' ||
+          request.resource.contentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || // .docx
+          request.resource.contentType == 'application/msword' || // .doc
+          request.resource.contentType == 'application/vnd.ms-powerpoint' || // .ppt
+          request.resource.contentType == 'application/vnd.openxmlformats-officedocument.presentationml.presentation' // .pptx
+        )
+        && fileName.matches('.*\\.(pdf|docx?|pptx?)$'); // Filename validation
+      
+      // Allow delete (app-level permission check)
+      allow delete: if true;
+    }
+    
+    // Deny all other storage access
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
