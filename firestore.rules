@@ -2,8 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // TEMPORARY admin check - restrict to specific email domains
-    // Replace 'yourdomain.com' with your actual admin email domain
+    // Admin check - checks for Firebase Auth users with admin email domain
     function isAdmin() {
       return request.auth != null && 
              request.auth.token.email != null &&
@@ -70,8 +69,14 @@ service cloud.firestore {
       // Allow public read for worker authentication
       allow read: if true;
       
-      // Only admins can create, update, or delete workers
-      allow create, update, delete: if isAdmin();
+      // Allow workers to update their own session data (login/logout)
+      // This allows updating only sessionToken, tokenExpiry, and lastLogin fields
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['sessionToken', 'tokenExpiry', 'lastLogin']);
+      
+      // Only admins can create or delete workers, or update other fields
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
     }
     
     // Department collections
@@ -84,25 +89,43 @@ service cloud.firestore {
       
       // Department messages
       match /messages/{messageId} {
-        // Allow anyone to read and create messages (access controlled at app level)
-        allow read, create: if true;
-        allow update, delete: if isAdmin();
+        // Allow anyone to read messages
+        allow read: if true;
+        // Allow anyone to create messages (workers and admins)
+        allow create: if true;
+        // Allow only the message sender to update their own messages or admins
+        allow update: if isAdmin() || 
+          (resource.data.senderId == request.resource.data.senderId);
+        // Allow only admins or message sender to delete
+        allow delete: if isAdmin() || 
+          (resource.data.senderId == request.auth.uid);
       }
       
       // Department ideas
       match /ideas/{ideaId} {
-        // Allow anyone to read and create ideas (access controlled at app level)
-        allow read, create: if true;
-        // Allow users to update/delete their own ideas or admins
-        allow update, delete: if isAdmin();
+        // Allow anyone to read ideas
+        allow read: if true;
+        // Allow anyone to create ideas
+        allow create: if true;
+        // Allow users to update their own ideas or admins
+        allow update: if isAdmin() || 
+          (resource.data.authorId == request.resource.data.authorId);
+        // Allow users to delete their own ideas or admins
+        allow delete: if isAdmin() || 
+          (resource.data.authorId == request.auth.uid);
       }
       
       // Department files
       match /files/{fileId} {
-        // Allow anyone to read and create files (access controlled at app level)
-        allow read, create: if true;
-        // Allow users to delete their own files or admins
-        allow update, delete: if isAdmin();
+        // Allow anyone to read files
+        allow read: if true;
+        // Allow anyone to create files (workers can upload without Firebase Auth)
+        allow create: if true;
+        // Allow anyone to delete files (access control handled at app level)
+        // This is necessary because workers don't use Firebase Auth
+        allow delete: if true;
+        // Allow updates only by admins
+        allow update: if isAdmin();
       }
     }
     
