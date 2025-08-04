@@ -109,16 +109,6 @@ const ResearchDashboard = () => {
       <div className="department-info">
         <h5>About Research Department</h5>
         <p>{departmentInfo.description}</p>
-        <div className="department-stats">
-          <div className="stat">
-            <span className="stat-value">15+</span>
-            <span className="stat-label">Active Projects</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">50+</span>
-            <span className="stat-label">Researchers</span>
-          </div>
-        </div>
       </div>
     </>
   );
