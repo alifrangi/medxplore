@@ -109,16 +109,6 @@ const MediaCommunicationsDashboard = () => {
       <div className="department-info">
         <h5>About Media & Communications</h5>
         <p>{departmentInfo.description}</p>
-        <div className="department-stats">
-          <div className="stat">
-            <span className="stat-value">25+</span>
-            <span className="stat-label">Campaigns</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">50+</span>
-            <span className="stat-label">Content Pieces</span>
-          </div>
-        </div>
       </div>
     </>
   );

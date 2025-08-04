@@ -17,19 +17,20 @@ const News = () => {
     try {
       const q = query(
         collection(db, 'news'),
-        where('published', '==', true),
         orderBy('createdAt', 'desc')
       );
       const snapshot = await getDocs(q);
-      const newsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        date: doc.data().createdAt?.toDate()?.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        }) || 'Recent'
-      }));
+      const newsData = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          date: doc.data().createdAt?.toDate()?.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) || 'Recent'
+        }))
+        .filter(item => item.published === true); // Filter published items after fetching
       setNewsItems(newsData);
     } catch (error) {
       console.error('Error loading news:', error);
