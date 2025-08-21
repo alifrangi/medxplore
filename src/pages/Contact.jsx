@@ -47,7 +47,7 @@ const Contact = () => {
           <div className="contact__info" style={{ marginTop: '2rem' }}>
             <div className="contact__item">
               <h3>Instagram</h3>
-              <p>@medxplore.official</p>
+              <p>@eduxplore_official</p>
             </div>
             <div className="contact__item">
               <h3>WhatsApp</h3>
