@@ -37,12 +37,7 @@ const Contact = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="contact-form-card"
         >
-          <div className="contact__mission">
-            <p>
-              Bridging the gap between medical professionals and the latest advancements 
-              in healthcare technology through innovation, education, and community.
-            </p>
-          </div>
+          
 
           <div className="contact__info" style={{ marginTop: '2rem' }}>
             <div className="contact__item">
