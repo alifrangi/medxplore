@@ -19,7 +19,7 @@ const Home = () => {
           minHeight: 200.00,
           minWidth: 200.00,
           highlightColor: 0xfaf8f1,
-          midtoneColor: 0xa9d3d8,
+          midtoneColor: 0x94bed5,
           lowlightColor: 0xfaf8f1,
           baseColor: 0xfaf8f1,
           blurFactor: 0.6,
@@ -103,7 +103,7 @@ const Home = () => {
                 title: "Excellence",
                 description: "Empowering medical students to excel in their studies and develop into exceptional healthcare professionals.",
                 icon: (
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a9d3d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94bed5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="12,2 15.09,8.26 22,9 17,14.74 18.18,21.02 12,17.77 5.82,21.02 7,14.74 2,9 8.91,8.26 12,2"/>
                   </svg>
                 )
@@ -112,7 +112,7 @@ const Home = () => {
                 title: "Growth", 
                 description: "Providing hands-on experiences and advanced learning opportunities to accelerate your medical education journey.",
                 icon: (
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a9d3d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94bed5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="20" x2="12" y2="10"/>
                     <line x1="18" y1="20" x2="18" y2="4"/>
                     <line x1="6" y1="20" x2="6" y2="16"/>
@@ -123,7 +123,7 @@ const Home = () => {
                 title: "Achievement",
                 description: "Supporting medical students in reaching their academic goals and building successful healthcare careers.",
                 icon: (
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#a9d3d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94bed5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="8" r="6"/>
                     <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
                   </svg>
