@@ -5,6 +5,8 @@ import { WorkerAuthProvider } from './contexts/WorkerAuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import Navbar from './components/Navbar'
+import Banner from './components/Banner/Banner'
+import CharacterWidget from './components/CharecterWidget/CharacterWidget'
 import Home from './pages/Home'
 import Contact from './pages/Contact'
 import Events from './pages/Events'
@@ -31,7 +33,12 @@ function AppContent() {
   
   return (
     <>
-      {!isDepartmentPage && <Navbar />}
+      {!isDepartmentPage && (
+        <>
+          <Banner />
+          <Navbar />
+        </>
+      )}
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
@@ -110,6 +117,7 @@ function AppContent() {
             element={<MediaCommunicationsDashboard />} 
           />
           </Routes>
+      <CharacterWidget />
     </>
   );
 }
