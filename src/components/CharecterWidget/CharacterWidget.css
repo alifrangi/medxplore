@@ -1,0 +1,171 @@
+/* Character Widget Styles */
+.character-widget {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 50;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.character-widget:not(.expanded):hover {
+  transform: scale(1.05);
+}
+
+.character-widget.expanded {
+  transform: scale(0.9);
+}
+
+.character-container {
+  position: relative;
+}
+
+/* Character Image */
+.character-image {
+  transition: all 0.3s ease;
+  opacity: 0.8;
+  filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04)) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
+}
+
+.character-image.small {
+  width: 3.25rem;
+  height: 3.25rem;
+}
+
+.character-image.large {
+  width: 6.25rem;
+  height: 6.25rem;
+}
+
+.character-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Quote Bubble */
+.quote-bubble {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 0.5rem;
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quote-content {
+  position: relative;
+  background-color: white !important;
+  color: #1f2937;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  max-width: 20rem;
+  width: 20rem;
+  border: 1px solid #e5e7eb;
+}
+
+.quote-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Speech bubble arrow */
+.quote-arrow {
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  width: 0;
+  height: 0;
+}
+
+.quote-arrow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+}
+
+/* Notification dot */
+.notification-dot {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.125rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Backdrop overlay */
+.character-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .character-backdrop {
+    display: block;
+  }
+  
+  .quote-content {
+    width: 16rem;
+    max-width: 16rem;
+  }
+  
+  .character-widget {
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+}
+
+/* Hover effects */
+.character-widget:hover .character-img {
+  opacity: 1;
+}
+
+/* Custom colors for MedXplore theme */
+.quote-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(5, 38, 89, 0.1);
+}
+
+
+
+/* MedXplore brand accent */
+.notification-dot {
+  background: linear-gradient(45deg, #94bed5, #8bc5cb);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
