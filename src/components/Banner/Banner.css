@@ -1,0 +1,89 @@
+/* Banner Styles */
+.awareness-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001; /* Higher than navbar to stay on top */
+    height: var(--banner-height);
+    background: #ec4773;
+    background-size: 400% 400%;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-top: 2px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.banner-content {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.banner-text {
+    color: rgb(35, 35, 35);
+    font-weight: 400;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.banner-link {
+    text-decoration: underline;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgb(35, 35, 35);
+    text-decoration: none;
+    padding-bottom: 1px;
+}
+
+.banner-link:hover {
+    color: #2b2b2b;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .awareness-banner {
+        padding: 0.4rem 0.5rem;
+        height: 32px;
+    }
+    
+    .banner-text {
+        font-size: 0.75rem;
+        letter-spacing: 0.3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .awareness-banner {
+        height: 28px;
+        padding: 0.3rem 0.4rem;
+    }
+    
+    .banner-text {
+        font-size: 0.7rem;
+        line-height: 1.2;
+    }
+}
+
