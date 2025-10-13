@@ -9,8 +9,21 @@
   --text-primary: #000000;
   --text-secondary: #333333;
   --accent-color: #94bed5;
+  --banner-height: 36px;
   --navbar-height: 80px;
   --transition-speed: 0.3s;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --banner-height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --banner-height: 28px;
+  }
 }
 
 body {
@@ -63,7 +76,7 @@ a {
 .admin-page {
   min-height: 100vh;
   background-color: var(--bg-primary);
-  padding-top: var(--navbar-height);
+  padding-top: calc(var(--banner-height) + var(--navbar-height));
 }
 
 .admin-header {
@@ -71,7 +84,7 @@ a {
   border-bottom: 1px solid #e0e0e0;
   padding: 1.5rem 0;
   position: sticky;
-  top: var(--navbar-height);
+  top: calc(var(--banner-height) + var(--navbar-height));
   z-index: 10;
 }
 
@@ -105,7 +118,7 @@ a {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding-top: var(--navbar-height);
+  padding-top: calc(var(--banner-height) + var(--navbar-height));
 }
 
 .loading-spinner {
