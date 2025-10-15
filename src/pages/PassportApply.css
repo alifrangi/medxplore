@@ -1,8 +1,9 @@
+
 .passport-apply-page {
   min-height: 100vh;
   background-color: var(--bg-primary);
   padding: 2rem;
-  padding-top: calc(var(--navbar-height) + 2rem);
+  padding-top: calc(var(--navbar-height) + 3rem);
 }
 
 .apply-container {
@@ -115,16 +116,14 @@
   cursor: pointer;
   transition: all var(--transition-speed);
   min-width: 120px;
+    background-color: var(--accent-color) !important
 }
 
 .prev-button {
-  background-color: #f0f0f0;
   color: var(--text-primary);
 }
 
-.prev-button:hover {
-  background-color: #e0e0e0;
-}
+
 
 .next-button,
 .submit-button {
@@ -133,7 +132,7 @@
   margin-left: auto;
 }
 
-.next-button:hover,
+
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(169, 211, 216, 0.4);
