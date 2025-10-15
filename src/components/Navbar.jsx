@@ -37,7 +37,7 @@ const Navbar = () => {
           <Link to="/" className="navbar__logo">
             <div className="navbar__logo-container">
               <img 
-                src="/logo.png" 
+                src="/logo-trans.png" 
                 alt="MedXplore Logo" 
                 className="navbar__logo-image"
               />
