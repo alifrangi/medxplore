@@ -1,7 +1,6 @@
 .admin-events {
   min-height: 100vh;
   background-color: var(--bg-primary);
-  padding-top: var(--navbar-height);
 }
 
 .events-container {

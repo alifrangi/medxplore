@@ -30,10 +30,15 @@ import WorkerLogin from './pages/WorkerLogin'
 function AppContent() {
   const location = useLocation();
   const isDepartmentPage = location.pathname.startsWith('/departments/');
+  const isAdminDashboard = location.pathname.startsWith('/admin/dashboard');
+  const isAdminNews = location.pathname.startsWith('/admin/news');
+  const isAdminEvents = location.pathname.startsWith('/admin/events');
+  const isAdminStudents = location.pathname.startsWith('/admin/students');
+  const isAdminApplications = location.pathname.startsWith('/admin/applications');
   
   return (
     <>
-      {!isDepartmentPage && (
+      {!isDepartmentPage && !isAdminDashboard && !isAdminNews && !isAdminEvents && !isAdminStudents && !isAdminApplications && (
         <>
           <Banner />
           <Navbar />
