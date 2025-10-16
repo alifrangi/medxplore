@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
 
 
       // BYPASS: Hardcoded admin credentials for testing
-      const BYPASS_EMAIL = 'admin@medxplore.com';
+      const BYPASS_EMAIL = '***REMOVED***';
       const BYPASS_PASSWORD = '***REMOVED***';
       
       if (email === BYPASS_EMAIL && password === BYPASS_PASSWORD) {

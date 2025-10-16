@@ -167,9 +167,20 @@ const Events = () => {
                   </div>
 
                   <div className="event-footer">
-                    <Link to="/passport/apply" className="register-button">
-                      Apply for Passport to Join
-                    </Link>
+                    {event.googleFormsLink ? (
+                      <a 
+                        href={event.googleFormsLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="register-button"
+                      >
+                        Register via Google Form
+                      </a>
+                    ) : (
+                      <Link to="/passport/apply" className="register-button">
+                        Apply for Passport to Join
+                      </Link>
+                    )}
                   </div>
                 </motion.div>
               ))}

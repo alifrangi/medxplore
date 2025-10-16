@@ -34,7 +34,8 @@ const AdminEvents = () => {
     date: '',
     location: '',
     category: 'workshop',
-    maxParticipants: ''
+    maxParticipants: '',
+    googleFormsLink: ''
   });
 
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -80,7 +81,8 @@ const AdminEvents = () => {
         date: '',
         location: '',
         category: 'workshop',
-        maxParticipants: ''
+        maxParticipants: '',
+        googleFormsLink: ''
       });
       alert('Event created successfully!');
     } else {
@@ -336,6 +338,14 @@ const AdminEvents = () => {
                       <span>{selectedEvent.maxParticipants}</span>
                     </div>
                   )}
+                  {selectedEvent.googleFormsLink && (
+                    <div className="detail-item">
+                      <label>Google Forms:</label>
+                      <a href={selectedEvent.googleFormsLink} target="_blank" rel="noopener noreferrer">
+                        View Form
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -487,6 +497,16 @@ const AdminEvents = () => {
                 />
               </div>
               
+              <div className="form-group">
+                <label>Google Forms Link (Optional)</label>
+                <input 
+                  type="url"
+                  value={newEvent.googleFormsLink}
+                  onChange={(e) => setNewEvent({...newEvent, googleFormsLink: e.target.value})}
+                  placeholder="https://forms.gle/..."
+                />
+              </div>
+              
               <div className="form-actions">
                 <button type="submit" disabled={actionLoading}>
                   {actionLoading ? 'Creating...' : 'Create Event'}
@@ -581,6 +601,16 @@ const AdminEvents = () => {
                   value={editingEvent.maxParticipants || ''}
                   onChange={(e) => setEditingEvent({...editingEvent, maxParticipants: e.target.value})}
                   min="1"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Google Forms Link (Optional)</label>
+                <input 
+                  type="url"
+                  value={editingEvent.googleFormsLink || ''}
+                  onChange={(e) => setEditingEvent({...editingEvent, googleFormsLink: e.target.value})}
+                  placeholder="https://forms.gle/..."
                 />
               </div>
               
