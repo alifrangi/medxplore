@@ -152,7 +152,6 @@
 
 .back-home-btn:hover {
   background: #8bc5cb;
-  transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(169, 211, 216, 0.4);
 }
 
