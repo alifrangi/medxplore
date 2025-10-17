@@ -115,6 +115,16 @@ export const approveApplication = async (applicationId, adminId) => {
   }
 };
 
+export const deleteApplication = async (applicationId) => {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.APPLICATIONS, applicationId));
+    return { success: true };
+  } catch (error) {
+    // Error deleting application
+    return { success: false, error: error.message };
+  }
+};
+
 // Student passport functions
 export const getStudentByPassport = async (passportNumber) => {
   try {
@@ -885,6 +895,7 @@ export default {
   submitApplication,
   getApplications,
   approveApplication,
+  deleteApplication,
   getStudentByPassport,
   getStudentEvents,
   createEvent,
