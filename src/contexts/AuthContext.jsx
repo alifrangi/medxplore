@@ -54,35 +54,6 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       
-
-
-
-      // BYPASS: Hardcoded admin credentials for testing
-      const BYPASS_EMAIL = '***REMOVED***';
-      const BYPASS_PASSWORD = '***REMOVED***';
-      
-      if (email === BYPASS_EMAIL && password === BYPASS_PASSWORD) {
-        // Bypass Firebase auth for testing
-        const bypassAdminData = {
-          email: BYPASS_EMAIL,
-          name: 'System Administrator',
-          role: 'admin',
-          permissions: ['full_access']
-        };
-        
-        setAdminData(bypassAdminData);
-        setAuthType('admin');
-        setCurrentUser({ email: BYPASS_EMAIL, uid: 'bypass-admin' });
-        sessionStorage.setItem('authType', 'admin');
-        
-        return { success: true };
-      }
-      
-
-
-
-      
-
       // First check if user is registered as admin
       const adminCheck = await checkAdminAccess(email);
       if (!adminCheck.success) {
