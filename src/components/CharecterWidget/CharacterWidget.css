@@ -23,18 +23,17 @@
 /* Character Image */
 .character-image {
   transition: all 0.3s ease;
-  opacity: 0.8;
   filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04)) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
 }
 
 .character-image.small {
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 3.5rem;
+  height: 3.5rem;
 }
 
 .character-image.large {
-  width: 6.25rem;
-  height: 6.25rem;
+  width: 6.5rem;
+  height: 6.5rem;
 }
 
 .character-img {

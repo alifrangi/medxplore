@@ -5,23 +5,26 @@ const CharacterWidget = () => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
 
-    // const quotes = [
-    //     "Hey there! Welcome to MedXplore :>",
-    //     "Hope you're having a wonderful day exploring medical opportunities!",
-    //     "Thanks for stopping by! Feel free to explore our events and resources",
-    //     "Hi! Ready to advance your medical career?",
-    //     "Don't forget to check out upcoming events and news!",
-    //     "You seem like a really dedicated medical student!"
+    const quotes = [
+        "Hey there! Welcome to MedXplore :>",
+        "Hope you're having a wonderful day exploring medical opportunities!",
+        "Thanks for stopping by! Feel free to explore our events and resources",
+        "Hi! Ready to advance your medical career?",
+        "Don't forget to check out upcoming events and news!",
+        "You seem like a really dedicated medical student!"
+    ];
+
+    //     const quotes = [
+    //     "Every event you join brings you one step closer to becoming a Pioneer.",
+    //     "Discover. Engage. Evolve — your MedXperience begins here.",
+    //     "Explore beyond textbooks — step into the real world of medicine.",
+    //     "Your achievements are your story — track them in your MedXperience Passport.",
+    //     "From curiosity to mastery — MedXplore guides your journey.",
+    //     "You’re not just a student — you’re an explorer of the future of healthcare.",
+    //     "Innovation starts with participation — be part of the movement.",
+    //     "One community. Infinite experiences. Welcome to MedXplore."
     // ];
 
-        const quotes = [
-        "October is Breast Cancer Awareness Month - Early detection saves lives!",
-        "1 in 8 women will develop breast cancer - Support research and awareness!",
-        "Together we can make a difference in the fight against breast cancer",
-        "Knowledge is power - Learn about breast cancer prevention today",
-        "Supporting survivors, honoring fighters, remembering angels",
-        "Pink October: Spreading hope, courage, and awareness worldwide"
-    ];
 
     const playClickSound = () => {
         // Create a cute click sound using Web Audio API
@@ -71,7 +74,7 @@ const CharacterWidget = () => {
                     {/* Character Image */}
                     <div className={`character-image ${isExpanded ? 'large' : 'small'}`}>
                         <img
-                            src="/cancer2.png"
+                            src="/cute-mx.png"
                             alt="MedXplore mascot"
                             className="character-img"
                         />

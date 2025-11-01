@@ -6,7 +6,7 @@
     right: 0;
     z-index: 1001; /* Higher than navbar to stay on top */
     height: var(--banner-height);
-    background: #ec4773;
+    background: black;
     background-size: 400% 400%;
     padding: 0.5rem 1rem;
     text-align: center;
@@ -16,6 +16,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
 }
 
 @keyframes gradientShift {
@@ -40,11 +41,11 @@
 }
 
 .banner-text {
-    color: rgb(35, 35, 35);
+    color: white;
     font-weight: 400;
-    font-size: 0.8rem;
+    font-size: 0.65rem;
     font-family: sans-serif;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.5px;
     white-space: nowrap;
 }
 
