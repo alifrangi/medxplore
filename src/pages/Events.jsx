@@ -195,7 +195,7 @@ const Events = () => {
               <div className="events-socials">
                 <h3>Stay Connected</h3>
                 <span>WhatsApp: Coming Soon!</span>
-                <span>Instagram: @eduxplore_official</span>
+                <span>Instagram: @medxorg</span>
               </div>
               <Link to="/passport/apply" className="passport-cta">
                 Apply for Your MedXperience Passport
