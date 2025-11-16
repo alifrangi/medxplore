@@ -1,6 +1,7 @@
 .leaderboard-page {
   min-height: 100vh;
   background-color: var(--bg-primary);
+  padding-top: calc(var(--navbar-height) + 2rem);
 }
 
 .leaderboard-loading {

@@ -6,7 +6,6 @@ import './Leaderboard.css';
 const Leaderboard = () => {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterTier, setFilterTier] = useState('all');
 
   useEffect(() => {
     loadWorkers();
@@ -47,13 +46,7 @@ const Leaderboard = () => {
     return names[dept] || dept;
   };
 
-  const filteredWorkers = filterTier === 'all'
-    ? workers
-    : workers.filter(w => getTier(w.points || 0).name === filterTier);
-
   const topTen = workers.slice(0, 10);
-  const totalPoints = workers.reduce((sum, w) => sum + (w.points || 0), 0);
-  const averagePoints = workers.length > 0 ? Math.round(totalPoints / workers.length) : 0;
 
   if (loading) {
     return (
@@ -119,55 +112,7 @@ const Leaderboard = () => {
       {/* Full Leaderboard Section */}
       <section className="full-leaderboard-section">
         <div className="section-container">
-          <div className="leaderboard-header">
-            <div className="stats-cards">
-              <div className="stat-card">
-                <span className="stat-label">Total Points</span>
-                <span className="stat-value">{totalPoints}</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-label">Total Members</span>
-                <span className="stat-value">{workers.length}</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-label">Average Points</span>
-                <span className="stat-value">{averagePoints}</span>
-              </div>
-            </div>
-
-            <div className="filter-section">
-              <button
-                className={`filter-btn ${filterTier === 'all' ? 'active' : ''}`}
-                onClick={() => setFilterTier('all')}
-              >
-                All
-              </button>
-              <button
-                className={`filter-btn ${filterTier === 'Bronze' ? 'active' : ''}`}
-                onClick={() => setFilterTier('Bronze')}
-              >
-                Bronze
-              </button>
-              <button
-                className={`filter-btn ${filterTier === 'Silver' ? 'active' : ''}`}
-                onClick={() => setFilterTier('Silver')}
-              >
-                Silver
-              </button>
-              <button
-                className={`filter-btn ${filterTier === 'Gold' ? 'active' : ''}`}
-                onClick={() => setFilterTier('Gold')}
-              >
-                Gold
-              </button>
-              <button
-                className={`filter-btn ${filterTier === 'Platinum' ? 'active' : ''}`}
-                onClick={() => setFilterTier('Platinum')}
-              >
-                Platinum
-              </button>
-            </div>
-          </div>
+          <h2 className="section-title">Top 10 Explorers Leaderboard</h2>
 
           <div className="leaderboard-table-container">
             <table className="leaderboard-table">
@@ -182,13 +127,13 @@ const Leaderboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredWorkers.map((worker, index) => {
+                {topTen.map((worker, index) => {
                   const tier = getTier(worker.points || 0);
-                  const originalRank = workers.findIndex(w => w.id === worker.id) + 1;
+                  const rank = index + 1;
 
                   return (
                     <tr key={worker.id}>
-                      <td className="rank-cell">#{originalRank}</td>
+                      <td className="rank-cell">#{rank}</td>
                       <td className="member-cell">
                         <div className="member-info">
                           <div className="member-avatar-small" style={{ backgroundColor: worker.profileColor || '#A9D3D8' }}>
@@ -211,9 +156,9 @@ const Leaderboard = () => {
               </tbody>
             </table>
 
-            {filteredWorkers.length === 0 && (
+            {topTen.length === 0 && (
               <div className="no-members">
-                <p>No members found in this tier.</p>
+                <p>No members found in the leaderboard.</p>
               </div>
             )}
           </div>
