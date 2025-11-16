@@ -20,6 +20,7 @@ const PointsManager = ({ workerId, workerName }) => {
     firstName: '',
     lastName: '',
     passportNumber: '',
+    university: '',
     departments: [],
     points: 0
   });
@@ -135,6 +136,7 @@ const PointsManager = ({ workerId, workerName }) => {
       firstName: '',
       lastName: '',
       passportNumber: '',
+      university: '',
       departments: [],
       points: 0
     });
@@ -164,6 +166,10 @@ const PointsManager = ({ workerId, workerName }) => {
       alert('Please enter a passport number');
       return;
     }
+    if (!newMember.university.trim()) {
+      alert('Please enter a university');
+      return;
+    }
     if (newMember.departments.length === 0) {
       alert('Please select at least one department');
       return;
@@ -176,6 +182,7 @@ const PointsManager = ({ workerId, workerName }) => {
         firstName: newMember.firstName.trim(),
         lastName: newMember.lastName.trim(),
         email: '', // No email needed for display-only entries
+        university: newMember.university.trim(),
         departments: newMember.departments,
         points: parseInt(newMember.points) || 0,
         profileColor: generateProfileColor(),
@@ -197,6 +204,7 @@ const PointsManager = ({ workerId, workerName }) => {
         firstName: '',
         lastName: '',
         passportNumber: '',
+        university: '',
         departments: [],
         points: 0
       });
@@ -459,6 +467,17 @@ const PointsManager = ({ workerId, workerName }) => {
 
                 <div className="form-row">
                   <div className="form-field">
+                    <label htmlFor="university">University *</label>
+                    <input
+                      id="university"
+                      type="text"
+                      value={newMember.university}
+                      onChange={(e) => setNewMember({ ...newMember, university: e.target.value })}
+                      placeholder="e.g., JUST"
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-field">
                     <label htmlFor="passportNumber">Passport Number *</label>
                     <input
                       id="passportNumber"
@@ -469,6 +488,9 @@ const PointsManager = ({ workerId, workerName }) => {
                       className="form-input"
                     />
                   </div>
+                </div>
+
+                <div className="form-row">
                   <div className="form-field">
                     <label htmlFor="initialPoints">Initial Points</label>
                     <input

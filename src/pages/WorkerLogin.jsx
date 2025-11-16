@@ -40,8 +40,8 @@ const WorkerLogin = () => {
       if (worker.departments.includes('all')) {
         // Worker has access to all departments, redirect to admin dashboard
         navigate('/admin/dashboard');
-      } else if (worker.departments.includes('research')) {
-        navigate('/departments/research');
+      } else if (worker.departments.includes('operations-logistics')) {
+        navigate('/departments/operations-logistics');
       } else if (worker.departments.includes('academic')) {
         navigate('/departments/academic');
       } else if (worker.departments.includes('global-outreach')) {
@@ -131,13 +131,13 @@ const WorkerLogin = () => {
           <div className="login-footer">
             <p>Not a worker? Access departments with a code:</p>
             <div className="department-links">
-              <button 
-                onClick={() => navigate('/departments/research')}
+              <button
+                onClick={() => navigate('/departments/operations-logistics')}
                 className="department-link"
               >
-                🧬 Research
+                ⚙️ Operations & Logistics
               </button>
-              <button 
+              <button
                 onClick={() => navigate('/departments/academic')}
                 className="department-link"
               >

@@ -18,7 +18,7 @@ const AdminLogin = () => {
 
   const departments = [
     { id: 'admin', name: 'Admin Dashboard', icon: '⚙️', path: '/admin/dashboard', isAdmin: true },
-    { id: 'research', name: 'Research', icon: '🧬', path: '/departments/research' },
+    { id: 'operations-logistics', name: 'Operations & Logistics', icon: '⚙️', path: '/departments/operations-logistics' },
     { id: 'academic', name: 'Academic', icon: '📚', path: '/departments/academic' },
     { id: 'global-outreach', name: 'Global Outreach', icon: '🌍', path: '/departments/global-outreach' },
     { id: 'student-engagement', name: 'Student Engagement', icon: '🤝', path: '/departments/student-engagement' },

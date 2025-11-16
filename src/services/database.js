@@ -827,6 +827,7 @@ export const getAllWorkers = async () => {
         firstName: workerData.firstName,
         lastName: workerData.lastName,
         email: decryptEmail(workerData.email),
+        university: workerData.university || 'JUST',
         departments: workerData.departments,
         profileColor: workerData.profileColor,
         isActive: workerData.isActive,

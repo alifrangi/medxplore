@@ -47,6 +47,7 @@ const Leaderboard = () => {
   };
 
   const topTen = workers.slice(0, 10);
+  const allWorkers = workers; // Show all workers in the table
 
   if (loading) {
     return (
@@ -94,7 +95,7 @@ const Leaderboard = () => {
                     {worker.firstName?.[0]}{worker.lastName?.[0]}
                   </div>
                   <h3 className="member-name">{worker.firstName} {worker.lastName}</h3>
-                  <p className="member-university">JUST</p>
+                  <p className="member-university">{worker.university || 'JUST'}</p>
                   <div className="points-display">
                     <span className="points-value">{worker.points || 0}</span>
                     <span className="points-label">XP</span>
@@ -112,7 +113,7 @@ const Leaderboard = () => {
       {/* Full Leaderboard Section */}
       <section className="full-leaderboard-section">
         <div className="section-container">
-          <h2 className="section-title">Top 10 Explorers Leaderboard</h2>
+          <h2 className="section-title">Full Leaderboard</h2>
 
           <div className="leaderboard-table-container">
             <table className="leaderboard-table">
@@ -127,7 +128,7 @@ const Leaderboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {topTen.map((worker, index) => {
+                {allWorkers.map((worker, index) => {
                   const tier = getTier(worker.points || 0);
                   const rank = index + 1;
 
@@ -142,7 +143,7 @@ const Leaderboard = () => {
                           <span className="member-name-text">{worker.firstName} {worker.lastName}</span>
                         </div>
                       </td>
-                      <td>JUST</td>
+                      <td>{worker.university || 'JUST'}</td>
                       <td>{worker.departments?.map(d => getDepartmentName(d)).join(', ') || 'N/A'}</td>
                       <td className="points-cell">{worker.points || 0}</td>
                       <td>
@@ -156,7 +157,7 @@ const Leaderboard = () => {
               </tbody>
             </table>
 
-            {topTen.length === 0 && (
+            {allWorkers.length === 0 && (
               <div className="no-members">
                 <p>No members found in the leaderboard.</p>
               </div>

@@ -24,7 +24,7 @@ const DepartmentWorkerManager = () => {
   const [success, setSuccess] = useState('');
 
   const departments = [
-    { id: 'research', name: 'Research', emoji: '🧬' },
+    { id: 'operations-logistics', name: 'Operations & Logistics', emoji: '⚙️' },
     { id: 'academic', name: 'Academic', emoji: '📚' },
     { id: 'global-outreach', name: 'Global Outreach', emoji: '🌍' },
     { id: 'student-engagement', name: 'Student Engagement', emoji: '🤝' },
