@@ -25,7 +25,9 @@ import AcademicDashboard from './pages/AcademicDashboard'
 import GlobalOutreachDashboard from './pages/GlobalOutreachDashboard'
 import MediaCommunicationsDashboard from './pages/MediaCommunicationsDashboard'
 import StudentEngagementDashboard from './pages/StudentEngagementDashboard'
+import OperationsLogisticsDashboard from './pages/OperationsLogisticsDashboard'
 import WorkerLogin from './pages/WorkerLogin'
+import Leaderboard from './pages/Leaderboard'
 
 function AppContent() {
   const location = useLocation();
@@ -49,6 +51,7 @@ function AppContent() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/events" element={<Events />} />
           <Route path="/news" element={<News />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/passport" element={<PassportLogin />} />
           <Route path="/passport/apply" element={<PassportApply />} />
           <Route 
@@ -117,9 +120,13 @@ function AppContent() {
             path="/departments/student-engagement" 
             element={<StudentEngagementDashboard />} 
           />
-          <Route 
-            path="/departments/media-communications" 
-            element={<MediaCommunicationsDashboard />} 
+          <Route
+            path="/departments/media-communications"
+            element={<MediaCommunicationsDashboard />}
+          />
+          <Route
+            path="/departments/operations-logistics"
+            element={<OperationsLogisticsDashboard />}
           />
           </Routes>
       <CharacterWidget />

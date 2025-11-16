@@ -320,18 +320,18 @@ export const getEventParticipants = async (eventId) => {
   }
 };
 
-export const bulkAddStudentsToEvent = async (eventId, studentIds, participationType = 'Attended') => {
+export const bulkAddStudentsToEvent = async (eventId, studentIds, participationType = 'Attended', adminNotes = '') => {
   try {
     const results = await Promise.all(
-      studentIds.map(studentId => addStudentToEvent(studentId, eventId, participationType))
+      studentIds.map(studentId => addStudentToEvent(studentId, eventId, participationType, adminNotes))
     );
-    
+
     const successCount = results.filter(result => result.success).length;
     const failCount = results.length - successCount;
-    
-    return { 
-      success: true, 
-      message: `Added ${successCount} students successfully${failCount > 0 ? `, ${failCount} failed` : ''}` 
+
+    return {
+      success: true,
+      message: `Added ${successCount} students successfully${failCount > 0 ? `, ${failCount} failed` : ''}`
     };
   } catch (error) {
     // Error bulk adding students to event
@@ -366,7 +366,7 @@ export const getEventStats = async (eventId) => {
   }
 };
 
-export const addStudentToEvent = async (passportNumber, eventId, participationType = 'Attended') => {
+export const addStudentToEvent = async (passportNumber, eventId, participationType = 'Attended', adminNotes = '') => {
   try {
     // Check if participation already exists
     const q = query(
@@ -375,7 +375,7 @@ export const addStudentToEvent = async (passportNumber, eventId, participationTy
       where('eventId', '==', eventId)
     );
     const existing = await getDocs(q);
-    
+
     if (!existing.empty) {
       return { success: false, error: 'Student already registered for this event' };
     }
@@ -385,6 +385,10 @@ export const addStudentToEvent = async (passportNumber, eventId, participationTy
       studentId: passportNumber,
       eventId,
       participationType,
+      adminNotes: adminNotes || '',
+      pointsAwarded: 0,
+      awardedBy: null,
+      awardedAt: null,
       addedAt: serverTimestamp(),
       certificateUrl: null
     });
@@ -500,10 +504,10 @@ export const updateStudentTier = async (passportNumber, newTier) => {
   }
 };
 
-export const addEventToStudent = async (passportNumber, eventId, participationType = 'Attended', certificateUrl = null) => {
+export const addEventToStudent = async (passportNumber, eventId, participationType = 'Attended', adminNotes = '', certificateUrl = null) => {
   try {
     // Adding event to student
-    
+
     // Check if participation already exists
     const q = query(
       collection(db, COLLECTIONS.PARTICIPATIONS),
@@ -511,7 +515,7 @@ export const addEventToStudent = async (passportNumber, eventId, participationTy
       where('eventId', '==', eventId)
     );
     const existing = await getDocs(q);
-    
+
     if (!existing.empty) {
       return { success: false, error: 'Student already registered for this event' };
     }
@@ -522,9 +526,13 @@ export const addEventToStudent = async (passportNumber, eventId, participationTy
       eventId,
       participationType,
       certificateUrl,
+      adminNotes: adminNotes || '',
+      pointsAwarded: 0,
+      awardedBy: null,
+      awardedAt: null,
       addedAt: serverTimestamp()
     };
-    
+
     // Adding participation
     await addDoc(collection(db, COLLECTIONS.PARTICIPATIONS), participationData);
     // Participation added
@@ -822,6 +830,7 @@ export const getAllWorkers = async () => {
         departments: workerData.departments,
         profileColor: workerData.profileColor,
         isActive: workerData.isActive,
+        points: workerData.points || 0,
         createdAt: workerData.createdAt,
         lastLogin: workerData.lastLogin
       });
@@ -891,6 +900,103 @@ export const deleteWorker = async (workerId) => {
   }
 };
 
+// Update participation notes
+export const updateParticipationNotes = async (participationId, adminNotes, adminId) => {
+  try {
+    await updateDoc(doc(db, COLLECTIONS.PARTICIPATIONS, participationId), {
+      adminNotes,
+      updatedBy: adminId,
+      updatedAt: serverTimestamp()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating participation notes:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Award points to participation (Operations & Logistics only)
+export const awardPointsToParticipation = async (participationId, points, workerId) => {
+  try {
+    const participationRef = doc(db, COLLECTIONS.PARTICIPATIONS, participationId);
+    const participationDoc = await getDoc(participationRef);
+
+    if (!participationDoc.exists()) {
+      return { success: false, error: 'Participation not found' };
+    }
+
+    const participation = participationDoc.data();
+
+    await updateDoc(participationRef, {
+      pointsAwarded: points,
+      awardedBy: workerId,
+      awardedAt: serverTimestamp()
+    });
+
+    // Update student's leaderboard points
+    const studentRef = doc(db, COLLECTIONS.STUDENTS, participation.studentId);
+    const studentDoc = await getDoc(studentRef);
+
+    if (studentDoc.exists()) {
+      const currentPoints = studentDoc.data().leaderboardPoints || 0;
+      await updateDoc(studentRef, {
+        leaderboardPoints: currentPoints + points
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error awarding points:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Worker permissions configuration
+export const WORKER_PERMISSIONS = {
+  // All departments have these base permissions
+  BASE: [
+    'view_applications',
+    'review_applications',
+    'approve_applications',
+    'reject_applications',
+    'manage_events',
+    'create_events',
+    'edit_events',
+    'delete_events',
+    'manage_news',
+    'create_news',
+    'edit_news',
+    'delete_news',
+    'view_students',
+    'view_analytics'
+  ],
+
+  // Only Operations & Logistics
+  OPERATIONS_LOGISTICS: [
+    'award_points',
+    'manage_leaderboard',
+    'bulk_point_operations'
+  ]
+};
+
+// Check if worker has permission
+export const hasPermission = (workerData, permission) => {
+  const basePermissions = WORKER_PERMISSIONS.BASE;
+  const opsPermissions = WORKER_PERMISSIONS.OPERATIONS_LOGISTICS;
+
+  // All workers have base permissions
+  if (basePermissions.includes(permission)) {
+    return true;
+  }
+
+  // Only ops & logistics have special permissions
+  if (opsPermissions.includes(permission)) {
+    return workerData?.department === 'Operations and Logistics';
+  }
+
+  return false;
+};
+
 export default {
   submitApplication,
   getApplications,
@@ -923,5 +1029,9 @@ export default {
   createWorker,
   getAllWorkers,
   updateWorker,
-  deleteWorker
+  deleteWorker,
+  updateParticipationNotes,
+  awardPointsToParticipation,
+  WORKER_PERMISSIONS,
+  hasPermission
 };

@@ -31,4 +31,5 @@ dist-ssr
 
 # Firebase
 .firebase/
-firebase-debug.log
+firebase-debug.logcrew-lobby/
+teamslobby-original/

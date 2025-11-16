@@ -103,7 +103,6 @@ const AdminDashboard = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="admin-loading">
@@ -202,10 +201,10 @@ const AdminDashboard = () => {
         >
           <h2>Department Dashboards</h2>
           <div className="departments-grid">
-            <Link to="/departments/research" className="department-card research">
-              <div className="department-icon">🧬</div>
-              <h3>Research</h3>
-              <p>Advancing medical knowledge through innovative research</p>
+            <Link to="/departments/operations-logistics" className="department-card operations-logistics">
+              <div className="department-icon">⚙️</div>
+              <h3>Operations & Logistics</h3>
+              <p>Managing event operations, points system, and logistical coordination</p>
             </Link>
 
             <Link to="/departments/academic" className="department-card academic">

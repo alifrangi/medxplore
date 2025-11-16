@@ -7,6 +7,9 @@ import UpcomingEvents from '../components/UpcomingEvents';
 import DepartmentChat from '../components/DepartmentChat';
 import DepartmentIdeas from '../components/DepartmentIdeas';
 import DepartmentFiles from '../components/DepartmentFiles';
+import ApplicationsManager from '../components/ApplicationsManager';
+import EventsManager from '../components/EventsManager';
+import NewsManager from '../components/NewsManager';
 import './DepartmentDashboard.css';
 
 const StudentEngagementDashboard = () => {
@@ -76,31 +79,31 @@ const StudentEngagementDashboard = () => {
       </div>
 
       <nav className="dashboard-nav">
-        <button 
-          className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
+        <button className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
           <span className="material-icons-outlined">dashboard</span>
           Overview
         </button>
-        <button 
-          className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`}
-          onClick={() => setActiveTab('chat')}
-        >
+        <button className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => setActiveTab('applications')}>
+          <span className="material-icons-outlined">assignment</span>
+          Applications
+        </button>
+        <button className={`nav-item ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
+          <span className="material-icons-outlined">event</span>
+          Events
+        </button>
+        <button className={`nav-item ${activeTab === 'news' ? 'active' : ''}`} onClick={() => setActiveTab('news')}>
+          <span className="material-icons-outlined">newspaper</span>
+          News
+        </button>
+        <button className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`} onClick={() => setActiveTab('chat')}>
           <span className="material-icons-outlined">forum</span>
           Team Chat
         </button>
-        <button 
-          className={`nav-item ${activeTab === 'ideas' ? 'active' : ''}`}
-          onClick={() => setActiveTab('ideas')}
-        >
+        <button className={`nav-item ${activeTab === 'ideas' ? 'active' : ''}`} onClick={() => setActiveTab('ideas')}>
           <span className="material-icons-outlined">lightbulb</span>
           Ideas Board
         </button>
-        <button 
-          className={`nav-item ${activeTab === 'files' ? 'active' : ''}`}
-          onClick={() => setActiveTab('files')}
-        >
+        <button className={`nav-item ${activeTab === 'files' ? 'active' : ''}`} onClick={() => setActiveTab('files')}>
           <span className="material-icons-outlined">folder</span>
           Files
         </button>
@@ -134,36 +137,50 @@ const StudentEngagementDashboard = () => {
             </div>
             
             <div className="quick-actions">
+              <div className="action-card" onClick={() => setActiveTab('applications')}>
+                <span className="material-icons-outlined">assignment</span>
+                <h4>Review Applications</h4>
+                <p>Review and approve student applications</p>
+              </div>
+              <div className="action-card" onClick={() => setActiveTab('events')}>
+                <span className="material-icons-outlined">event</span>
+                <h4>Manage Events</h4>
+                <p>Create and manage engagement events</p>
+              </div>
+              <div className="action-card" onClick={() => setActiveTab('news')}>
+                <span className="material-icons-outlined">newspaper</span>
+                <h4>Publish News</h4>
+                <p>Share updates and announcements</p>
+              </div>
               <div className="action-card" onClick={() => setActiveTab('ideas')}>
                 <span className="material-icons-outlined">group</span>
                 <h4>Propose Program</h4>
                 <p>Share student engagement program ideas</p>
-              </div>
-              <div className="action-card" onClick={() => setActiveTab('files')}>
-                <span className="material-icons-outlined">event</span>
-                <h4>Event Resources</h4>
-                <p>Access planning guides and materials</p>
-              </div>
-              <div className="action-card" onClick={() => setActiveTab('chat')}>
-                <span className="material-icons-outlined">diversity_3</span>
-                <h4>Community Discussion</h4>
-                <p>Connect with engagement coordinators</p>
               </div>
             </div>
 
             <UpcomingEvents departmentFilter="student-engagement" limit={5} />
           </div>
         );
-      
+
+      case 'applications':
+        return <ApplicationsManager workerId={worker?.id || adminData?.id} workerName={worker ? `${worker.firstName} ${worker.lastName}` : adminData?.name} />;
+
+      case 'events':
+        return <EventsManager workerId={worker?.id || adminData?.id} workerName={worker ? `${worker.firstName} ${worker.lastName}` : adminData?.name} />;
+
+      case 'news':
+        return <NewsManager workerId={worker?.id || adminData?.id} workerName={worker ? `${worker.firstName} ${worker.lastName}` : adminData?.name} />;
+
       case 'chat':
         return <DepartmentChat departmentId={departmentInfo.id} departmentName={departmentInfo.name} />;
-      
+
       case 'ideas':
         return <DepartmentIdeas departmentId={departmentInfo.id} departmentName={departmentInfo.name} />;
-      
+
       case 'files':
         return <DepartmentFiles departmentId={departmentInfo.id} departmentName={departmentInfo.name} />;
-      
+
       default:
         return null;
     }

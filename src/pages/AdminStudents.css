@@ -175,21 +175,22 @@
 .modal-content {
   background: white;
   border-radius: 20px;
-  padding: 2rem;
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  padding: 2rem 2rem 1rem 2rem;
   border-bottom: 2px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -224,6 +225,9 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .detail-section {
@@ -378,43 +382,165 @@
 }
 
 /* Add Event Modal */
-.add-event-form {
+.add-event-modal-content {
+  max-width: 600px;
+}
+
+.add-event-form-content {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
 }
 
-.event-option {
+.form-section {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.event-option .event-info {
-  flex: 1;
-}
-
-.event-option h4 {
-  margin: 0 0 0.5rem 0;
+.form-section label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
   color: var(--text-primary);
 }
 
-.event-option p {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+.event-select-dropdown,
+.participation-type-select {
+  padding: 0.875rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  background: white;
 }
 
-.event-option select {
-  padding: 0.5rem;
+.event-select-dropdown:focus,
+.participation-type-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(169, 211, 216, 0.1);
+}
+
+.selected-event-preview {
+  background: linear-gradient(135deg, rgba(169, 211, 216, 0.1) 0%, rgba(169, 211, 216, 0.05) 100%);
+  padding: 1.25rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-color);
+}
+
+.selected-event-preview h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  color: var(--accent-color);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.selected-event-preview p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.medxplore-notes-textarea {
+  padding: 0.875rem 1rem;
   border: 2px solid #e0e0e0;
-  border-radius: 6px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all var(--transition-speed);
+}
+
+.medxplore-notes-textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(169, 211, 216, 0.1);
+}
+
+.medxplore-notes-textarea::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.field-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+.no-events-message {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  background: #f8f9fa;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.add-event-form-content .form-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  align-items: stretch;
+}
+
+.add-event-form-content .cancel-btn,
+.add-event-form-content .submit-btn {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  transition: all var(--transition-speed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  height: auto;
+}
+
+.add-event-form-content .cancel-btn {
+  background: #f0f0f0;
+  color: var(--text-primary);
+  border: 2px solid #e0e0e0;
+}
+
+.add-event-form-content .cancel-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
+}
+
+.add-event-form-content .submit-btn {
+  background: var(--accent-color);
+  color: white;
+}
+
+.add-event-form-content .submit-btn:hover:not(:disabled) {
+  background: #8bc5cb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(169, 211, 216, 0.3);
+}
+
+.add-event-form-content .submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Edit Student Modal */

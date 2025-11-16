@@ -40,6 +40,7 @@ const AdminEvents = () => {
 
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [participationType, setParticipationType] = useState('Attended');
+  const [adminNotes, setAdminNotes] = useState('');
 
   useEffect(() => {
     loadData();
@@ -156,12 +157,13 @@ const AdminEvents = () => {
       alert('Please select at least one student');
       return;
     }
-    
+
     setActionLoading(true);
     const result = await bulkAddStudentsToEvent(
-      selectedEvent.id, 
-      selectedStudents, 
-      participationType
+      selectedEvent.id,
+      selectedStudents,
+      participationType,
+      adminNotes
     );
     
     if (result.success) {
@@ -174,6 +176,7 @@ const AdminEvents = () => {
       setEventParticipants(participants);
       setEventStats(stats);
       setSelectedStudents([]);
+      setAdminNotes('');
       setAddingStudents(false);
       alert(result.message);
     } else {
@@ -391,9 +394,20 @@ const AdminEvents = () => {
                           <h4>{participant.student?.fullName || 'Unknown Student'}</h4>
                           <p>{participant.student?.university}</p>
                           <span className="participation-type">{participant.participationType}</span>
+                          {participant.adminNotes && (
+                            <div className="participant-admin-notes">
+                              <label>Admin Notes:</label>
+                              <p>{participant.adminNotes}</p>
+                            </div>
+                          )}
+                          {participant.pointsAwarded > 0 && (
+                            <div className="points-awarded-badge">
+                              <span>+{participant.pointsAwarded} pts awarded</span>
+                            </div>
+                          )}
                         </div>
                         <div className="participant-tier">
-                          <span 
+                          <span
                             className="tier-badge"
                             style={{ backgroundColor: TIER_DEFINITIONS[participant.student?.tier]?.color || TIER_DEFINITIONS['Explorer']?.color }}
                           >
@@ -645,7 +659,7 @@ const AdminEvents = () => {
             
             <div className="participation-type-selector">
               <label>Participation Type:</label>
-              <select 
+              <select
                 value={participationType}
                 onChange={(e) => setParticipationType(e.target.value)}
               >
@@ -654,7 +668,19 @@ const AdminEvents = () => {
                 <option value="Organized">Organized</option>
               </select>
             </div>
-            
+
+            <div className="admin-notes-section">
+              <label>Admin Notes (Optional):</label>
+              <textarea
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                placeholder="Add notes about this participation (e.g., role details, special recognition, feedback for students)"
+                rows="4"
+                className="admin-notes-textarea"
+              />
+              <small className="notes-hint">These notes will be visible to the students on their passport dashboard</small>
+            </div>
+
             <div className="students-selection">
               <div className="selection-header">
                 <h3>Select Students ({selectedStudents.length} selected)</h3>

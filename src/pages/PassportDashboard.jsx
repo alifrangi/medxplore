@@ -12,6 +12,8 @@ const PassportDashboard = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState('all');
+  const [selectedEventModal, setSelectedEventModal] = useState(null);
+  const [showEventModal, setShowEventModal] = useState(false);
   const [vantaEffect, setVantaEffect] = useState(null);
   const vantaRef = useRef(null);
 
@@ -60,6 +62,8 @@ const PassportDashboard = () => {
       if (vantaEffect) {
         vantaEffect.destroy();
       }
+      // Cleanup: ensure scrolling is re-enabled
+      document.body.style.overflow = 'unset';
     };
   }, [studentData?.tier]); // Remove vantaEffect from dependencies to avoid loops
 
@@ -74,6 +78,30 @@ const PassportDashboard = () => {
   const handleLogout = async () => {
     await logout();
     navigate('/passport');
+  };
+
+  const openEventModal = (participation) => {
+    setSelectedEventModal(participation);
+    setShowEventModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeEventModal = () => {
+    setShowEventModal(false);
+    setSelectedEventModal(null);
+    document.body.style.overflow = 'unset';
+  };
+
+  const truncateDescription = (description, maxLength = 150) => {
+    if (!description || description === 'No description available') {
+      return 'No description available';
+    }
+
+    if (description.length <= maxLength) {
+      return description;
+    }
+
+    return description.substring(0, maxLength) + '...';
   };
 
   const getTierProgress = () => {
@@ -327,10 +355,20 @@ const PassportDashboard = () => {
                   </div>
                   
                   <div className="event-details">
-                    <p className="event-location">{participation.event?.location || 'Location TBD'}</p>
-                    <p className="event-description">{participation.event?.description || 'No description available'}</p>
+                    <p className="event-location">📍 {participation.event?.location || 'Location TBD'}</p>
+                    <p className="event-description">
+                      {truncateDescription(participation.event?.description)}
+                    </p>
+                    {participation.event?.description && participation.event.description.length > 150 && (
+                      <button
+                        className="read-more-btn-passport"
+                        onClick={() => openEventModal(participation)}
+                      >
+                        Read More
+                      </button>
+                    )}
                   </div>
-                  
+
                   <div className="event-footer">
                     <span className="participation-type">{participation.participationType}</span>
                     {participation.certificateUrl && (
@@ -369,6 +407,115 @@ const PassportDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Event Details Modal */}
+      {showEventModal && selectedEventModal && (
+        <motion.div
+          className="event-modal-passport"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          onClick={closeEventModal}
+        >
+          <motion.div
+            className="event-modal-content-passport"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="event-modal-header-passport">
+              <h2>{selectedEventModal.event?.name || 'Event Details'}</h2>
+              <button onClick={closeEventModal} className="close-modal-btn">×</button>
+            </div>
+
+            <div className="event-modal-body-passport">
+              <div className="modal-event-info">
+                <div className="modal-info-item">
+                  <span className="modal-info-label">📅 Date:</span>
+                  <span className="modal-info-value">
+                    {(() => {
+                      const date = selectedEventModal.event?.date;
+                      if (!date) return 'Date TBD';
+
+                      try {
+                        let dateObj;
+                        if (date.toDate && typeof date.toDate === 'function') {
+                          dateObj = date.toDate();
+                        } else if (date.seconds) {
+                          dateObj = new Date(date.seconds * 1000);
+                        } else if (typeof date === 'string' || typeof date === 'number') {
+                          dateObj = new Date(date);
+                        } else {
+                          return 'Date TBD';
+                        }
+
+                        if (isNaN(dateObj.getTime())) {
+                          return 'Date TBD';
+                        }
+
+                        return dateObj.toLocaleDateString();
+                      } catch (error) {
+                        return 'Date TBD';
+                      }
+                    })()}
+                  </span>
+                </div>
+
+                <div className="modal-info-item">
+                  <span className="modal-info-label">📍 Location:</span>
+                  <span className="modal-info-value">{selectedEventModal.event?.location || 'Location TBD'}</span>
+                </div>
+
+                <div className="modal-info-item">
+                  <span className="modal-info-label">🎯 Participation:</span>
+                  <span className="modal-participation-badge">{selectedEventModal.participationType}</span>
+                </div>
+              </div>
+
+              <div className="modal-section">
+                <h3>Description</h3>
+                <p className="modal-description">{selectedEventModal.event?.description || 'No description available'}</p>
+              </div>
+
+              {/* MedXplore Notes Section */}
+              {selectedEventModal.adminNotes && (
+                <div className="modal-section">
+                  <h3>MedXplore Notes</h3>
+                  <div className="modal-admin-notes">
+                    <p>{selectedEventModal.adminNotes}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Points Awarded Section */}
+              {selectedEventModal.pointsAwarded > 0 && (
+                <div className="modal-section">
+                  <div className="modal-points-awarded">
+                    <span className="points-icon">⭐</span>
+                    <span className="points-label">Points Earned:</span>
+                    <span className="points-value">+{selectedEventModal.pointsAwarded}</span>
+                  </div>
+                </div>
+              )}
+
+              {selectedEventModal.certificateUrl && (
+                <div className="modal-section">
+                  <a
+                    href={selectedEventModal.certificateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="modal-certificate-link"
+                  >
+                    <span className="material-icons-outlined">workspace_premium</span>
+                    View Certificate
+                  </a>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };

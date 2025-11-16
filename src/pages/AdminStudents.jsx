@@ -27,10 +27,18 @@ const AdminStudents = () => {
   const [studentEvents, setStudentEvents] = useState([]);
   const [editingStudent, setEditingStudent] = useState(null);
   const [addingEvent, setAddingEvent] = useState(false);
+  const [selectedEventToAdd, setSelectedEventToAdd] = useState(null);
+  const [participationType, setParticipationType] = useState('Attended');
+  const [medxploreNotes, setMedxploreNotes] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     loadData();
+
+    // Cleanup: Re-enable scrolling when component unmounts
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, []);
 
   useEffect(() => {
@@ -70,7 +78,10 @@ const AdminStudents = () => {
   const handleViewStudent = async (student) => {
     setSelectedStudent(student);
     setActionLoading(true);
-    
+
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+
     try {
       // Always load fresh student events data
       const events = await getStudentEvents(student.passportNumber);
@@ -80,21 +91,64 @@ const AdminStudents = () => {
       // Error loading student events
       setStudentEvents([]);
     }
-    
+
     setActionLoading(false);
+  };
+
+  const handleCloseStudentModal = () => {
+    setSelectedStudent(null);
+    // Re-enable background scrolling
+    document.body.style.overflow = 'unset';
   };
 
   const handleEditStudent = (student) => {
     setEditingStudent({ ...student });
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleCloseEditModal = () => {
+    setEditingStudent(null);
+    // Re-enable background scrolling
+    document.body.style.overflow = 'unset';
+  };
+
+  const handleOpenAddEventModal = () => {
+    setAddingEvent(true);
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleCloseAddEventModal = () => {
+    setAddingEvent(false);
+    setSelectedEventToAdd(null);
+    setParticipationType('Attended');
+    setMedxploreNotes('');
+    // Re-enable background scrolling
+    document.body.style.overflow = 'unset';
+  };
+
+  const handleSubmitAddEvent = async (e) => {
+    e.preventDefault();
+    if (!selectedEventToAdd) {
+      alert('Please select an event');
+      return;
+    }
+    await handleAddEventToStudent(
+      selectedStudent.passportNumber,
+      selectedEventToAdd,
+      participationType,
+      medxploreNotes
+    );
   };
 
   const handleUpdateStudent = async (updates) => {
     setActionLoading(true);
     const result = await updateStudent(editingStudent.passportNumber, updates);
-    
+
     if (result.success) {
       await loadData();
-      setEditingStudent(null);
+      handleCloseEditModal();
       alert('Student updated successfully!');
     } else {
       alert('Failed to update student: ' + result.error);
@@ -112,7 +166,7 @@ const AdminStudents = () => {
     
     if (result.success) {
       await loadData();
-      setSelectedStudent(null);
+      handleCloseStudentModal();
       alert('Student deleted successfully!');
     } else {
       alert('Failed to delete student: ' + result.error);
@@ -136,19 +190,19 @@ const AdminStudents = () => {
     setActionLoading(false);
   };
 
-  const handleAddEventToStudent = async (passportNumber, eventId, participationType) => {
+  const handleAddEventToStudent = async (passportNumber, eventId, participationType, adminNotes = '') => {
     setActionLoading(true);
-    const result = await addEventToStudent(passportNumber, eventId, participationType);
-    
+    const result = await addEventToStudent(passportNumber, eventId, participationType, adminNotes);
+
     if (result.success) {
       // Reload all data to ensure consistency
       await loadData();
-      
+
       // Refresh the selected student's events
       if (selectedStudent && selectedStudent.passportNumber === passportNumber) {
         const updatedEvents = await getStudentEvents(passportNumber);
         setStudentEvents(updatedEvents);
-        
+
         // Update the selected student's total events count
         const updatedStudents = await getAllStudents();
         const updatedStudent = updatedStudents.find(s => s.passportNumber === passportNumber);
@@ -156,8 +210,8 @@ const AdminStudents = () => {
           setSelectedStudent(updatedStudent);
         }
       }
-      
-      setAddingEvent(false);
+
+      handleCloseAddEventModal();
       alert('Event added successfully!');
     } else {
       alert('Failed to add event: ' + result.error);
@@ -309,13 +363,13 @@ const AdminStudents = () => {
 
       {/* Student Details Modal */}
       {selectedStudent && (
-        <motion.div 
+        <motion.div
           className="student-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={() => setSelectedStudent(null)}
+          onClick={handleCloseStudentModal}
         >
-          <motion.div 
+          <motion.div
             className="modal-content"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
@@ -323,9 +377,9 @@ const AdminStudents = () => {
           >
             <div className="modal-header">
               <h2>{selectedStudent.fullName}</h2>
-              <button 
+              <button
                 className="close-btn"
-                onClick={() => setSelectedStudent(null)}
+                onClick={handleCloseStudentModal}
               >
                 ×
               </button>
@@ -370,9 +424,9 @@ const AdminStudents = () => {
               <div className="detail-section">
                 <div className="section-header">
                   <h3>Event Participation</h3>
-                  <button 
+                  <button
                     className="add-event-btn"
-                    onClick={() => setAddingEvent(true)}
+                    onClick={handleOpenAddEventModal}
                   >
                     Add Event
                   </button>
@@ -433,67 +487,109 @@ const AdminStudents = () => {
 
       {/* Add Event Modal */}
       {addingEvent && (
-        <motion.div 
+        <motion.div
           className="add-event-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={() => setAddingEvent(false)}
+          onClick={handleCloseAddEventModal}
         >
-          <motion.div 
-            className="modal-content"
+          <motion.div
+            className="modal-content add-event-modal-content"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2>Add Event to Student</h2>
-            <div className="add-event-form">
-              {events.filter(event => {
-                // Filter out events the student has already participated in
-                return !studentEvents.some(participation => participation.eventId === event.id);
-              }).map((event) => (
-                <div key={event.id} className="event-option">
-                  <div className="event-info">
-                    <h4>{event.name}</h4>
-                    <p>{event.description}</p>
-                  </div>
-                  <select 
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        handleAddEventToStudent(selectedStudent.passportNumber, event.id, e.target.value);
-                      }
-                    }}
-                    defaultValue=""
-                  >
-                    <option value="">Select participation type</option>
-                    <option value="Attended">Attended</option>
-                    <option value="Presented">Presented</option>
-                    <option value="Organized">Organized</option>
-                  </select>
-                </div>
-              ))}
-              {events.filter(event => {
-                return !studentEvents.some(participation => participation.eventId === event.id);
-              }).length === 0 && (
-                <p>No available events. The student has participated in all existing events, or no events have been created yet.</p>
-              )}
+            <div className="modal-header">
+              <h2>Add Event to {selectedStudent?.fullName}</h2>
+              <button className="close-btn" onClick={handleCloseAddEventModal}>
+                ×
+              </button>
             </div>
-            <button 
-              className="close-btn"
-              onClick={() => setAddingEvent(false)}
-            >
-              Close
-            </button>
+
+            <form onSubmit={handleSubmitAddEvent} className="add-event-form-content">
+              <div className="form-section">
+                <label htmlFor="event-select">Select Event *</label>
+                <select
+                  id="event-select"
+                  value={selectedEventToAdd || ''}
+                  onChange={(e) => setSelectedEventToAdd(e.target.value)}
+                  required
+                  className="event-select-dropdown"
+                >
+                  <option value="">Choose an event...</option>
+                  {events.filter(event => {
+                    return !studentEvents.some(participation => participation.eventId === event.id);
+                  }).map((event) => (
+                    <option key={event.id} value={event.id}>
+                      {event.name}
+                    </option>
+                  ))}
+                </select>
+                {events.filter(event => {
+                  return !studentEvents.some(participation => participation.eventId === event.id);
+                }).length === 0 && (
+                  <p className="no-events-message">No available events. The student has participated in all existing events.</p>
+                )}
+              </div>
+
+              {selectedEventToAdd && (
+                <>
+                  <div className="selected-event-preview">
+                    <h4>{events.find(e => e.id === selectedEventToAdd)?.name}</h4>
+                    <p>{events.find(e => e.id === selectedEventToAdd)?.description}</p>
+                  </div>
+
+                  <div className="form-section">
+                    <label htmlFor="participation-type">Participation Type *</label>
+                    <select
+                      id="participation-type"
+                      value={participationType}
+                      onChange={(e) => setParticipationType(e.target.value)}
+                      required
+                      className="participation-type-select"
+                    >
+                      <option value="Attended">Attended</option>
+                      <option value="Presented">Presented</option>
+                      <option value="Organized">Organized</option>
+                      <option value="Volunteered">Volunteered</option>
+                    </select>
+                  </div>
+
+                  <div className="form-section">
+                    <label htmlFor="medxplore-notes">MedXplore Notes</label>
+                    <textarea
+                      id="medxplore-notes"
+                      value={medxploreNotes}
+                      onChange={(e) => setMedxploreNotes(e.target.value)}
+                      placeholder="Describe what the student did during this event, their contributions, achievements, etc. This will be visible to the student on their passport."
+                      rows="5"
+                      className="medxplore-notes-textarea"
+                    />
+                    <small className="field-hint">Optional - Add personalized feedback or notes about the student's participation</small>
+                  </div>
+
+                  <div className="form-actions">
+                    <button type="button" onClick={handleCloseAddEventModal} className="cancel-btn">
+                      Cancel
+                    </button>
+                    <button type="submit" disabled={actionLoading} className="submit-btn">
+                      {actionLoading ? 'Adding Event...' : 'Add Event to Student'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </form>
           </motion.div>
         </motion.div>
       )}
 
       {/* Edit Student Modal */}
       {editingStudent && (
-        <motion.div 
+        <motion.div
           className="edit-student-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          onClick={() => setEditingStudent(null)}
+          onClick={handleCloseEditModal}
         >
           <motion.div 
             className="modal-content"
@@ -549,7 +645,7 @@ const AdminStudents = () => {
                 <button type="submit" disabled={actionLoading}>
                   {actionLoading ? 'Updating...' : 'Update Student'}
                 </button>
-                <button type="button" onClick={() => setEditingStudent(null)}>
+                <button type="button" onClick={handleCloseEditModal}>
                   Cancel
                 </button>
               </div>

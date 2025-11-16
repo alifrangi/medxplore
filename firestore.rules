@@ -68,14 +68,21 @@ service cloud.firestore {
     match /workers/{workerId} {
       // Allow public read for worker authentication
       allow read: if true;
-      
+
       // Allow workers to update their own session data (login/logout)
       // This allows updating only sessionToken, tokenExpiry, and lastLogin fields
       allow update: if request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(['sessionToken', 'tokenExpiry', 'lastLogin']);
-      
-      // Only admins can create or delete workers, or update other fields
-      allow create: if isAdmin();
+        .hasOnly(['sessionToken', 'tokenExpiry', 'lastLogin']) ||
+        // Allow updating points and departments for leaderboard management
+        request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['points', 'departments']) ||
+        request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['points']);
+
+      // Allow creating workers (for seeding leaderboard)
+      allow create: if true;
+
+      // Only admins can delete workers
       allow delete: if isAdmin();
     }
     
@@ -138,6 +145,13 @@ service cloud.firestore {
     match /tiers/{tierId} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    // Worker Points History collection
+    match /workerPointsHistory/{historyId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
     }
   }
 }

@@ -30,18 +30,12 @@ const PassportApply = () => {
     
     // Medical Interests
     preferredSpecialties: '',
-    careerGoals: '',
-    
-    // Experience
-    previousExperience: '',
-    
-    // Motivation
-    motivationStatement: ''
+    careerGoals: ''
   });
 
   const [errors, setErrors] = useState({});
 
-  const totalSteps = 5;
+  const totalSteps = 4;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -80,9 +74,6 @@ const PassportApply = () => {
       case 4:
         if (!formData.preferredSpecialties) newErrors.preferredSpecialties = 'Please specify your medical interests';
         if (!formData.careerGoals) newErrors.careerGoals = 'Please describe your career goals';
-        break;
-      case 5:
-        if (!formData.motivationStatement) newErrors.motivationStatement = 'Motivation statement is required';
         break;
     }
     
@@ -806,35 +797,6 @@ const PassportApply = () => {
                     className={errors.careerGoals ? 'error' : ''}
                   />
                   {errors.careerGoals && <span className="error-text">{errors.careerGoals}</span>}
-                </div>
-                
-                <div className="form-group">
-                  <label>Previous Medical/Volunteer Experience</label>
-                  <textarea
-                    name="previousExperience"
-                    value={formData.previousExperience}
-                    onChange={handleInputChange}
-                    rows="3"
-                    placeholder="Optional: Describe any relevant experience"
-                  />
-                </div>
-              </div>
-            )}
-
-            {currentStep === 5 && (
-              <div className="form-step">
-                <h2>Motivation Statement</h2>
-                <div className="form-group">
-                  <label>Why do you want to join MedXplore? *</label>
-                  <textarea
-                    name="motivationStatement"
-                    value={formData.motivationStatement}
-                    onChange={handleInputChange}
-                    rows="6"
-                    placeholder="Tell us why you're interested in joining the MedXperience Passport program and how it will help your medical journey (minimum 100 words)"
-                    className={errors.motivationStatement ? 'error' : ''}
-                  />
-                  {errors.motivationStatement && <span className="error-text">{errors.motivationStatement}</span>}
                 </div>
               </div>
             )}

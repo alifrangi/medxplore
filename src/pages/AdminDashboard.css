@@ -409,8 +409,8 @@ padding: 0;
   height: 6px;
 }
 
-.department-card.research::before {
-  background: linear-gradient(45deg, #00BCD4, #0097A7);
+.department-card.operations-logistics::before {
+  background: linear-gradient(45deg, #607D8B, #455A64);
 }
 
 .department-card.academic::before {
