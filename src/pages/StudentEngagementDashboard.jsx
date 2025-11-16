@@ -8,8 +8,6 @@ import DepartmentChat from '../components/DepartmentChat';
 import DepartmentIdeas from '../components/DepartmentIdeas';
 import DepartmentFiles from '../components/DepartmentFiles';
 import ApplicationsManager from '../components/ApplicationsManager';
-import EventsManager from '../components/EventsManager';
-import NewsManager from '../components/NewsManager';
 import './DepartmentDashboard.css';
 
 const StudentEngagementDashboard = () => {
@@ -87,14 +85,6 @@ const StudentEngagementDashboard = () => {
           <span className="material-icons-outlined">assignment</span>
           Applications
         </button>
-        <button className={`nav-item ${activeTab === 'events' ? 'active' : ''}`} onClick={() => setActiveTab('events')}>
-          <span className="material-icons-outlined">event</span>
-          Events
-        </button>
-        <button className={`nav-item ${activeTab === 'news' ? 'active' : ''}`} onClick={() => setActiveTab('news')}>
-          <span className="material-icons-outlined">newspaper</span>
-          News
-        </button>
         <button className={`nav-item ${activeTab === 'chat' ? 'active' : ''}`} onClick={() => setActiveTab('chat')}>
           <span className="material-icons-outlined">forum</span>
           Team Chat
@@ -142,16 +132,6 @@ const StudentEngagementDashboard = () => {
                 <h4>Review Applications</h4>
                 <p>Review and approve student applications</p>
               </div>
-              <div className="action-card" onClick={() => setActiveTab('events')}>
-                <span className="material-icons-outlined">event</span>
-                <h4>Manage Events</h4>
-                <p>Create and manage engagement events</p>
-              </div>
-              <div className="action-card" onClick={() => setActiveTab('news')}>
-                <span className="material-icons-outlined">newspaper</span>
-                <h4>Publish News</h4>
-                <p>Share updates and announcements</p>
-              </div>
               <div className="action-card" onClick={() => setActiveTab('ideas')}>
                 <span className="material-icons-outlined">group</span>
                 <h4>Propose Program</h4>
@@ -165,12 +145,6 @@ const StudentEngagementDashboard = () => {
 
       case 'applications':
         return <ApplicationsManager workerId={worker?.id || adminData?.id} workerName={worker ? `${worker.firstName} ${worker.lastName}` : adminData?.name} />;
-
-      case 'events':
-        return <EventsManager workerId={worker?.id || adminData?.id} workerName={worker ? `${worker.firstName} ${worker.lastName}` : adminData?.name} />;
-
-      case 'news':
-        return <NewsManager workerId={worker?.id || adminData?.id} workerName={worker ? `${worker.firstName} ${worker.lastName}` : adminData?.name} />;
 
       case 'chat':
         return <DepartmentChat departmentId={departmentInfo.id} departmentName={departmentInfo.name} />;
