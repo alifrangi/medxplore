@@ -72,7 +72,10 @@ export const seedLeaderboardData = async () => {
           results.updated.push(`${member.firstName} ${member.lastName}`);
         } else {
           // Create new worker
-          const defaultPassword = '***REMOVED***'; // Default password
+          const defaultPassword = import.meta.env.VITE_DEFAULT_WORKER_PASSWORD;
+          if (!defaultPassword) {
+            throw new Error('VITE_DEFAULT_WORKER_PASSWORD environment variable is not set');
+          }
           const { hash, salt } = await hashPassword(defaultPassword);
 
           const newWorker = {
