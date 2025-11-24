@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import './Navbar.css'
@@ -74,50 +75,68 @@ const Navbar = () => {
             <span></span>
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <motion.div 
-            className="navbar__mobile-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-        )}
-        
-        <motion.div 
-          className={`navbar__mobile ${isMobileMenuOpen ? 'navbar__mobile--open' : ''}`}
-          initial={false}
-          animate={{ 
-            height: isMobileMenuOpen ? 'auto' : 0,
-            opacity: isMobileMenuOpen ? 1 : 0
-          }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
-        >
-          <div className="navbar__mobile-content">
-            {navItems.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ 
-                  opacity: isMobileMenuOpen ? 1 : 0, 
-                  x: isMobileMenuOpen ? 0 : -20 
-                }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Link 
-                  to={item.path}
-                  className={`navbar__mobile-link ${location.pathname === item.path ? 'navbar__mobile-link--active' : ''} ${item.isPortal ? 'navbar__mobile-link--portal' : ''}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
       </div>
+
+      {/* Mobile Menu - Rendered via Portal */}
+      {createPortal(
+        <>
+          {/* Mobile Menu Backdrop */}
+          {isMobileMenuOpen && (
+            <div 
+              className="navbar__mobile-backdrop"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+          )}
+          
+          {/* Mobile Menu */}
+          <div 
+            className={`navbar__mobile ${isMobileMenuOpen ? 'navbar__mobile--open' : ''}`}
+          >
+            <button 
+              className="navbar__mobile-close"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-label="Close mobile menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <div className="navbar__mobile-content">
+              <div className="navbar__mobile-main">
+                {navItems.filter(item => !item.isPortal).map((item, index) => (
+                  <Link 
+                    key={item.name}
+                    to={item.path}
+                    className={`navbar__mobile-link ${location.pathname === item.path ? 'navbar__mobile-link--active' : ''}`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      transitionDelay: isMobileMenuOpen ? `${index * 0.1}s` : '0s'
+                    }}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+              <div className="navbar__mobile-footer">
+                {navItems.filter(item => item.isPortal).map((item, index) => (
+                  <Link 
+                    key={item.name}
+                    to={item.path}
+                    className="navbar__mobile-link navbar__mobile-link--portal"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    style={{
+                      transitionDelay: isMobileMenuOpen ? `${(navItems.length - 1 + index) * 0.1}s` : '0s'
+                    }}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>,
+        document.body
+      )}
     </motion.nav>
   )
 }
