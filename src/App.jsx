@@ -1,33 +1,61 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { WorkerAuthProvider } from './contexts/WorkerAuthContext'
+import { ToastProvider } from './components/shared/Toast'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import Navbar from './components/Navbar'
 import Banner from './components/Banner/Banner'
 import CharacterWidget from './components/CharecterWidget/CharacterWidget'
-import Home from './pages/Home'
-import Contact from './pages/Contact'
-import Events from './pages/Events'
-import News from './pages/News'
-import PassportLogin from './pages/PassportLogin'
-import PassportApply from './pages/PassportApply'
-import PassportDashboard from './pages/PassportDashboard'
-import AdminLogin from './pages/AdminLogin'
-import AdminDashboard from './pages/AdminDashboard'
-import AdminApplications from './pages/AdminApplications'
-import AdminStudents from './pages/AdminStudents'
-import AdminEvents from './pages/AdminEvents'
-import AdminNews from './pages/AdminNews'
-import ResearchDashboard from './pages/ResearchDashboard'
-import AcademicDashboard from './pages/AcademicDashboard'
-import GlobalOutreachDashboard from './pages/GlobalOutreachDashboard'
-import MediaCommunicationsDashboard from './pages/MediaCommunicationsDashboard'
-import StudentEngagementDashboard from './pages/StudentEngagementDashboard'
-import OperationsLogisticsDashboard from './pages/OperationsLogisticsDashboard'
-import WorkerLogin from './pages/WorkerLogin'
-import Leaderboard from './pages/Leaderboard'
+
+// Lazy load pages for better performance
+const Home = lazy(() => import('./pages/Home'))
+const Contact = lazy(() => import('./pages/Contact'))
+const Events = lazy(() => import('./pages/Events'))
+const News = lazy(() => import('./pages/News'))
+const Leaderboard = lazy(() => import('./pages/Leaderboard'))
+const PassportLogin = lazy(() => import('./pages/PassportLogin'))
+const PassportApply = lazy(() => import('./pages/PassportApply'))
+const PassportDashboard = lazy(() => import('./pages/PassportDashboard'))
+const AdminLogin = lazy(() => import('./pages/AdminLogin'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
+const AdminApplications = lazy(() => import('./pages/AdminApplications'))
+const AdminStudents = lazy(() => import('./pages/AdminStudents'))
+const AdminEvents = lazy(() => import('./pages/AdminEvents'))
+const AdminNews = lazy(() => import('./pages/AdminNews'))
+const ResearchDashboard = lazy(() => import('./pages/ResearchDashboard'))
+const AcademicDashboard = lazy(() => import('./pages/AcademicDashboard'))
+const GlobalOutreachDashboard = lazy(() => import('./pages/GlobalOutreachDashboard'))
+const MediaCommunicationsDashboard = lazy(() => import('./pages/MediaCommunicationsDashboard'))
+const StudentEngagementDashboard = lazy(() => import('./pages/StudentEngagementDashboard'))
+const OperationsLogisticsDashboard = lazy(() => import('./pages/OperationsLogisticsDashboard'))
+const WorkerLogin = lazy(() => import('./pages/WorkerLogin'))
+
+// Loading fallback component
+const PageLoader = () => (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '50vh',
+    color: '#6b7280'
+  }}>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        border: '3px solid #e5e7eb',
+        borderTopColor: '#94bed5',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+        margin: '0 auto 1rem'
+      }} />
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      Loading...
+    </div>
+  </div>
+)
 
 function AppContent() {
   const location = useLocation();
@@ -46,6 +74,7 @@ function AppContent() {
           <Navbar />
         </>
       )}
+      <Suspense fallback={<PageLoader />}>
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
@@ -129,6 +158,7 @@ function AppContent() {
             element={<OperationsLogisticsDashboard />}
           />
           </Routes>
+      </Suspense>
       <CharacterWidget />
     </>
   );
@@ -140,7 +170,9 @@ function App() {
       <Router>
         <AuthProvider>
           <WorkerAuthProvider>
-            <AppContent />
+            <ToastProvider>
+              <AppContent />
+            </ToastProvider>
           </WorkerAuthProvider>
         </AuthProvider>
       </Router>
