@@ -277,8 +277,9 @@ const EventsManager = ({ workerId, workerName }) => {
         >
           <motion.div
             className="modal-content"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">
@@ -373,8 +374,9 @@ const EventsManager = ({ workerId, workerName }) => {
         >
           <motion.div
             className="modal-content"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">
@@ -469,8 +471,9 @@ const EventsManager = ({ workerId, workerName }) => {
         >
           <motion.div
             className="modal-content event-details-modal"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">
@@ -533,6 +536,11 @@ const EventsManager = ({ workerId, workerName }) => {
                 )}
               </div>
             </div>
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={() => setSelectedEvent(null)}>
+                Close
+              </button>
+            </div>
           </motion.div>
         </motion.div>
       )}
@@ -547,8 +555,9 @@ const EventsManager = ({ workerId, workerName }) => {
         >
           <motion.div
             className="modal-content"
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">

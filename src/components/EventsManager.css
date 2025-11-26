@@ -40,20 +40,19 @@
 }
 
 .create-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   background: var(--accent-color);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .create-btn:hover {
   background: #8bc5cb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(148, 190, 213, 0.3);
 }
 
 .events-grid {
@@ -491,6 +490,262 @@
   cursor: not-allowed;
 }
 
+/* Modal Overlay and Content - scoped to events-manager */
+.events-manager .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  padding: 0;
+  box-sizing: border-box;
+  backdrop-filter: blur(4px);
+}
+
+.events-manager .modal-content {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Form inside modal needs to be flex too */
+.events-manager .modal-content form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Drag handle indicator */
+.events-manager .modal-content::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #d1d5db;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.events-manager .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 1.25rem 1rem;
+  background: white;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.events-manager .modal-header h2 {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.events-manager .close-btn {
+  background: #f3f4f6;
+  border: none;
+  font-size: 1.25rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.events-manager .close-btn:hover {
+  background: #e5e7eb;
+  color: var(--text-primary);
+}
+
+.events-manager .modal-body {
+  padding: 0 1.25rem 1rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for modal body */
+.events-manager .modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.events-manager .modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.events-manager .modal-body::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.events-manager .modal-body::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Prominent sticky footer */
+.events-manager .modal-footer {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.25rem !important;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+  background: white !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.events-manager .modal-footer .submit-btn,
+.events-manager .modal-footer .cancel-btn {
+  flex: 1 !important;
+  padding: 0 1rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+  transform: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  line-height: 1 !important;
+  font-family: 'Inter', sans-serif !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+.events-manager .modal-footer .submit-btn {
+  order: 2 !important;
+  background: var(--accent-color) !important;
+  color: white !important;
+}
+
+.events-manager .modal-footer .cancel-btn {
+  order: 1 !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
+}
+
+.events-manager .modal-footer .submit-btn:hover:not(:disabled) {
+  background: #8bc5cb !important;
+}
+
+.events-manager .modal-footer .cancel-btn:hover {
+  background: #e5e7eb !important;
+}
+
+.events-manager .modal-footer .submit-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Make form groups more compact */
+.events-manager .modal-body .form-group {
+  margin-bottom: 1rem;
+}
+
+.events-manager .modal-body .form-group label {
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.events-manager .modal-body .form-group input,
+.events-manager .modal-body .form-group textarea,
+.events-manager .modal-body .form-group select {
+  padding: 0.65rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+.events-manager .modal-body .form-group textarea {
+  resize: none;
+}
+
+.events-manager .modal-body .form-row {
+  gap: 0.75rem;
+}
+
+/* Event Details Modal specific styles */
+.events-manager .event-details-modal {
+  max-width: 700px;
+}
+
+/* Desktop styles - centered modal */
+@media (min-width: 769px) {
+  .events-manager .modal-overlay {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .events-manager .modal-content {
+    border-radius: 16px;
+    max-height: 80vh;
+  }
+
+  .events-manager .modal-content::before {
+    display: none;
+  }
+
+  .events-manager .modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .events-manager .modal-body {
+    padding: 1.5rem;
+  }
+
+  .events-manager .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    box-shadow: none;
+  }
+
+  .events-manager .modal-footer .submit-btn {
+    flex: initial;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .events-manager .modal-footer .cancel-btn {
+    flex: initial;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+/* Mobile responsive styles */
 @media (max-width: 768px) {
   .events-manager {
     padding: 1rem;
@@ -544,5 +799,23 @@
 
   .select-all-btn {
     width: 100%;
+  }
+
+  /* Mobile modal is full width bottom sheet */
+  .events-manager .modal-content {
+    max-width: 100%;
+    max-height: 90vh;
+  }
+
+  .events-manager .modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .events-manager .modal-body {
+    padding: 0 1rem 1rem;
+  }
+
+  .events-manager .modal-body .form-group {
+    margin-bottom: 0.875rem;
   }
 }

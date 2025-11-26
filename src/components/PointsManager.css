@@ -313,68 +313,133 @@
   margin: 0;
 }
 
-/* Modal */
-.modal-overlay {
+/* Modal - scoped to points-manager */
+.points-manager .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   z-index: 1000;
-  padding: 2rem;
+  padding: 0;
 }
 
-.modal-content {
+.points-manager .modal-content {
   background: white;
-  border-radius: 20px;
+  border-radius: 20px 20px 0 0;
   max-width: 600px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+  position: relative;
 }
 
-.modal-header {
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid rgba(169, 211, 216, 0.2);
+.points-manager .modal-content::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #d1d5db;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.points-manager .modal-header {
+  padding: 1.5rem 1.25rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
-.modal-header h3 {
+.points-manager .modal-header h3 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.75rem;
-  color: var(--accent-color);
+  font-size: 1.35rem;
+  color: var(--text-primary);
   margin: 0;
   font-weight: 600;
 }
 
-.close-btn {
-  background: none;
+.points-manager .close-btn {
+  background: #f3f4f6;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
-  color: var(--text-secondary);
-  transition: all var(--transition-speed) ease;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  color: #6b7280;
+  transition: all 0.2s ease;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.close-btn:hover {
-  background: rgba(169, 211, 216, 0.1);
-  color: var(--accent-color);
+.points-manager .close-btn:hover {
+  background: #e5e7eb;
+  color: var(--text-primary);
 }
 
-.close-btn .material-icons-outlined {
-  font-size: 1.5rem;
+.points-manager .close-btn .material-icons-outlined {
+  font-size: 1.25rem;
 }
 
-.modal-body {
-  padding: 2rem;
+.points-manager .modal-body {
+  padding: 0 1.25rem 1rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.points-manager .modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.points-manager .modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.points-manager .modal-body::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .points-manager .modal-overlay {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .points-manager .modal-content {
+    border-radius: 16px;
+    max-height: 80vh;
+  }
+
+  .points-manager .modal-content::before {
+    display: none;
+  }
+
+  .points-manager .modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .points-manager .modal-body {
+    padding: 1.5rem;
+  }
 }
 
 .participation-details {
@@ -475,56 +540,76 @@
   font-style: italic;
 }
 
-.modal-footer {
-  padding: 1.5rem 2rem;
-  border-top: 1px solid rgba(169, 211, 216, 0.2);
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+/* Modal footer */
+.points-manager .modal-footer {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.25rem !important;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+  background: white !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
-.cancel-btn {
-  padding: 0.75rem 1.5rem;
-  background: white;
-  border: 1px solid rgba(169, 211, 216, 0.3);
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  color: var(--text-secondary);
+.points-manager .modal-footer .submit-btn,
+.points-manager .modal-footer .cancel-btn {
+  flex: 1 !important;
+  padding: 0 1rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+  transform: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  line-height: 1 !important;
+  font-family: 'Inter', sans-serif !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  gap: 0.5rem !important;
 }
 
-.cancel-btn:hover {
-  background: rgba(169, 211, 216, 0.05);
-  border-color: var(--accent-color);
+.points-manager .modal-footer .submit-btn {
+  order: 2 !important;
+  background: var(--accent-color) !important;
+  color: white !important;
 }
 
-.submit-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--accent-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
+.points-manager .modal-footer .cancel-btn {
+  order: 1 !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
 }
 
-.submit-btn:hover {
-  background: #8bc5cb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(169, 211, 216, 0.3);
+.points-manager .modal-footer .submit-btn:hover {
+  background: #8bc5cb !important;
 }
 
-.submit-btn .material-icons-outlined {
-  font-size: 1.2rem;
+.points-manager .modal-footer .cancel-btn:hover {
+  background: #e5e7eb !important;
+}
+
+.points-manager .modal-footer .submit-btn .material-icons-outlined {
+  font-size: 1.1rem;
+}
+
+@media (min-width: 769px) {
+  .points-manager .modal-footer {
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Responsive */
@@ -570,24 +655,17 @@
     min-width: 800px;
   }
 
-  .modal-overlay {
-    padding: 1rem;
+  .points-manager .modal-content {
+    max-width: 100%;
+    max-height: 90vh;
   }
 
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    padding: 1rem;
+  .points-manager .modal-header h3 {
+    font-size: 1.2rem;
   }
 
-  .modal-footer {
-    flex-direction: column;
-  }
-
-  .cancel-btn,
-  .submit-btn {
-    width: 100%;
-    justify-content: center;
+  .points-manager .modal-body {
+    padding: 0 1rem 1rem;
   }
 
   .create-member-btn {

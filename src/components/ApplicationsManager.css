@@ -169,8 +169,8 @@
   margin: 0;
 }
 
-/* Modal Styles */
-.modal-overlay {
+/* Modal Styles - scoped to applications-manager */
+.applications-manager .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -178,60 +178,121 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 0;
+  backdrop-filter: blur(4px);
 }
 
-.modal-content {
+.applications-manager .modal-content {
   background: white;
-  border-radius: 16px;
-  max-width: 800px;
+  border-radius: 20px 20px 0 0;
+  max-width: 700px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
 }
 
-.application-modal .modal-header {
+.applications-manager .modal-content::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #d1d5db;
+  border-radius: 2px;
+  z-index: 1;
+}
+
+.applications-manager .application-modal .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
-  border-bottom: 2px solid var(--accent-color);
+  padding: 1.5rem 1.25rem 1rem;
+  background: white;
+  flex-shrink: 0;
 }
 
-.application-modal .modal-header h2 {
+.applications-manager .application-modal .modal-header h2 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.75rem;
+  font-size: 1.35rem;
   color: var(--text-primary);
   margin: 0;
+  font-weight: 600;
 }
 
-.close-btn {
-  background: none;
+.applications-manager .close-btn {
+  background: #f3f4f6;
   border: none;
-  font-size: 2rem;
+  font-size: 1.25rem;
   cursor: pointer;
-  color: var(--text-secondary);
+  color: #6b7280;
   padding: 0;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 50%;
   transition: all 0.2s ease;
 }
 
-.close-btn:hover {
-  background: #f0f0f0;
+.applications-manager .close-btn:hover {
+  background: #e5e7eb;
   color: var(--text-primary);
 }
 
-.modal-body {
-  padding: 2rem;
+.applications-manager .modal-body {
+  padding: 0 1.25rem 1rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.applications-manager .modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.applications-manager .modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.applications-manager .modal-body::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .applications-manager .modal-overlay {
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .applications-manager .modal-content {
+    border-radius: 16px;
+    max-height: 80vh;
+  }
+
+  .applications-manager .modal-content::before {
+    display: none;
+  }
+
+  .applications-manager .application-modal .modal-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .applications-manager .modal-body {
+    padding: 1.5rem;
+  }
 }
 
 .detail-section {
@@ -286,49 +347,76 @@
   font-size: 1.1rem !important;
 }
 
-.modal-footer {
-  padding: 1.5rem 2rem;
-  border-top: 1px solid #e0e0e0;
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
+/* Modal footer */
+.applications-manager .modal-footer {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.25rem !important;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+  background: white !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08) !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
-.approve-btn {
-  padding: 0.875rem 2rem;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.applications-manager .modal-footer .approve-btn,
+.applications-manager .modal-footer .cancel-btn {
+  flex: 1 !important;
+  padding: 0 1rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: background 0.2s ease !important;
+  transform: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  line-height: 1 !important;
+  font-family: 'Inter', sans-serif !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
 }
 
-.approve-btn:hover:not(:disabled) {
-  background: #218838;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+.applications-manager .modal-footer .approve-btn {
+  order: 2 !important;
+  background: #28a745 !important;
+  color: white !important;
 }
 
-.approve-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.applications-manager .modal-footer .cancel-btn {
+  order: 1 !important;
+  background: #f3f4f6 !important;
+  color: #374151 !important;
 }
 
-.cancel-btn {
-  padding: 0.875rem 2rem;
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.applications-manager .modal-footer .approve-btn:hover:not(:disabled) {
+  background: #218838 !important;
 }
 
-.cancel-btn:hover {
-  background: #5a6268;
+.applications-manager .modal-footer .cancel-btn:hover {
+  background: #e5e7eb !important;
+}
+
+.applications-manager .modal-footer .approve-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+@media (min-width: 769px) {
+  .applications-manager .modal-footer {
+    padding: 1rem 1.5rem !important;
+    border-top: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -360,25 +448,16 @@
     gap: 1rem;
   }
 
-  .modal-content {
-    margin: 1rem;
+  .applications-manager .modal-content {
+    max-width: 100%;
+    max-height: 90vh;
   }
 
-  .modal-body {
-    padding: 1.5rem 1rem;
+  .applications-manager .modal-header h2 {
+    font-size: 1.2rem;
   }
 
-  .application-modal .modal-header {
-    padding: 1.5rem 1rem;
-  }
-
-  .modal-footer {
-    flex-direction: column;
-    padding: 1rem;
-  }
-
-  .approve-btn,
-  .cancel-btn {
-    width: 100%;
+  .applications-manager .modal-body {
+    padding: 0 1rem 1rem;
   }
 }
