@@ -1691,6 +1691,17 @@ export const getRejectedIdeas = async (university = null) => {
   }
 };
 
+// Delete an idea
+export const deleteIdea = async (ideaId) => {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.IDEAS, ideaId));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 // Get all ideas (for admin overview)
 export const getAllIdeas = async () => {
   try {
@@ -1974,6 +1985,7 @@ export default {
   getActiveIdeas,
   getPublishedIdeas,
   getRejectedIdeas,
+  deleteIdea,
   getAllIdeas,
   // Feedback functions
   submitFeedback,

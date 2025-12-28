@@ -7,6 +7,7 @@ import IdeaViewModal from '../../pipeline/IdeaViewModal';
 import StatusBadge from '../../pipeline/StatusBadge';
 import DepartmentWorkerManager from '../../DepartmentWorkerManager';
 import { PIPELINE_STAGES, IDEA_TYPES } from '../../../data/mockData';
+import { deleteEvent, deleteIdea } from '../../../services/database';
 import './UnitContent.css';
 
 const SystemsContent = ({
@@ -36,6 +37,8 @@ const SystemsContent = ({
     maxParticipants: '',
     googleFormsLink: ''
   });
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
   // Filter ideas ready for publishing (in systems stage, not rejected/published)
   const queueIdeas = ideas.filter(idea =>
@@ -43,8 +46,8 @@ const SystemsContent = ({
     idea.currentStatus !== PIPELINE_STAGES.PUBLISHED
   );
 
-  // Get published events
-  const publishedEvents = ideas.filter(idea =>
+  // Get published events from allIdeas (since published ideas have currentUnit = null)
+  const publishedEvents = allIdeas.filter(idea =>
     idea.currentStatus === PIPELINE_STAGES.PUBLISHED
   );
 
@@ -95,6 +98,25 @@ const SystemsContent = ({
       toast.error('Failed to publish event. Please try again.');
     } finally {
       setPublishLoading(false);
+    }
+  };
+
+  const handleDeleteEvent = async (event) => {
+    setDeleteLoading(true);
+    try {
+      // Delete the event from events collection
+      if (event.eventId) {
+        await deleteEvent(event.eventId);
+      }
+      // Delete the idea
+      await deleteIdea(event.id);
+      toast.success('Event deleted successfully');
+      setShowDeleteConfirm(null);
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast.error('Failed to delete event');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -225,6 +247,16 @@ const SystemsContent = ({
                         ? new Date(event.publishedAt).toLocaleDateString()
                         : 'recently'}
                     </p>
+                    <div className="event-card__actions">
+                      <button
+                        className="delete-event-btn"
+                        onClick={() => setShowDeleteConfirm(event)}
+                        disabled={deleteLoading}
+                      >
+                        <Icon name="Trash2" size={16} />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 );
               })}
@@ -378,6 +410,58 @@ const SystemsContent = ({
             }}
             viewOnly={isViewOnly}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteConfirm && (
+          <div className="modal-overlay" onClick={() => setShowDeleteConfirm(null)}>
+            <motion.div
+              className="delete-confirm-modal"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+            >
+              <div className="modal-header">
+                <h2>Delete Event</h2>
+                <button
+                  className="idea-modal__close"
+                  onClick={() => setShowDeleteConfirm(null)}
+                >
+                  <Icon name="X" size={20} />
+                </button>
+              </div>
+              <div className="modal-body">
+                <p className="delete-warning">
+                  Are you sure you want to delete this event?
+                </p>
+                <p className="delete-event-name">
+                  <strong>{showDeleteConfirm.title}</strong>
+                </p>
+                <p className="delete-note">
+                  This action cannot be undone. The event will be permanently removed.
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="cancel-btn"
+                  onClick={() => setShowDeleteConfirm(null)}
+                  disabled={deleteLoading}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="delete-confirm-btn"
+                  onClick={() => handleDeleteEvent(showDeleteConfirm)}
+                  disabled={deleteLoading}
+                >
+                  {deleteLoading ? 'Deleting...' : 'Delete Event'}
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
