@@ -30,7 +30,9 @@ const UNIVERSITY_ALIASES = {
 
 // Check if a student's university matches the worker's university
 const matchesUniversity = (studentUni, workerUni) => {
-  if (!studentUni || !workerUni) return false;
+  // If workerUni is null/undefined (admin), match all universities
+  if (!workerUni) return true;
+  if (!studentUni) return false;
 
   // Direct match
   if (studentUni === workerUni) return true;
@@ -83,9 +85,7 @@ const PassportContent = ({
   const [medxploreNotes, setMedxploreNotes] = useState('');
 
   useEffect(() => {
-    if (university) {
-      loadData();
-    }
+    loadData();
   }, [university]);
 
   const loadData = async () => {
