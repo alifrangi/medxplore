@@ -69,10 +69,11 @@ function AppContent() {
                          location.pathname.startsWith('/lobby') ||
                          location.pathname.startsWith('/unit/') ||
                          location.pathname.startsWith('/worker');
+  const isPassportDashboard = location.pathname === '/passport/dashboard';
 
   return (
     <>
-      {!isAdminPage && !isPipelinePage && (
+      {!isAdminPage && !isPipelinePage && !isPassportDashboard && (
         <>
           <Banner />
           <Navbar />
