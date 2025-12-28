@@ -384,6 +384,10 @@
   --sidebar-border: #3d3d3d;
 }
 
+:root.dark-mode .worker-sidebar__logo {
+  color: #ffffff;
+}
+
 :root.dark-mode .worker-sidebar__logo span {
   color: #4CAF50;
 }
