@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { getAllEvents } from '../services/database'
 import Icon from '../components/shared/Icon'
+import useForceLightMode from '../hooks/useForceLightMode'
 import './Events.css'
 
 const Events = () => {
+  useForceLightMode()
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);

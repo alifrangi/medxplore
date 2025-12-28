@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { submitApplication } from '../services/database';
 import confetti from 'canvas-confetti';
+import useForceLightMode from '../hooks/useForceLightMode';
 import './PassportApply.css';
 
 const PassportApply = () => {
+  useForceLightMode();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);

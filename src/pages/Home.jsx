@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import useForceLightMode from '../hooks/useForceLightMode'
 import './Home.css'
 
 const Home = () => {
+  useForceLightMode()
   const heroRef = useRef(null)
 
   useEffect(() => {

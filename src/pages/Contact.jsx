@@ -1,8 +1,10 @@
 import React from 'react'
 import { motion } from 'framer-motion'
+import useForceLightMode from '../hooks/useForceLightMode'
 import './Contact.css'
 
 const Contact = () => {
+  useForceLightMode()
 
   return (
     <div className="contact-page">
