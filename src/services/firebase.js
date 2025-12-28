@@ -18,7 +18,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// Initialize Analytics (optional - may fail due to CSP restrictions)
+let analytics = null;
+try {
+  analytics = getAnalytics(app);
+} catch (error) {
+  console.warn('Firebase Analytics could not be initialized:', error.message);
+}
 
 // Initialize Firebase services
 export const auth = getAuth(app);
