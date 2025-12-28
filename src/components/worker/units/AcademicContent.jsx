@@ -34,8 +34,8 @@ const AcademicContent = ({
       case 'pending':
         return ideas.filter(i => i.currentStatus !== PIPELINE_STAGES.REJECTED);
       case 'lobby':
-        // Show all ideas from all stages (excluding rejected)
-        return allIdeas.filter(i => i.currentStatus !== PIPELINE_STAGES.REJECTED);
+        // Show all ideas from all stages (including rejected)
+        return allIdeas;
       default:
         return ideas;
     }
@@ -43,7 +43,7 @@ const AcademicContent = ({
 
   const filteredIdeas = getFilteredIdeas();
   const pendingCount = ideas.filter(i => i.currentStatus !== PIPELINE_STAGES.REJECTED).length;
-  const lobbyCount = allIdeas.filter(i => i.currentStatus !== PIPELINE_STAGES.REJECTED).length;
+  const lobbyCount = allIdeas.length;
 
   const handleIdeaClick = (idea) => {
     setSelectedIdea(idea);

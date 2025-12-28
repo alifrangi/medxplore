@@ -51,10 +51,8 @@ const SystemsContent = ({
     idea.currentStatus === PIPELINE_STAGES.PUBLISHED
   );
 
-  // Get all ideas for lobby (excluding rejected)
-  const lobbyIdeas = allIdeas.filter(idea =>
-    idea.currentStatus !== PIPELINE_STAGES.REJECTED
-  );
+  // Get all ideas for lobby (including rejected)
+  const lobbyIdeas = allIdeas;
 
   const handlePublishIdea = (idea) => {
     setSelectedIdea(idea);
