@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, serverTimestamp, orderBy, query } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import Icon from '../components/shared/Icon';
 import './AdminNews.css';
 
 const AdminNews = () => {
@@ -153,7 +154,7 @@ const AdminNews = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <button className="modal-close" onClick={handleCancel}>
-              <span className="material-icons-outlined">close</span>
+              <Icon name="X" size={20} />
             </button>
             <h2 className={editingNews ? 'form-title edit-title' : 'form-title add-title'}>
               {editingNews ? 'Edit News' : 'Add News Post'}

@@ -1,8 +1,20 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig({
+  // Test configuration
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/__tests__/setup.js',
+    include: ['src/__tests__/**/*.test.{js,jsx}'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+    },
+  },
+
   plugins: [
     react(),
     // Bundle size analysis in production

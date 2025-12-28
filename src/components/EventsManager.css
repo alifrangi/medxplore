@@ -819,3 +819,135 @@
     margin-bottom: 0.875rem;
   }
 }
+
+/* ===== DARK MODE SUPPORT ===== */
+:root.dark-mode .events-manager {
+  background: #1e1e1e;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .events-manager-loading .loading-spinner {
+  border-color: #3d3d3d;
+  border-top-color: var(--accent-color);
+}
+
+:root.dark-mode .manager-header {
+  border-bottom-color: #3d3d3d;
+}
+
+:root.dark-mode .event-card {
+  background: #1e1e1e;
+  border-color: #3d3d3d;
+}
+
+:root.dark-mode .event-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .event-actions {
+  border-top-color: #3d3d3d;
+}
+
+:root.dark-mode .form-group input,
+:root.dark-mode .form-group textarea,
+:root.dark-mode .form-group select {
+  background: #2d2d2d;
+  border-color: #4d4d4d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .form-group input::placeholder,
+:root.dark-mode .form-group textarea::placeholder {
+  color: #888;
+}
+
+:root.dark-mode .admin-notes-section {
+  background: #252525;
+}
+
+:root.dark-mode .admin-notes-section textarea {
+  background: #2d2d2d;
+  border-color: #4d4d4d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .admin-notes-section small {
+  color: #888;
+}
+
+:root.dark-mode .event-details-modal .event-info {
+  background: #252525;
+}
+
+:root.dark-mode .participant-item {
+  background: #252525;
+  border-color: #3d3d3d;
+}
+
+:root.dark-mode .participant-admin-notes {
+  background: #2d2d2d;
+}
+
+:root.dark-mode .students-list {
+  border-color: #3d3d3d;
+  background: #252525;
+}
+
+:root.dark-mode .student-checkbox {
+  border-bottom-color: #3d3d3d;
+}
+
+:root.dark-mode .student-checkbox label strong {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .events-manager .modal-content {
+  background: #1e1e1e;
+}
+
+:root.dark-mode .events-manager .modal-content::before {
+  background: #4d4d4d;
+}
+
+:root.dark-mode .events-manager .modal-header {
+  background: #1e1e1e;
+}
+
+:root.dark-mode .events-manager .close-btn {
+  background: #2d2d2d;
+  color: #b0b0b0;
+}
+
+:root.dark-mode .events-manager .close-btn:hover {
+  background: #3d3d3d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .events-manager .modal-body::-webkit-scrollbar-thumb {
+  background: #4d4d4d;
+}
+
+:root.dark-mode .events-manager .modal-footer {
+  background: #1e1e1e !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+:root.dark-mode .events-manager .modal-footer .cancel-btn {
+  background: #2d2d2d !important;
+  color: #b0b0b0 !important;
+}
+
+:root.dark-mode .events-manager .modal-footer .cancel-btn:hover {
+  background: #3d3d3d !important;
+}
+
+@media (min-width: 769px) {
+  :root.dark-mode .events-manager .modal-header {
+    border-bottom-color: #3d3d3d;
+  }
+
+  :root.dark-mode .events-manager .modal-footer {
+    border-top-color: #3d3d3d !important;
+    box-shadow: none !important;
+  }
+}

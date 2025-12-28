@@ -20,8 +20,6 @@ const Navbar = () => {
 
   const navItems = [
     { name: 'Events', path: '/events' },
-    { name: 'News', path: '/news' },
-    { name: 'Leaderboard', path: '/leaderboard' },
     { name: 'Contact', path: '/contact' },
     { name: 'Portal', path: '/passport', isPortal: true }
   ]

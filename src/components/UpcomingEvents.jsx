@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getAllEvents } from '../services/database';
+import Icon from './shared/Icon';
 import './UpcomingEvents.css';
 
 const UpcomingEvents = ({ departmentFilter = null, limit = 5 }) => {
@@ -61,14 +62,14 @@ const UpcomingEvents = ({ departmentFilter = null, limit = 5 }) => {
 
   const getCategoryIcon = (category) => {
     const icons = {
-      workshop: 'build',
-      conference: 'groups',
-      seminar: 'school',
-      networking: 'connect_without_contact',
-      research: 'biotech',
-      clinical: 'medical_services'
+      workshop: 'Wrench',
+      conference: 'Users',
+      seminar: 'GraduationCap',
+      networking: 'Share2',
+      research: 'Microscope',
+      clinical: 'Stethoscope'
     };
-    return icons[category] || 'event';
+    return icons[category] || 'Calendar';
   };
 
   const getCategoryColor = (category) => {
@@ -137,13 +138,11 @@ const UpcomingEvents = ({ departmentFilter = null, limit = 5 }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
             >
-              <div 
+              <div
                 className="event-category-indicator"
                 style={{ backgroundColor: getCategoryColor(event.category) }}
               >
-                <span className="material-icons-outlined">
-                  {getCategoryIcon(event.category)}
-                </span>
+                <Icon name={getCategoryIcon(event.category)} size={20} color="#fff" />
               </div>
               
               <div className="event-content">
@@ -158,16 +157,16 @@ const UpcomingEvents = ({ departmentFilter = null, limit = 5 }) => {
                 
                 <div className="event-meta">
                   <span className="event-location">
-                    <span className="material-icons-outlined">location_on</span>
+                    <Icon name="MapPin" size={14} />
                     {event.location}
                   </span>
                   <span className="event-time">
-                    <span className="material-icons-outlined">schedule</span>
+                    <Icon name="Clock" size={14} />
                     {event.time || 'Time TBD'}
                   </span>
                   {event.department && (
                     <span className="event-department">
-                      <span className="material-icons-outlined">business</span>
+                      <Icon name="Building2" size={14} />
                       {event.department}
                     </span>
                   )}
@@ -177,7 +176,7 @@ const UpcomingEvents = ({ departmentFilter = null, limit = 5 }) => {
           ))
         ) : (
           <div className="no-upcoming-events">
-            <span className="material-icons-outlined">event_busy</span>
+            <Icon name="CalendarX" size={48} />
             <p>No upcoming events at the moment</p>
           </div>
         )}
@@ -187,7 +186,7 @@ const UpcomingEvents = ({ departmentFilter = null, limit = 5 }) => {
         <div className="view-all-events">
           <a href="/events" className="view-all-link">
             View all events
-            <span className="material-icons-outlined">arrow_forward</span>
+            <Icon name="ArrowRight" size={16} />
           </a>
         </div>
       )}

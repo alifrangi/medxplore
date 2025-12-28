@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import Icon from '../Icon';
 import './Toast.css';
 
 const ToastContext = createContext(null);
@@ -9,24 +10,25 @@ const ToastContext = createContext(null);
  */
 const TOAST_TYPES = {
   success: {
-    icon: 'check_circle',
+    icon: 'CheckCircle',
     className: 'toast--success',
   },
   error: {
-    icon: 'error',
+    icon: 'AlertCircle',
     className: 'toast--error',
   },
   warning: {
-    icon: 'warning',
+    icon: 'AlertTriangle',
     className: 'toast--warning',
   },
   info: {
-    icon: 'info',
+    icon: 'Info',
     className: 'toast--info',
   },
 };
 
 let toastId = 0;
+const recentToasts = new Map(); // Track recent toasts to prevent duplicates
 
 /**
  * Toast Provider Component
@@ -41,6 +43,22 @@ export const ToastProvider = ({ children }) => {
       duration = 4000,
       title,
     } = options;
+
+    // Prevent duplicate toasts with same message within 500ms
+    const toastKey = `${type}:${message}`;
+    const now = Date.now();
+    const lastShown = recentToasts.get(toastKey);
+
+    if (lastShown && now - lastShown < 500) {
+      return null; // Skip duplicate
+    }
+    recentToasts.set(toastKey, now);
+
+    // Clean up old entries
+    if (recentToasts.size > 20) {
+      const oldestKey = recentToasts.keys().next().value;
+      recentToasts.delete(oldestKey);
+    }
 
     const id = ++toastId;
 
@@ -129,8 +147,8 @@ const Toast = ({ toast, onDismiss }) => {
       transition={{ type: 'spring', damping: 20, stiffness: 300 }}
       role="alert"
     >
-      <span className="toast-icon material-icons-outlined">
-        {config.icon}
+      <span className="toast-icon">
+        <Icon name={config.icon} size={20} />
       </span>
 
       <div className="toast-content">
@@ -143,7 +161,7 @@ const Toast = ({ toast, onDismiss }) => {
         onClick={onDismiss}
         aria-label="Dismiss notification"
       >
-        <span className="material-icons-outlined">close</span>
+        <Icon name="X" size={16} />
       </button>
     </motion.div>
   );

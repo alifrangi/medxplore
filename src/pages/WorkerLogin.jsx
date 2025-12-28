@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useWorkerAuth } from '../contexts/WorkerAuthContext';
+import Icon from '../components/shared/Icon';
 import './WorkerLogin.css';
 
 const WorkerLogin = () => {
@@ -107,7 +108,7 @@ const WorkerLogin = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <span className="material-icons-outlined">error</span>
+                <Icon name="AlertCircle" size={18} />
                 {error}
               </motion.div>
             )}
@@ -135,19 +136,19 @@ const WorkerLogin = () => {
                 onClick={() => navigate('/departments/operations-logistics')}
                 className="department-link"
               >
-                ⚙️ Operations & Logistics
+                <Icon name="Settings" size={16} /> Operations & Logistics
               </button>
               <button
                 onClick={() => navigate('/departments/academic')}
                 className="department-link"
               >
-                📚 Academic
+                <Icon name="BookOpen" size={16} /> Academic
               </button>
-              <button 
+              <button
                 onClick={() => navigate('/departments/global-outreach')}
                 className="department-link"
               >
-                🌍 Global Outreach
+                <Icon name="Globe" size={16} /> Global Outreach
               </button>
             </div>
           </div>

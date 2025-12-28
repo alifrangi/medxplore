@@ -13,6 +13,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import Icon from './shared/Icon';
 import './DepartmentIdeas.css';
 
 const DepartmentIdeas = ({ departmentId, departmentName }) => {
@@ -142,13 +143,13 @@ const DepartmentIdeas = ({ departmentId, departmentName }) => {
 
   const getCategoryIcon = (category) => {
     const icons = {
-      general: 'lightbulb',
-      event: 'event',
-      improvement: 'trending_up',
-      research: 'science',
-      collaboration: 'group_work'
+      general: 'Lightbulb',
+      event: 'Calendar',
+      improvement: 'TrendingUp',
+      research: 'FlaskConical',
+      collaboration: 'Users'
     };
-    return icons[category] || 'lightbulb';
+    return icons[category] || 'Lightbulb';
   };
 
   const getStatusColor = (status) => {
@@ -177,11 +178,11 @@ const DepartmentIdeas = ({ departmentId, departmentName }) => {
     <div className="department-ideas-container">
       <div className="ideas-header">
         <h3>{departmentName} Ideas Board</h3>
-        <button 
+        <button
           className="add-idea-button"
           onClick={() => setShowAddForm(true)}
         >
-          <span className="material-icons-outlined">add</span>
+          <Icon name="Plus" size={18} />
           New Idea
         </button>
       </div>
@@ -242,7 +243,7 @@ const DepartmentIdeas = ({ departmentId, departmentName }) => {
       <div className="ideas-list">
         {ideas.length === 0 ? (
           <div className="no-ideas">
-            <span className="material-icons-outlined">emoji_objects</span>
+            <Icon name="Lightbulb" size={48} />
             <p>No ideas yet. Be the first to share!</p>
           </div>
         ) : (
@@ -256,8 +257,8 @@ const DepartmentIdeas = ({ departmentId, departmentName }) => {
             >
               <div className="idea-header">
                 <div className="idea-meta">
-                  <span className="material-icons-outlined category-icon">
-                    {getCategoryIcon(idea.category)}
+                  <span className="category-icon">
+                    <Icon name={getCategoryIcon(idea.category)} size={18} />
                   </span>
                   <span className="idea-author">{idea.userName}</span>
                   <span className="idea-role">{idea.userRole}</span>
@@ -294,13 +295,13 @@ const DepartmentIdeas = ({ departmentId, departmentName }) => {
                       }}
                       className="icon-button"
                     >
-                      <span className="material-icons-outlined">edit</span>
+                      <Icon name="Edit2" size={16} />
                     </button>
                     <button
                       onClick={() => handleDeleteIdea(idea.id)}
                       className="icon-button delete"
                     >
-                      <span className="material-icons-outlined">delete</span>
+                      <Icon name="Trash2" size={16} />
                     </button>
                   </div>
                 )}
@@ -341,9 +342,7 @@ const DepartmentIdeas = ({ departmentId, departmentName }) => {
                   onClick={() => handleToggleLike(idea.id, idea.likes || [])}
                   className={`like-button ${idea.likes?.includes(userInfo?.id) ? 'liked' : ''}`}
                 >
-                  <span className="material-icons-outlined">
-                    {idea.likes?.includes(userInfo?.id) ? 'favorite' : 'favorite_border'}
-                  </span>
+                  <Icon name={idea.likes?.includes(userInfo?.id) ? 'Heart' : 'Heart'} size={16} />
                   <span>{idea.likes?.length || 0}</span>
                 </button>
                 <span className="idea-date">

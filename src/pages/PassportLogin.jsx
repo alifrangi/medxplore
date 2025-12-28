@@ -91,7 +91,7 @@ const PassportLogin = () => {
           </div>
 
           <div className="admin-link">
-            <a href="/admin">Admin Portal</a>
+            <a href="/portal">Admin Portal</a>
           </div>
         </div>
       </motion.div>

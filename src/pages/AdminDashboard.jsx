@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { getApplications, getAllEvents, deleteApplication, approveApplication } from '../services/database';
+import { usePipeline } from '../contexts/PipelineContext';
+import { getApplications, getAllEvents, deleteApplication, approveApplication, getAllFeedback, getAllAccessCodes, createAccessCode, updateAccessCode, deleteAccessCode } from '../services/database';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import Icon from '../components/shared/Icon';
 import DepartmentWorkerManager from '../components/DepartmentWorkerManager';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { adminData, logout } = useAuth();
+  const { logoutUser } = usePipeline();
   const [stats, setStats] = useState({
     totalStudents: 0,
     pendingApplications: 0,
@@ -19,6 +22,14 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [feedback, setFeedback] = useState([]);
+  const [accessCodes, setAccessCodes] = useState([]);
+  const [showAccessCodeForm, setShowAccessCodeForm] = useState(false);
+  const [accessCodeFormData, setAccessCodeFormData] = useState({
+    code: '',
+    university: 'ALL',
+    description: ''
+  });
 
   useEffect(() => {
     loadDashboardData();
@@ -42,6 +53,18 @@ const AdminDashboard = () => {
       const allApplications = await getApplications();
       const recentActivity = allApplications.slice(0, 5);
 
+      // Get feedback
+      const feedbackResult = await getAllFeedback();
+      if (feedbackResult.success) {
+        setFeedback(feedbackResult.feedback);
+      }
+
+      // Get access codes
+      const accessCodesResult = await getAllAccessCodes();
+      if (accessCodesResult.success) {
+        setAccessCodes(accessCodesResult.codes);
+      }
+
       setStats({
         totalStudents,
         pendingApplications,
@@ -56,7 +79,13 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = async () => {
+    // Clear both auth contexts
     await logout();
+    logoutUser();
+
+    // Clear all session storage
+    sessionStorage.clear();
+
     navigate('/admin');
   };
 
@@ -82,6 +111,64 @@ const AdminDashboard = () => {
   const handleViewApplication = (applicationId) => {
     const app = stats.recentActivity.find(a => a.id === applicationId);
     setSelectedApplication(app);
+  };
+
+  // Access Code Management
+  const handleCreateAccessCode = async (e) => {
+    e.preventDefault();
+    if (!accessCodeFormData.code.trim()) {
+      alert('Please enter an access code');
+      return;
+    }
+
+    try {
+      const result = await createAccessCode({
+        code: accessCodeFormData.code.toUpperCase(),
+        university: accessCodeFormData.university,
+        description: accessCodeFormData.description
+      });
+
+      if (result.success) {
+        alert('Access code created successfully!');
+        setAccessCodeFormData({ code: '', university: 'ALL', description: '' });
+        setShowAccessCodeForm(false);
+        loadDashboardData();
+      } else {
+        alert('Failed to create access code: ' + result.error);
+      }
+    } catch (error) {
+      alert('An error occurred while creating the access code');
+    }
+  };
+
+  const handleToggleAccessCode = async (codeId, currentStatus) => {
+    try {
+      const result = await updateAccessCode(codeId, { isActive: !currentStatus });
+      if (result.success) {
+        loadDashboardData();
+      } else {
+        alert('Failed to update access code');
+      }
+    } catch (error) {
+      alert('An error occurred');
+    }
+  };
+
+  const handleDeleteAccessCode = async (codeId) => {
+    if (!confirm('Are you sure you want to delete this access code?')) {
+      return;
+    }
+
+    try {
+      const result = await deleteAccessCode(codeId);
+      if (result.success) {
+        loadDashboardData();
+      } else {
+        alert('Failed to delete access code');
+      }
+    } catch (error) {
+      alert('An error occurred');
+    }
   };
 
   const handleApproveApplication = async (applicationId, applicationName) => {
@@ -135,7 +222,9 @@ const AdminDashboard = () => {
           transition={{ duration: 0.6 }}
         >
           <div className="stat-card">
-            <div className="stat-icon students-icon">👥</div>
+            <div className="stat-icon students-icon">
+              <Icon name="Users" size={24} />
+            </div>
             <div className="stat-content">
               <h3>{stats.totalStudents}</h3>
               <p>Total Students</p>
@@ -143,7 +232,9 @@ const AdminDashboard = () => {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon applications-icon">📋</div>
+            <div className="stat-icon applications-icon">
+              <Icon name="FileText" size={24} />
+            </div>
             <div className="stat-content">
               <h3>{stats.pendingApplications}</h3>
               <p>Pending Applications</p>
@@ -151,7 +242,9 @@ const AdminDashboard = () => {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon events-icon">📅</div>
+            <div className="stat-icon events-icon">
+              <Icon name="Calendar" size={24} />
+            </div>
             <div className="stat-content">
               <h3>{stats.totalEvents}</h3>
               <p>Total Events</p>
@@ -168,28 +261,29 @@ const AdminDashboard = () => {
           <h2>Quick Actions</h2>
           <div className="actions-grid">
             <Link to="/admin/applications" className="action-card">
-              <div className="action-icon">📝</div>
+              <div className="action-icon">
+                <Icon name="FileEdit" size={28} />
+              </div>
               <h3>Review Applications</h3>
               <p>Review and approve pending student applications</p>
             </Link>
 
             <Link to="/admin/students" className="action-card">
-              <div className="action-icon">🎓</div>
+              <div className="action-icon">
+                <Icon name="GraduationCap" size={28} />
+              </div>
               <h3>Manage Students</h3>
               <p>View and manage all registered students</p>
             </Link>
 
             <Link to="/admin/events" className="action-card">
-              <div className="action-icon">🎯</div>
+              <div className="action-icon">
+                <Icon name="Target" size={28} />
+              </div>
               <h3>Manage Events</h3>
               <p>Create events and track attendance</p>
             </Link>
 
-            <Link to="/admin/news" className="action-card">
-              <div className="action-icon">📰</div>
-              <h3>Manage News</h3>
-              <p>Create and manage news posts</p>
-            </Link>
           </div>
         </motion.div>
 
@@ -199,47 +293,208 @@ const AdminDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <h2>Department Dashboards</h2>
+          <h2>Unit Dashboards</h2>
           <div className="departments-grid">
-            <Link to="/departments/operations-logistics" className="department-card operations-logistics">
-              <div className="department-icon">⚙️</div>
-              <h3>Operations & Logistics</h3>
-              <p>Managing event operations, points system, and logistical coordination</p>
+            <Link to="/worker/academic" className="department-card academic">
+              <div className="department-icon">
+                <Icon name="BookOpen" size={28} />
+              </div>
+              <h3>Academic Unit</h3>
+              <p>Reviews academic value and learning outcomes</p>
             </Link>
 
-            <Link to="/departments/academic" className="department-card academic">
-              <div className="department-icon">📚</div>
-              <h3>Academic</h3>
-              <p>Excellence in medical education and academic development</p>
+            <Link to="/worker/programs" className="department-card programs">
+              <div className="department-icon">
+                <Icon name="ClipboardList" size={28} />
+              </div>
+              <h3>Programs Unit</h3>
+              <p>Prepares program structure and event design</p>
             </Link>
 
-            <Link to="/departments/global-outreach" className="department-card global-outreach">
-              <div className="department-icon">🌍</div>
-              <h3>Global Outreach</h3>
-              <p>Connecting medical professionals worldwide for global health impact</p>
+            <Link to="/worker/operations" className="department-card operations">
+              <div className="department-icon">
+                <Icon name="Settings" size={28} />
+              </div>
+              <h3>Operations Unit</h3>
+              <p>Handles feasibility and logistics</p>
             </Link>
 
-            <Link to="/departments/student-engagement" className="department-card student-engagement">
-              <div className="department-icon">🤝</div>
-              <h3>Student Engagement</h3>
-              <p>Building strong communities and fostering student participation</p>
+            <Link to="/worker/external" className="department-card external">
+              <div className="department-icon">
+                <Icon name="Building2" size={28} />
+              </div>
+              <h3>External Approvals</h3>
+              <p>Secures official permissions and approvals</p>
             </Link>
 
-            <Link to="/departments/media-communications" className="department-card media-communications">
-              <div className="department-icon">📢</div>
-              <h3>Media & Communications</h3>
-              <p>Managing outreach, content creation, and external communications</p>
+            <Link to="/worker/systems" className="department-card systems">
+              <div className="department-icon">
+                <Icon name="Monitor" size={28} />
+              </div>
+              <h3>Systems Unit</h3>
+              <p>Creates and publishes events on platform</p>
+            </Link>
+
+            <Link to="/worker/passport" className="department-card passport">
+              <div className="department-icon">
+                <Icon name="Ticket" size={28} />
+              </div>
+              <h3>Passport Unit</h3>
+              <p>Manages attendance and passport credits</p>
             </Link>
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="department-worker-section"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <DepartmentWorkerManager />
+        </motion.div>
+
+        {/* Access Codes Section */}
+        <motion.div
+          className="access-codes-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+        >
+          <div className="section-header">
+            <h2>Access Codes</h2>
+            <button
+              className="add-code-btn"
+              onClick={() => setShowAccessCodeForm(!showAccessCodeForm)}
+            >
+              {showAccessCodeForm ? 'Cancel' : 'Add Code'}
+            </button>
+          </div>
+
+          {showAccessCodeForm && (
+            <motion.form
+              className="access-code-form"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              onSubmit={handleCreateAccessCode}
+            >
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Access Code *</label>
+                  <input
+                    type="text"
+                    placeholder="e.g., MEDX2025"
+                    value={accessCodeFormData.code}
+                    onChange={(e) => setAccessCodeFormData({...accessCodeFormData, code: e.target.value.toUpperCase()})}
+                    maxLength={12}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>University</label>
+                  <select
+                    value={accessCodeFormData.university}
+                    onChange={(e) => setAccessCodeFormData({...accessCodeFormData, university: e.target.value})}
+                  >
+                    <option value="ALL">All Universities</option>
+                    <option value="JUST">JUST</option>
+                    <option value="YU">YU</option>
+                  </select>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Description (optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Spring 2025 Ideas Submission"
+                  value={accessCodeFormData.description}
+                  onChange={(e) => setAccessCodeFormData({...accessCodeFormData, description: e.target.value})}
+                />
+              </div>
+              <button type="submit" className="submit-code-btn">Create Access Code</button>
+            </motion.form>
+          )}
+
+          {accessCodes.length > 0 ? (
+            <div className="access-codes-list">
+              {accessCodes.map((code) => (
+                <div key={code.id} className={`access-code-item ${!code.isActive ? 'inactive' : ''}`}>
+                  <div className="code-info">
+                    <span className="code-value">{code.code}</span>
+                    <span className={`code-status ${code.isActive ? 'active' : 'inactive'}`}>
+                      {code.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div className="code-details">
+                    <span className="code-university">{code.university === 'ALL' ? 'All Universities' : code.university}</span>
+                    {code.description && <span className="code-description">{code.description}</span>}
+                    <span className="code-usage">Used: {code.usageCount || 0} times</span>
+                  </div>
+                  <div className="code-actions">
+                    <button
+                      className={`toggle-btn ${code.isActive ? 'deactivate' : 'activate'}`}
+                      onClick={() => handleToggleAccessCode(code.id, code.isActive)}
+                    >
+                      {code.isActive ? 'Deactivate' : 'Activate'}
+                    </button>
+                    <button
+                      className="delete-code-btn"
+                      onClick={() => handleDeleteAccessCode(code.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="no-codes">No access codes created yet. Create one to allow idea submissions.</p>
+          )}
+        </motion.div>
+
+        {/* Feedback Section */}
+        <motion.div
+          className="feedback-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+        >
+          <h2>User Feedback</h2>
+          {feedback.length > 0 ? (
+            <div className="feedback-list">
+              {feedback.map((item) => (
+                <div key={item.id} className={`feedback-item feedback-item--${item.type}`}>
+                  <div className="feedback-item__header">
+                    <span className={`feedback-type-badge feedback-type-badge--${item.type}`}>
+                      {item.type}
+                    </span>
+                    <span className="feedback-item__date">
+                      {item.createdAt instanceof Date
+                        ? item.createdAt.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })
+                        : new Date(item.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })
+                      }
+                    </span>
+                  </div>
+                  <p className="feedback-item__message">{item.message}</p>
+                  <div className="feedback-item__footer">
+                    <span className="feedback-item__user">
+                      From: {item.userName || 'Anonymous'}
+                      {item.university && ` (${item.university})`}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="no-feedback">No feedback received yet</p>
+          )}
         </motion.div>
 
 

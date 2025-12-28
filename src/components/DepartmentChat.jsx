@@ -13,6 +13,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { db } from '../services/firebase';
+import Icon from './shared/Icon';
 import './DepartmentChat.css';
 
 const DepartmentChat = ({ departmentId, departmentName }) => {
@@ -125,7 +126,7 @@ const DepartmentChat = ({ departmentId, departmentName }) => {
       <div className="chat-header">
         <h3>{departmentName} Team Chat</h3>
         <span className="chat-member-count">
-          <span className="material-icons-outlined">group</span>
+          <Icon name="Users" size={16} />
           {messages.length > 0 ? `${new Set(messages.map(m => m.userId)).size} members` : 'No messages yet'}
         </span>
       </div>
@@ -133,7 +134,7 @@ const DepartmentChat = ({ departmentId, departmentName }) => {
       <div className="chat-messages" ref={messagesContainerRef}>
         {messages.length === 0 ? (
           <div className="no-messages">
-            <span className="material-icons-outlined">chat_bubble_outline</span>
+            <Icon name="MessageCircle" size={48} />
             <p>Start the conversation!</p>
           </div>
         ) : (
@@ -150,12 +151,12 @@ const DepartmentChat = ({ departmentId, departmentName }) => {
                 <span className="message-role">{message.userRole}</span>
                 <span className="message-time">{formatMessageTime(message.timestamp)}</span>
                 {message.userId === userInfo?.id && (
-                  <button 
+                  <button
                     onClick={() => handleDeleteMessage(message.id)}
                     className="message-delete-button"
                     title="Delete message"
                   >
-                    <span className="material-icons-outlined">delete</span>
+                    <Icon name="Trash2" size={14} />
                   </button>
                 )}
               </div>
@@ -176,7 +177,7 @@ const DepartmentChat = ({ departmentId, departmentName }) => {
           maxLength={500}
         />
         <button type="submit" className="chat-send-button" disabled={!newMessage.trim()}>
-          <span className="material-icons-outlined">send</span>
+          <Icon name="Send" size={18} />
         </button>
       </form>
     </div>

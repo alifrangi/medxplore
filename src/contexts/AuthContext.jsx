@@ -104,7 +104,8 @@ export const AuthProvider = ({ children }) => {
       // Clear session storage
       sessionStorage.removeItem('passportNumber');
       sessionStorage.removeItem('authType');
-      
+      sessionStorage.removeItem('pipelineUser'); // Also clear pipeline session
+
       return { success: true };
     } catch (error) {
       // Logout error

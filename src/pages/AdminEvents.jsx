@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { 
-  getAllEvents, 
-  createEvent, 
-  updateEvent, 
-  deleteEvent, 
-  getEventParticipants, 
+import {
+  getAllEvents,
+  createEvent,
+  updateEvent,
+  deleteEvent,
+  getEventParticipants,
   bulkAddStudentsToEvent,
   getEventStats,
   getAllStudents,
   TIER_DEFINITIONS
 } from '../services/database';
+import Icon from '../components/shared/Icon';
 import './AdminEvents.css';
 
 const AdminEvents = () => {
@@ -245,8 +246,8 @@ const AdminEvents = () => {
               <div className="event-details">
                 <p className="event-description">{event.description}</p>
                 <div className="event-meta">
-                  <span className="event-date">📅 {formatDate(event.date)}</span>
-                  <span className="event-location">📍 {event.location}</span>
+                  <span className="event-date"><Icon name="Calendar" size={14} /> {formatDate(event.date)}</span>
+                  <span className="event-location"><Icon name="MapPin" size={14} /> {event.location}</span>
                 </div>
               </div>
               

@@ -28,7 +28,10 @@ const COLLECTIONS = {
   TIERS: 'tiers',
   DEPARTMENTS: 'departments',
   NEWS: 'news',
-  WORKERS: 'workers'
+  WORKERS: 'workers',
+  IDEAS: 'ideas',
+  ACCESS_CODES: 'accessCodes',
+  FEEDBACK: 'feedback'
 };
 
 // Helper function to generate passport numbers
@@ -629,12 +632,11 @@ export const checkAdminAccess = async (email) => {
 
 // Tier definitions
 export const TIER_DEFINITIONS = {
-  Explorer: { 
-    min: 0, 
-    max: 4, 
+  Explorer: {
+    min: 0,
+    max: 4,
     color: '#A9D3D8', // MedXplore light blue
-    emoji: '🔵',
-    icon: 'explore', // Material icon for exploring/compass
+    icon: 'Compass', // Lucide icon for exploring
     description: "You've taken your first step.",
     benefits: [
       'Personalized MedXplore Passport issued',
@@ -643,12 +645,11 @@ export const TIER_DEFINITIONS = {
       'Recognition as an active participant'
     ]
   },
-  Scholar: { 
-    min: 5, 
-    max: 19, 
+  Scholar: {
+    min: 5,
+    max: 19,
     color: '#C0C0C0', // Silver/warm gray
-    emoji: '⚪',
-    icon: 'school', // Material icon for education/scholar
+    icon: 'BookMarked', // Lucide icon for education/scholar
     description: "You're consistently involved and growing your experience.",
     benefits: [
       'Scholar-level certificate of achievement',
@@ -657,12 +658,11 @@ export const TIER_DEFINITIONS = {
       'Invited to contribute to MedXplore\'s Student Voice Corner (quotes, opinions, article ideas)'
     ]
   },
-  Mentor: { 
-    min: 20, 
-    max: 29, 
+  Mentor: {
+    min: 20,
+    max: 29,
     color: '#9CAF88', // Sage green
-    emoji: '🟢',
-    icon: 'psychology', // Material icon for mentorship/guidance
+    icon: 'Brain', // Lucide icon for mentorship/guidance
     description: "You've gone beyond participation — you're becoming a guide.",
     benefits: [
       'Mentor-level certificate with official verification',
@@ -671,12 +671,11 @@ export const TIER_DEFINITIONS = {
       'Invitation to join focus groups on student development needs'
     ]
   },
-  Pioneer: { 
-    min: 30, 
-    max: null, 
+  Pioneer: {
+    min: 30,
+    max: null,
     color: '#1a1a1a', // Black
-    emoji: '⚫',
-    icon: 'military_tech', // Material icon for achievement/pioneer
+    icon: 'Award', // Lucide icon for achievement/pioneer
     description: "You're setting the standard. You've earned recognition.",
     benefits: [
       'Pioneer-tier digital certificate of excellence',
@@ -779,7 +778,7 @@ export const createWorker = async (workerData) => {
     // Check if email already exists
     const workersRef = collection(db, COLLECTIONS.WORKERS);
     const workersSnapshot = await getDocs(workersRef);
-    
+
     for (const workerDoc of workersSnapshot.docs) {
       const existingWorker = workerDoc.data();
       if (decryptEmail(existingWorker.email) === workerData.email.toLowerCase()) {
@@ -789,15 +788,19 @@ export const createWorker = async (workerData) => {
 
     // Hash password
     const { hash, salt } = await hashPassword(workerData.password);
-    
-    // Create worker document
+
+    // Create worker document with new units/university schema
     const newWorker = {
       firstName: workerData.firstName,
       lastName: workerData.lastName,
       email: encryptEmail(workerData.email.toLowerCase()),
       passwordHash: hash,
       salt: salt,
-      departments: workerData.departments,
+      // New schema: units and university
+      units: workerData.units || [],
+      university: workerData.university || 'JUST',
+      // Keep departments for backward compatibility during migration
+      departments: workerData.departments || [],
       profileColor: generateProfileColor(),
       isActive: true,
       createdAt: serverTimestamp(),
@@ -807,7 +810,7 @@ export const createWorker = async (workerData) => {
     };
 
     const docRef = await addDoc(collection(db, COLLECTIONS.WORKERS), newWorker);
-    
+
     return { success: true, id: docRef.id };
   } catch (error) {
     console.error('Error creating worker:', error);
@@ -819,7 +822,7 @@ export const getAllWorkers = async () => {
   try {
     const snapshot = await getDocs(collection(db, COLLECTIONS.WORKERS));
     const workers = [];
-    
+
     snapshot.docs.forEach(doc => {
       const workerData = doc.data();
       workers.push({
@@ -828,7 +831,9 @@ export const getAllWorkers = async () => {
         lastName: workerData.lastName,
         email: decryptEmail(workerData.email),
         university: workerData.university || 'JUST',
-        departments: workerData.departments,
+        // New schema: units (preferred) with departments fallback
+        units: workerData.units || [],
+        departments: workerData.departments || [],
         profileColor: workerData.profileColor,
         isActive: workerData.isActive,
         points: workerData.points || 0,
@@ -836,14 +841,14 @@ export const getAllWorkers = async () => {
         lastLogin: workerData.lastLogin
       });
     });
-    
+
     // Sort by creation date
     workers.sort((a, b) => {
       const dateA = a.createdAt?.toDate?.() || new Date(0);
       const dateB = b.createdAt?.toDate?.() || new Date(0);
       return dateB - dateA;
     });
-    
+
     return { success: true, workers };
   } catch (error) {
     console.error('Error getting workers:', error);
@@ -856,9 +861,23 @@ export const updateWorker = async (workerId, updates) => {
     const updateData = {
       firstName: updates.firstName,
       lastName: updates.lastName,
-      departments: updates.departments,
       updatedAt: serverTimestamp()
     };
+
+    // Update units if provided (new schema)
+    if (updates.units !== undefined) {
+      updateData.units = updates.units;
+    }
+
+    // Update university if provided
+    if (updates.university !== undefined) {
+      updateData.university = updates.university;
+    }
+
+    // Keep departments for backward compatibility
+    if (updates.departments !== undefined) {
+      updateData.departments = updates.departments;
+    }
 
     // Update email if changed
     if (updates.email) {
@@ -883,7 +902,7 @@ export const updateWorker = async (workerId, updates) => {
     }
 
     await updateDoc(doc(db, COLLECTIONS.WORKERS, workerId), updateData);
-    
+
     return { success: true };
   } catch (error) {
     console.error('Error updating worker:', error);
@@ -897,6 +916,118 @@ export const deleteWorker = async (workerId) => {
     return { success: true };
   } catch (error) {
     console.error('Error deleting worker:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Department to Unit migration mapping
+const DEPARTMENT_TO_UNIT_MAP = {
+  'operations-logistics': 'operations',
+  'academic': 'academic',
+  'global-outreach': 'external',
+  'student-engagement': 'programs',
+  'media-communications': 'systems'
+};
+
+// Migrate existing workers from departments to units
+export const migrateWorkersToUnits = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTIONS.WORKERS));
+    const results = { migrated: 0, skipped: 0, errors: [] };
+
+    for (const workerDoc of snapshot.docs) {
+      const workerData = workerDoc.data();
+
+      // Skip if already migrated (has units array with content)
+      if (workerData.units && workerData.units.length > 0) {
+        results.skipped++;
+        continue;
+      }
+
+      try {
+        // Map departments to units
+        const departments = workerData.departments || [];
+        const units = departments
+          .map(dept => DEPARTMENT_TO_UNIT_MAP[dept])
+          .filter(Boolean);
+
+        // Update worker with units and university
+        await updateDoc(doc(db, COLLECTIONS.WORKERS, workerDoc.id), {
+          units: units,
+          university: workerData.university || 'JUST',
+          migratedAt: serverTimestamp()
+        });
+
+        results.migrated++;
+      } catch (error) {
+        results.errors.push({ id: workerDoc.id, error: error.message });
+      }
+    }
+
+    console.log('Worker migration complete:', results);
+    return { success: true, results };
+  } catch (error) {
+    console.error('Error migrating workers:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Authenticate a worker (for unified login)
+export const authenticateWorker = async (email, password) => {
+  try {
+    const workersRef = collection(db, COLLECTIONS.WORKERS);
+    const workersSnapshot = await getDocs(workersRef);
+
+    for (const workerDoc of workersSnapshot.docs) {
+      const workerData = workerDoc.data();
+      const decryptedEmail = decryptEmail(workerData.email);
+
+      if (decryptedEmail === email.toLowerCase()) {
+        // Found the worker by email
+        if (!workerData.isActive) {
+          return { success: false, error: 'Account is inactive' };
+        }
+
+        // Verify password
+        const { hash } = await hashPassword(password, workerData.salt);
+
+        if (hash === workerData.passwordHash) {
+          // Password matches - generate session
+          const sessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+          const tokenExpiry = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+
+          await updateDoc(doc(db, COLLECTIONS.WORKERS, workerDoc.id), {
+            sessionToken,
+            tokenExpiry,
+            lastLogin: Date.now()
+          });
+
+          return {
+            success: true,
+            worker: {
+              id: workerDoc.id,
+              email: decryptedEmail,
+              firstName: workerData.firstName,
+              lastName: workerData.lastName,
+              name: `${workerData.firstName} ${workerData.lastName}`,
+              units: workerData.units || [],
+              university: workerData.university || 'JUST',
+              profileColor: workerData.profileColor,
+              isAdmin: false,
+              isWorker: true,
+              sessionToken,
+              tokenExpiry
+            }
+          };
+        } else {
+          return { success: false, error: 'Invalid password' };
+        }
+      }
+    }
+
+    return { success: false, error: 'Worker not found' };
+  } catch (error) {
+    console.error('Error authenticating worker:', error);
     return { success: false, error: error.message };
   }
 };
@@ -998,13 +1129,802 @@ export const hasPermission = (workerData, permission) => {
   return false;
 };
 
+// ==========================================
+// IDEAS COLLECTION FUNCTIONS (Pipeline System)
+// ==========================================
+
+// Pipeline stages (imported from mockData.js structure)
+export const PIPELINE_STAGES = {
+  SUBMITTED: 'submitted',
+  ACADEMIC_REVIEW: 'academic-review',
+  PROGRAMS_PACKAGE: 'programs-package',
+  OPERATIONS: 'operations',
+  EXTERNAL_APPROVALS: 'external-approvals',
+  SYSTEMS: 'systems',
+  PUBLISHED: 'published',
+  PASSPORT_VERIFICATION: 'passport-verification',
+  COMPLETED: 'completed',
+  RETURNED: 'returned',
+  REJECTED: 'rejected'
+};
+
+// Pipeline flow order
+const PIPELINE_ORDER = [
+  PIPELINE_STAGES.SUBMITTED,
+  PIPELINE_STAGES.ACADEMIC_REVIEW,
+  PIPELINE_STAGES.PROGRAMS_PACKAGE,
+  PIPELINE_STAGES.OPERATIONS,
+  PIPELINE_STAGES.EXTERNAL_APPROVALS,
+  PIPELINE_STAGES.SYSTEMS,
+  PIPELINE_STAGES.PUBLISHED,
+  PIPELINE_STAGES.PASSPORT_VERIFICATION,
+  PIPELINE_STAGES.COMPLETED
+];
+
+// Stage to Unit mapping
+const STAGE_TO_UNIT = {
+  [PIPELINE_STAGES.ACADEMIC_REVIEW]: 'academic',
+  [PIPELINE_STAGES.PROGRAMS_PACKAGE]: 'programs',
+  [PIPELINE_STAGES.OPERATIONS]: 'operations',
+  [PIPELINE_STAGES.EXTERNAL_APPROVALS]: 'external',
+  [PIPELINE_STAGES.SYSTEMS]: 'systems',
+  [PIPELINE_STAGES.PASSPORT_VERIFICATION]: 'passport'
+};
+
+// Get next stage in pipeline
+export const getNextStage = (currentStage, requiresExternalApproval = true) => {
+  const currentIndex = PIPELINE_ORDER.indexOf(currentStage);
+  if (currentIndex === -1 || currentIndex >= PIPELINE_ORDER.length - 1) return null;
+
+  let nextStage = PIPELINE_ORDER[currentIndex + 1];
+
+  // Skip external approvals if not required
+  if (nextStage === PIPELINE_STAGES.EXTERNAL_APPROVALS && !requiresExternalApproval) {
+    nextStage = PIPELINE_ORDER[currentIndex + 2];
+  }
+
+  return nextStage;
+};
+
+// Get previous stage in pipeline
+export const getPreviousStage = (currentStage) => {
+  const currentIndex = PIPELINE_ORDER.indexOf(currentStage);
+  if (currentIndex <= 1) return null;
+  return PIPELINE_ORDER[currentIndex - 1];
+};
+
+// Get unit ID for a stage
+export const getUnitIdForStage = (stage) => {
+  return STAGE_TO_UNIT[stage] || null;
+};
+
+// Generate unique idea ID
+export const generateIdeaId = async (university) => {
+  const prefix = `IDEA-${university}-`;
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${prefix}${timestamp}${random}`;
+};
+
+// Submit a new idea
+export const submitIdea = async (ideaData) => {
+  try {
+    // Handle "Other" university - assign to JUST
+    const university = ideaData.university === 'Other' ? 'JUST' : ideaData.university;
+
+    const ideaId = await generateIdeaId(university);
+    const now = serverTimestamp();
+
+    const newIdea = {
+      id: ideaId,
+      title: ideaData.title,
+      type: ideaData.type,
+      university: university,
+      originalUniversity: ideaData.university, // Keep track if it was "Other"
+      submittedBy: ideaData.submittedBy,
+      submittedAt: now,
+      targetAudience: ideaData.targetAudience || '',
+      goal: ideaData.goal || '',
+      description: ideaData.description || '',
+      estimatedAttendees: ideaData.estimatedAttendees || 0,
+      requiresApproval: ideaData.requiresApproval ?? true,
+      suggestedSpeakers: ideaData.suggestedSpeakers || '',
+      resourcesNeeded: ideaData.resourcesNeeded || '',
+      notes: ideaData.notes || '',
+      driveLink: '',
+      currentStatus: PIPELINE_STAGES.ACADEMIC_REVIEW,
+      currentUnit: 'academic',
+      isPublished: false,
+      publishedAt: null,
+      eventId: null,
+      returnReason: null,
+      rejectionReason: null,
+      statusHistory: [
+        {
+          status: PIPELINE_STAGES.SUBMITTED,
+          timestamp: new Date().toISOString(),
+          unit: null,
+          actor: ideaData.submittedBy,
+          notes: 'Initial submission'
+        },
+        {
+          status: PIPELINE_STAGES.ACADEMIC_REVIEW,
+          timestamp: new Date().toISOString(),
+          unit: 'academic',
+          actor: 'System',
+          notes: 'Forwarded for academic review'
+        }
+      ],
+      createdAt: now,
+      updatedAt: now
+    };
+
+    await setDoc(doc(db, COLLECTIONS.IDEAS, ideaId), newIdea);
+
+    return { success: true, id: ideaId, idea: newIdea };
+  } catch (error) {
+    console.error('Error submitting idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Get all ideas for a university
+export const getIdeasByUniversity = async (university) => {
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.IDEAS),
+      where('university', '==', university)
+    );
+    const snapshot = await getDocs(q);
+
+    let ideas = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      // Convert Firestore timestamps to JS dates for compatibility
+      submittedAt: doc.data().submittedAt?.toDate?.() || doc.data().submittedAt,
+      createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
+      updatedAt: doc.data().updatedAt?.toDate?.() || doc.data().updatedAt,
+      publishedAt: doc.data().publishedAt?.toDate?.() || doc.data().publishedAt
+    }));
+
+    // Sort by submission date (newest first)
+    ideas.sort((a, b) => {
+      const dateA = a.submittedAt instanceof Date ? a.submittedAt : new Date(a.submittedAt || 0);
+      const dateB = b.submittedAt instanceof Date ? b.submittedAt : new Date(b.submittedAt || 0);
+      return dateB - dateA;
+    });
+
+    return { success: true, ideas };
+  } catch (error) {
+    console.error('Error getting ideas by university:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// Get ideas for a specific unit (optionally filtered by university)
+export const getIdeasByUnit = async (unitId, university = null) => {
+  try {
+    let q;
+    if (university) {
+      q = query(
+        collection(db, COLLECTIONS.IDEAS),
+        where('currentUnit', '==', unitId),
+        where('university', '==', university)
+      );
+    } else {
+      q = query(
+        collection(db, COLLECTIONS.IDEAS),
+        where('currentUnit', '==', unitId)
+      );
+    }
+
+    const snapshot = await getDocs(q);
+
+    let ideas = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate?.() || doc.data().submittedAt,
+      createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
+      updatedAt: doc.data().updatedAt?.toDate?.() || doc.data().updatedAt,
+      publishedAt: doc.data().publishedAt?.toDate?.() || doc.data().publishedAt
+    }));
+
+    return { success: true, ideas };
+  } catch (error) {
+    console.error('Error getting ideas by unit:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// Get ideas by status
+export const getIdeasByStatus = async (status, university = null) => {
+  try {
+    let q;
+    if (university) {
+      q = query(
+        collection(db, COLLECTIONS.IDEAS),
+        where('currentStatus', '==', status),
+        where('university', '==', university)
+      );
+    } else {
+      q = query(
+        collection(db, COLLECTIONS.IDEAS),
+        where('currentStatus', '==', status)
+      );
+    }
+
+    const snapshot = await getDocs(q);
+
+    let ideas = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate?.() || doc.data().submittedAt,
+      createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
+      updatedAt: doc.data().updatedAt?.toDate?.() || doc.data().updatedAt,
+      publishedAt: doc.data().publishedAt?.toDate?.() || doc.data().publishedAt
+    }));
+
+    return { success: true, ideas };
+  } catch (error) {
+    console.error('Error getting ideas by status:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// Get a single idea by ID
+export const getIdeaById = async (ideaId) => {
+  try {
+    const ideaDoc = await getDoc(doc(db, COLLECTIONS.IDEAS, ideaId));
+
+    if (!ideaDoc.exists()) {
+      return { success: false, error: 'Idea not found' };
+    }
+
+    const data = ideaDoc.data();
+    return {
+      success: true,
+      idea: {
+        ...data,
+        submittedAt: data.submittedAt?.toDate?.() || data.submittedAt,
+        createdAt: data.createdAt?.toDate?.() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+        publishedAt: data.publishedAt?.toDate?.() || data.publishedAt
+      }
+    };
+  } catch (error) {
+    console.error('Error getting idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Approve an idea (move to next stage)
+export const approveIdea = async (ideaId, notes = '', actorName) => {
+  try {
+    const ideaRef = doc(db, COLLECTIONS.IDEAS, ideaId);
+    const ideaDoc = await getDoc(ideaRef);
+
+    if (!ideaDoc.exists()) {
+      return { success: false, error: 'Idea not found' };
+    }
+
+    const idea = ideaDoc.data();
+    const nextStage = getNextStage(idea.currentStatus, idea.requiresApproval);
+
+    if (!nextStage) {
+      return { success: false, error: 'Cannot approve - no next stage available' };
+    }
+
+    const nextUnit = getUnitIdForStage(nextStage);
+
+    const historyEntry = {
+      status: nextStage,
+      timestamp: new Date().toISOString(),
+      unit: nextUnit,
+      actor: actorName || 'System',
+      notes: notes || `Approved by ${actorName || 'System'}`
+    };
+
+    await updateDoc(ideaRef, {
+      currentStatus: nextStage,
+      currentUnit: nextUnit,
+      statusHistory: [...(idea.statusHistory || []), historyEntry],
+      updatedAt: serverTimestamp()
+    });
+
+    return { success: true, nextStage, nextUnit };
+  } catch (error) {
+    console.error('Error approving idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Return an idea to previous stage
+export const returnIdea = async (ideaId, reason, actorName) => {
+  try {
+    if (!reason || reason.trim() === '') {
+      return { success: false, error: 'Return reason is required' };
+    }
+
+    const ideaRef = doc(db, COLLECTIONS.IDEAS, ideaId);
+    const ideaDoc = await getDoc(ideaRef);
+
+    if (!ideaDoc.exists()) {
+      return { success: false, error: 'Idea not found' };
+    }
+
+    const idea = ideaDoc.data();
+    const previousStage = getPreviousStage(idea.currentStatus);
+
+    if (!previousStage) {
+      return { success: false, error: 'Cannot return - no previous stage' };
+    }
+
+    const previousUnit = getUnitIdForStage(previousStage);
+
+    // Add RETURNED status entry
+    const returnedEntry = {
+      status: PIPELINE_STAGES.RETURNED,
+      timestamp: new Date().toISOString(),
+      unit: idea.currentUnit,
+      actor: actorName || 'System',
+      notes: reason,
+      returnedTo: previousUnit
+    };
+
+    // Add entry for the stage it's returned to
+    const resumeEntry = {
+      status: previousStage,
+      timestamp: new Date().toISOString(),
+      unit: previousUnit,
+      actor: 'System',
+      notes: `Returned for revision: ${reason}`
+    };
+
+    await updateDoc(ideaRef, {
+      currentStatus: previousStage,
+      currentUnit: previousUnit,
+      returnReason: reason,
+      statusHistory: [...(idea.statusHistory || []), returnedEntry, resumeEntry],
+      updatedAt: serverTimestamp()
+    });
+
+    return { success: true, previousStage, previousUnit };
+  } catch (error) {
+    console.error('Error returning idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Reject an idea
+export const rejectIdea = async (ideaId, reason, actorName) => {
+  try {
+    if (!reason || reason.trim() === '') {
+      return { success: false, error: 'Rejection reason is required' };
+    }
+
+    const ideaRef = doc(db, COLLECTIONS.IDEAS, ideaId);
+    const ideaDoc = await getDoc(ideaRef);
+
+    if (!ideaDoc.exists()) {
+      return { success: false, error: 'Idea not found' };
+    }
+
+    const idea = ideaDoc.data();
+
+    const historyEntry = {
+      status: PIPELINE_STAGES.REJECTED,
+      timestamp: new Date().toISOString(),
+      unit: idea.currentUnit,
+      actor: actorName || 'System',
+      notes: reason
+    };
+
+    await updateDoc(ideaRef, {
+      currentStatus: PIPELINE_STAGES.REJECTED,
+      currentUnit: null,
+      rejectionReason: reason,
+      statusHistory: [...(idea.statusHistory || []), historyEntry],
+      updatedAt: serverTimestamp()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error rejecting idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Update drive link for an idea
+export const updateIdeaDriveLink = async (ideaId, driveLink) => {
+  try {
+    await updateDoc(doc(db, COLLECTIONS.IDEAS, ideaId), {
+      driveLink,
+      updatedAt: serverTimestamp()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating drive link:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Publish an idea as an event (Systems unit only)
+export const publishIdea = async (ideaId, eventData, actorName) => {
+  try {
+    const ideaRef = doc(db, COLLECTIONS.IDEAS, ideaId);
+    const ideaDoc = await getDoc(ideaRef);
+
+    if (!ideaDoc.exists()) {
+      return { success: false, error: 'Idea not found' };
+    }
+
+    const idea = ideaDoc.data();
+
+    // Verify idea is in Systems stage
+    if (idea.currentStatus !== PIPELINE_STAGES.SYSTEMS) {
+      return { success: false, error: 'Idea must be in Systems stage to publish' };
+    }
+
+    // Create event in events collection
+    const eventId = idea.id.replace('IDEA-', 'EVENT-');
+
+    const newEvent = {
+      name: eventData.name || idea.title,
+      description: eventData.description || idea.description,
+      date: eventData.date,
+      location: eventData.location || '',
+      maxParticipants: eventData.maxParticipants || idea.estimatedAttendees,
+      category: idea.type,
+      googleFormsLink: eventData.googleFormsLink || '',
+      linkedIdeaId: idea.id,
+      university: idea.university,
+      createdBy: actorName || 'Systems Unit',
+      createdAt: serverTimestamp(),
+      participantCount: 0
+    };
+
+    // Create the event
+    await setDoc(doc(db, COLLECTIONS.EVENTS, eventId), newEvent);
+
+    // Update the idea
+    const historyEntry = {
+      status: PIPELINE_STAGES.PUBLISHED,
+      timestamp: new Date().toISOString(),
+      unit: 'systems',
+      actor: actorName || 'System',
+      notes: `Event published as ${eventId}`
+    };
+
+    await updateDoc(ideaRef, {
+      currentStatus: PIPELINE_STAGES.PUBLISHED,
+      currentUnit: null,
+      isPublished: true,
+      publishedAt: serverTimestamp(),
+      eventId: eventId,
+      eventData: {
+        name: newEvent.name,
+        date: eventData.date,
+        location: newEvent.location,
+        maxParticipants: newEvent.maxParticipants,
+        googleFormsLink: newEvent.googleFormsLink
+      },
+      statusHistory: [...(idea.statusHistory || []), historyEntry],
+      updatedAt: serverTimestamp()
+    });
+
+    return { success: true, eventId, event: newEvent };
+  } catch (error) {
+    console.error('Error publishing idea:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Get pending count for a unit
+export const getPendingCountForUnit = async (unitId, university = null) => {
+  try {
+    const result = await getIdeasByUnit(unitId, university);
+    if (!result.success) return 0;
+
+    // Filter out rejected ideas
+    const pendingIdeas = result.ideas.filter(
+      idea => idea.currentStatus !== PIPELINE_STAGES.REJECTED
+    );
+
+    return pendingIdeas.length;
+  } catch (error) {
+    console.error('Error getting pending count:', error);
+    return 0;
+  }
+};
+
+// Get all active ideas (not rejected/published/completed)
+export const getActiveIdeas = async (university = null) => {
+  try {
+    let q;
+    if (university) {
+      q = query(
+        collection(db, COLLECTIONS.IDEAS),
+        where('university', '==', university)
+      );
+    } else {
+      q = collection(db, COLLECTIONS.IDEAS);
+    }
+
+    const snapshot = await getDocs(q);
+
+    let ideas = snapshot.docs
+      .map(doc => ({
+        ...doc.data(),
+        submittedAt: doc.data().submittedAt?.toDate?.() || doc.data().submittedAt,
+        createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
+        updatedAt: doc.data().updatedAt?.toDate?.() || doc.data().updatedAt,
+        publishedAt: doc.data().publishedAt?.toDate?.() || doc.data().publishedAt
+      }))
+      .filter(idea =>
+        idea.currentStatus !== PIPELINE_STAGES.REJECTED &&
+        idea.currentStatus !== PIPELINE_STAGES.PUBLISHED &&
+        idea.currentStatus !== PIPELINE_STAGES.COMPLETED
+      );
+
+    return { success: true, ideas };
+  } catch (error) {
+    console.error('Error getting active ideas:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// Get published ideas/events
+export const getPublishedIdeas = async (university = null) => {
+  try {
+    return await getIdeasByStatus(PIPELINE_STAGES.PUBLISHED, university);
+  } catch (error) {
+    console.error('Error getting published ideas:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// Get rejected ideas
+export const getRejectedIdeas = async (university = null) => {
+  try {
+    return await getIdeasByStatus(PIPELINE_STAGES.REJECTED, university);
+  } catch (error) {
+    console.error('Error getting rejected ideas:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// Get all ideas (for admin overview)
+export const getAllIdeas = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTIONS.IDEAS));
+
+    let ideas = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      submittedAt: doc.data().submittedAt?.toDate?.() || doc.data().submittedAt,
+      createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
+      updatedAt: doc.data().updatedAt?.toDate?.() || doc.data().updatedAt,
+      publishedAt: doc.data().publishedAt?.toDate?.() || doc.data().publishedAt
+    }));
+
+    // Sort by submission date (newest first)
+    ideas.sort((a, b) => {
+      const dateA = a.submittedAt instanceof Date ? a.submittedAt : new Date(a.submittedAt || 0);
+      const dateB = b.submittedAt instanceof Date ? b.submittedAt : new Date(b.submittedAt || 0);
+      return dateB - dateA;
+    });
+
+    return { success: true, ideas };
+  } catch (error) {
+    console.error('Error getting all ideas:', error);
+    return { success: false, error: error.message, ideas: [] };
+  }
+};
+
+// ===== Feedback Functions =====
+
+export const submitFeedback = async (feedbackData) => {
+  try {
+    const docRef = await addDoc(collection(db, COLLECTIONS.FEEDBACK), {
+      ...feedbackData,
+      status: 'new',
+      createdAt: serverTimestamp(),
+      resolvedAt: null,
+      resolvedBy: null
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllFeedback = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTIONS.FEEDBACK));
+    const feedback = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt,
+      resolvedAt: doc.data().resolvedAt?.toDate?.() || doc.data().resolvedAt
+    }));
+
+    // Sort by creation date (newest first)
+    feedback.sort((a, b) => {
+      const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt || 0);
+      const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt || 0);
+      return dateB - dateA;
+    });
+
+    return { success: true, feedback };
+  } catch (error) {
+    console.error('Error getting feedback:', error);
+    return { success: false, error: error.message, feedback: [] };
+  }
+};
+
+export const updateFeedbackStatus = async (feedbackId, status, resolvedBy = null) => {
+  try {
+    const updates = {
+      status,
+      updatedAt: serverTimestamp()
+    };
+
+    if (status === 'resolved') {
+      updates.resolvedAt = serverTimestamp();
+      updates.resolvedBy = resolvedBy;
+    }
+
+    await updateDoc(doc(db, COLLECTIONS.FEEDBACK, feedbackId), updates);
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating feedback status:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteFeedback = async (feedbackId) => {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.FEEDBACK, feedbackId));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting feedback:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// ========== ACCESS CODE FUNCTIONS ==========
+
+// Create a new access code
+export const createAccessCode = async (codeData) => {
+  try {
+    const code = codeData.code.toUpperCase();
+
+    // Check if code already exists
+    const existingDoc = await getDoc(doc(db, COLLECTIONS.ACCESS_CODES, code));
+    if (existingDoc.exists()) {
+      return { success: false, error: 'Access code already exists' };
+    }
+
+    await setDoc(doc(db, COLLECTIONS.ACCESS_CODES, code), {
+      code: code,
+      university: codeData.university || 'ALL',
+      description: codeData.description || '',
+      isActive: true,
+      usageCount: 0,
+      createdAt: serverTimestamp(),
+      expiresAt: codeData.expiresAt || null
+    });
+
+    return { success: true, code };
+  } catch (error) {
+    console.error('Error creating access code:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Get all access codes
+export const getAllAccessCodes = async () => {
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTIONS.ACCESS_CODES));
+    const codes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Sort by createdAt descending
+    codes.sort((a, b) => {
+      const dateA = a.createdAt?.toDate?.() || new Date(0);
+      const dateB = b.createdAt?.toDate?.() || new Date(0);
+      return dateB - dateA;
+    });
+
+    return { success: true, codes };
+  } catch (error) {
+    console.error('Error getting access codes:', error);
+    return { success: false, error: error.message, codes: [] };
+  }
+};
+
+// Validate an access code
+export const validateAccessCode = async (code, university = null) => {
+  try {
+    const codeUpper = code.toUpperCase();
+    const codeDoc = await getDoc(doc(db, COLLECTIONS.ACCESS_CODES, codeUpper));
+
+    if (!codeDoc.exists()) {
+      return { success: false, error: 'Invalid access code' };
+    }
+
+    const codeData = codeDoc.data();
+
+    // Check if code is active
+    if (!codeData.isActive) {
+      return { success: false, error: 'This access code has been deactivated' };
+    }
+
+    // Check if code has expired
+    if (codeData.expiresAt) {
+      const expiryDate = codeData.expiresAt.toDate?.() || new Date(codeData.expiresAt);
+      if (expiryDate < new Date()) {
+        return { success: false, error: 'This access code has expired' };
+      }
+    }
+
+    // Check if code is for a specific university
+    if (codeData.university !== 'ALL' && university && codeData.university !== university) {
+      return { success: false, error: 'This access code is not valid for your university' };
+    }
+
+    // Increment usage count
+    await updateDoc(doc(db, COLLECTIONS.ACCESS_CODES, codeUpper), {
+      usageCount: (codeData.usageCount || 0) + 1,
+      lastUsedAt: serverTimestamp()
+    });
+
+    return { success: true, codeData };
+  } catch (error) {
+    console.error('Error validating access code:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Update an access code
+export const updateAccessCode = async (codeId, updates) => {
+  try {
+    await updateDoc(doc(db, COLLECTIONS.ACCESS_CODES, codeId), {
+      ...updates,
+      updatedAt: serverTimestamp()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating access code:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Delete an access code
+export const deleteAccessCode = async (codeId) => {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.ACCESS_CODES, codeId));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting access code:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 export default {
+  // Application functions
   submitApplication,
   getApplications,
   approveApplication,
   deleteApplication,
+  // Student functions
   getStudentByPassport,
   getStudentEvents,
+  getAllStudents,
+  updateStudent,
+  deleteStudent,
+  updateStudentTier,
+  addEventToStudent,
+  removeEventFromStudent,
+  generatePassportNumber,
+  // Event functions
   createEvent,
   getAllEvents,
   updateEvent,
@@ -1013,26 +1933,57 @@ export default {
   bulkAddStudentsToEvent,
   getEventStats,
   addStudentToEvent,
+  // Admin functions
   checkAdminAccess,
-  generatePassportNumber,
-  getAllStudents,
-  updateStudent,
-  deleteStudent,
-  updateStudentTier,
-  addEventToStudent,
-  removeEventFromStudent,
+  // Department functions
   getDepartmentAccess,
   createDepartment,
+  // News functions
   createNews,
   getAllNews,
   updateNews,
   deleteNews,
+  // Worker functions
   createWorker,
   getAllWorkers,
   updateWorker,
   deleteWorker,
+  migrateWorkersToUnits,
+  authenticateWorker,
   updateParticipationNotes,
   awardPointsToParticipation,
   WORKER_PERMISSIONS,
-  hasPermission
+  hasPermission,
+  // Ideas/Pipeline functions
+  PIPELINE_STAGES,
+  getNextStage,
+  getPreviousStage,
+  getUnitIdForStage,
+  generateIdeaId,
+  submitIdea,
+  getIdeasByUniversity,
+  getIdeasByUnit,
+  getIdeasByStatus,
+  getIdeaById,
+  approveIdea,
+  returnIdea,
+  rejectIdea,
+  updateIdeaDriveLink,
+  publishIdea,
+  getPendingCountForUnit,
+  getActiveIdeas,
+  getPublishedIdeas,
+  getRejectedIdeas,
+  getAllIdeas,
+  // Feedback functions
+  submitFeedback,
+  getAllFeedback,
+  updateFeedbackStatus,
+  deleteFeedback,
+  // Access Code functions
+  createAccessCode,
+  getAllAccessCodes,
+  validateAccessCode,
+  updateAccessCode,
+  deleteAccessCode
 };

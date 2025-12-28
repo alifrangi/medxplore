@@ -18,6 +18,7 @@ import {
   deleteObject 
 } from 'firebase/storage';
 import { db, storage } from '../services/firebase';
+import Icon from './shared/Icon';
 import './DepartmentFiles.css';
 
 const DepartmentFiles = ({ departmentId, departmentName }) => {
@@ -63,15 +64,15 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
   };
 
   const getFileIcon = (fileType) => {
-    if (fileType.includes('pdf')) return 'picture_as_pdf';
-    if (fileType.includes('image')) return 'image';
-    if (fileType.includes('video')) return 'videocam';
-    if (fileType.includes('audio')) return 'audiotrack';
-    if (fileType.includes('sheet') || fileType.includes('excel')) return 'table_chart';
-    if (fileType.includes('document') || fileType.includes('word')) return 'description';
-    if (fileType.includes('presentation') || fileType.includes('powerpoint')) return 'slideshow';
-    if (fileType.includes('zip') || fileType.includes('rar')) return 'folder_zip';
-    return 'insert_drive_file';
+    if (fileType.includes('pdf')) return 'FileText';
+    if (fileType.includes('image')) return 'Image';
+    if (fileType.includes('video')) return 'Video';
+    if (fileType.includes('audio')) return 'Music';
+    if (fileType.includes('sheet') || fileType.includes('excel')) return 'Table';
+    if (fileType.includes('document') || fileType.includes('word')) return 'FileText';
+    if (fileType.includes('presentation') || fileType.includes('powerpoint')) return 'Presentation';
+    if (fileType.includes('zip') || fileType.includes('rar')) return 'FolderArchive';
+    return 'File';
   };
 
   const getFileCategory = (fileType, fileName) => {
@@ -278,7 +279,7 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
                 disabled={uploading}
               />
               <label htmlFor="file-input" className="file-input-label">
-                <span className="material-icons-outlined">cloud_upload</span>
+                <Icon name="CloudUpload" size={20} />
                 {selectedFile ? selectedFile.name : 'Choose File'}
               </label>
             </div>
@@ -332,7 +333,7 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
         <AnimatePresence>
           {filteredFiles.length === 0 ? (
             <div className="no-files">
-              <span className="material-icons-outlined">folder_open</span>
+              <Icon name="FolderOpen" size={48} />
               <p>No files uploaded yet</p>
             </div>
           ) : (
@@ -346,9 +347,7 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
                 transition={{ duration: 0.2 }}
               >
                 <div className="file-icon">
-                  <span className="material-icons-outlined">
-                    {getFileIcon(file.type)}
-                  </span>
+                  <Icon name={getFileIcon(file.type)} size={24} />
                 </div>
                 
                 <div className="file-info">
@@ -365,30 +364,30 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
 
                 <div className="file-actions">
                   {canViewFile(file.name) && (
-                    <button 
+                    <button
                       className="action-btn view"
                       onClick={() => handleViewFile(file)}
                       title="View"
                     >
-                      <span className="material-icons-outlined">visibility</span>
+                      <Icon name="Eye" size={18} />
                     </button>
                   )}
-                  <a 
-                    href={file.url} 
-                    target="_blank" 
+                  <a
+                    href={file.url}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="action-btn download"
                     title="Download"
                   >
-                    <span className="material-icons-outlined">download</span>
+                    <Icon name="Download" size={18} />
                   </a>
                   {(isAdmin || file.uploadedById === userInfo?.id) && (
-                    <button 
+                    <button
                       className="action-btn delete"
                       onClick={() => handleDelete(file)}
                       title="Delete"
                     >
-                      <span className="material-icons-outlined">delete</span>
+                      <Icon name="Trash2" size={18} />
                     </button>
                   )}
                 </div>
@@ -420,19 +419,19 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
                   <h3>{viewingFile.name}</h3>
                   <p>Uploaded by {viewingFile.uploadedBy} • {formatFileSize(viewingFile.size)}</p>
                 </div>
-                <button 
+                <button
                   className="close-viewer-btn"
                   onClick={closeModal}
                   title="Close"
                 >
-                  <span className="material-icons-outlined">close</span>
+                  <Icon name="X" size={20} />
                 </button>
               </div>
               
               <div className="file-viewer-content">
                 {fileLoadError ? (
                   <div className="file-load-error">
-                    <span className="material-icons-outlined">error_outline</span>
+                    <Icon name="AlertCircle" size={48} />
                     <h4>Unable to load file</h4>
                     <p>The file "{viewingFile.name}" could not be displayed. This might happen if:</p>
                     <ul>
@@ -475,13 +474,13 @@ const DepartmentFiles = ({ departmentId, departmentName }) => {
               </div>
               
               <div className="file-viewer-actions">
-                <a 
-                  href={viewingFile.url} 
-                  target="_blank" 
+                <a
+                  href={viewingFile.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="viewer-action-btn primary"
                 >
-                  <span className="material-icons-outlined">download</span>
+                  <Icon name="Download" size={18} />
                   Download
                 </a>
                 <button 

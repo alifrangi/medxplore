@@ -441,3 +441,306 @@
     font-size: 1.5rem;
   }
 }
+
+/* Pipeline Section Styles */
+.pipeline-section {
+  margin-top: 0;
+}
+
+.pipeline-section h1 {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.legacy-section {
+  margin-top: 1.5rem;
+}
+
+.legacy-section h2 {
+  text-align: center;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+}
+
+.section-subtitle {
+  color: #999;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.pipeline-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pipeline-shortcut {
+  border-color: var(--unit-color, #e0e0e0);
+  position: relative;
+  overflow: hidden;
+}
+
+.pipeline-shortcut::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--unit-color);
+}
+
+.pipeline-shortcut:hover {
+  border-color: var(--unit-color);
+  background: color-mix(in srgb, var(--unit-color) 8%, white);
+}
+
+.input-hint {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* Unified Login Container */
+.admin-login-container.unified {
+  max-width: 420px;
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.unified .login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.unified .login-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem;
+}
+
+.unified .login-header p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.login-form .form-group {
+  margin: 0;
+}
+
+.login-form .form-group label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #94bed5;
+  box-shadow: 0 0 0 3px rgba(148, 190, 213, 0.1);
+}
+
+.form-input::placeholder {
+  color: #bbb;
+}
+
+.unified .login-button {
+  margin-top: 0.5rem;
+}
+
+.unified .admin-info {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .admin-login-container.unified {
+    padding: 2rem;
+    max-width: 100%;
+  }
+
+  .unified .login-header h1 {
+    font-size: 2rem;
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+:root.dark-mode .admin-login-card {
+  background: #1e1e1e;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .admin-input {
+  background: #2d2d2d;
+  border-color: #4d4d4d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .admin-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .admin-input::placeholder {
+  color: #888;
+}
+
+:root.dark-mode .error-message {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: #EF5350;
+}
+
+:root.dark-mode .dashboard-shortcuts {
+  background: #1e1e1e;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .dashboard-shortcut {
+  background: #1e1e1e;
+  border-color: #3d3d3d;
+}
+
+:root.dark-mode .dashboard-shortcut:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .dashboard-shortcut.admin-main:hover {
+  background: rgba(45, 156, 219, 0.1);
+}
+
+:root.dark-mode .dashboard-shortcut.research:hover {
+  background: rgba(0, 188, 212, 0.1);
+}
+
+:root.dark-mode .dashboard-shortcut.academic:hover {
+  background: rgba(76, 175, 80, 0.1);
+}
+
+:root.dark-mode .dashboard-shortcut.global-outreach:hover {
+  background: rgba(156, 39, 176, 0.1);
+}
+
+:root.dark-mode .dashboard-shortcut.student-engagement:hover {
+  background: rgba(255, 152, 0, 0.1);
+}
+
+:root.dark-mode .dashboard-shortcut.media-communications:hover {
+  background: rgba(233, 30, 99, 0.1);
+}
+
+:root.dark-mode .dashboard-shortcut.admin:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:root.dark-mode .current-worker {
+  background: rgba(33, 150, 243, 0.15);
+  border-color: #2196F3;
+}
+
+:root.dark-mode .current-worker p {
+  color: #64B5F6;
+}
+
+:root.dark-mode .login-modal {
+  background: #1e1e1e;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .modal-header {
+  border-bottom-color: #3d3d3d;
+}
+
+:root.dark-mode .close-button {
+  color: #888;
+}
+
+:root.dark-mode .close-button:hover {
+  background: #2d2d2d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .modal-input {
+  background: #2d2d2d;
+  border-color: #4d4d4d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .modal-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .cancel-button {
+  background: #2d2d2d;
+  color: #b0b0b0;
+  border-color: #4d4d4d;
+}
+
+:root.dark-mode .cancel-button:hover {
+  background: #3d3d3d;
+}
+
+:root.dark-mode .pipeline-shortcut:hover {
+  background: color-mix(in srgb, var(--unit-color) 10%, #1e1e1e);
+}
+
+:root.dark-mode .admin-login-container.unified {
+  background: #1e1e1e;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .unified .login-header h1 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .login-form .form-group label {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .form-input {
+  background: #2d2d2d;
+  border-color: #4d4d4d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .form-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(148, 190, 213, 0.15);
+}
+
+:root.dark-mode .form-input::placeholder {
+  color: #888;
+}
+
+:root.dark-mode .unified .admin-info {
+  border-top-color: #3d3d3d;
+}

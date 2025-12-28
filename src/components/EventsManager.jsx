@@ -11,6 +11,7 @@ import {
   getEventStats,
   TIER_DEFINITIONS
 } from '../services/database';
+import Icon from './shared/Icon';
 import './EventsManager.css';
 
 const EventsManager = ({ workerId, workerName }) => {
@@ -228,8 +229,8 @@ const EventsManager = ({ workerId, workerName }) => {
             </div>
             <p className="event-description">{event.description}</p>
             <div className="event-meta">
-              <span>📅 {formatDate(event.date)}</span>
-              <span>📍 {event.location}</span>
+              <span><Icon name="Calendar" size={14} /> {formatDate(event.date)}</span>
+              <span><Icon name="MapPin" size={14} /> {event.location}</span>
             </div>
             <div className="event-actions">
               <button

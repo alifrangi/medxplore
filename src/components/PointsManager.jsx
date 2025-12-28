@@ -3,6 +3,7 @@ import { collection, doc, updateDoc, addDoc, serverTimestamp } from 'firebase/fi
 import { db } from '../services/firebase';
 import { getAllWorkers } from '../services/database';
 import { generateProfileColor } from '../utils/crypto';
+import Icon from './shared/Icon';
 import './PointsManager.css';
 
 const PointsManager = ({ workerId, workerName }) => {
@@ -269,7 +270,7 @@ const PointsManager = ({ workerId, workerName }) => {
           <p>Recognize and reward team members for their contributions</p>
         </div>
         <button className="create-member-btn" onClick={handleCreateMember}>
-          <span className="material-icons-outlined">person_add</span>
+          <Icon name="UserPlus" size={18} />
           Create New Member
         </button>
       </div>
@@ -305,7 +306,7 @@ const PointsManager = ({ workerId, workerName }) => {
       <div className="participations-table-container">
         {filteredWorkers.length === 0 ? (
           <div className="no-participations">
-            <span className="material-icons-outlined">groups</span>
+            <Icon name="Users" size={48} />
             <h3>No Team Members Found</h3>
             <p>No team members match your current filters.</p>
           </div>
@@ -349,7 +350,7 @@ const PointsManager = ({ workerId, workerName }) => {
                       className="award-points-btn"
                       onClick={() => handleAwardPoints(worker)}
                     >
-                      <span className="material-icons-outlined">stars</span>
+                      <Icon name="Star" size={16} />
                       Award Points
                     </button>
                   </td>
@@ -367,7 +368,7 @@ const PointsManager = ({ workerId, workerName }) => {
             <div className="modal-header">
               <h3>Award Points to Team Member</h3>
               <button className="close-btn" onClick={() => setShowModal(false)}>
-                <span className="material-icons-outlined">close</span>
+                <Icon name="X" size={20} />
               </button>
             </div>
 
@@ -419,7 +420,7 @@ const PointsManager = ({ workerId, workerName }) => {
                 Cancel
               </button>
               <button className="submit-btn" onClick={submitPointsAward}>
-                <span className="material-icons-outlined">check_circle</span>
+                <Icon name="CheckCircle" size={18} />
                 Award Points
               </button>
             </div>
@@ -434,7 +435,7 @@ const PointsManager = ({ workerId, workerName }) => {
             <div className="modal-header">
               <h3>Create New Team Member</h3>
               <button className="close-btn" onClick={() => setShowCreateModal(false)}>
-                <span className="material-icons-outlined">close</span>
+                <Icon name="X" size={20} />
               </button>
             </div>
 
@@ -540,7 +541,7 @@ const PointsManager = ({ workerId, workerName }) => {
                   <>Creating...</>
                 ) : (
                   <>
-                    <span className="material-icons-outlined">check_circle</span>
+                    <Icon name="CheckCircle" size={18} />
                     Create Member
                   </>
                 )}

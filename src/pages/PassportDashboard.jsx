@@ -1,10 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { getStudentEvents, TIER_DEFINITIONS } from '../services/database';
 import TierProgressBar from '../components/TierProgressBar';
+import Icon from '../components/shared/Icon';
 import './PassportDashboard.css';
+
+// Animation variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const scaleIn = {
+  initial: { opacity: 0, scale: 0.9 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.9 }
+};
 
 const PassportDashboard = () => {
   const navigate = useNavigate();
@@ -147,14 +169,33 @@ const PassportDashboard = () => {
           background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
         }} />
       )}
-      <div className="dashboard-header">
+      <motion.div
+        className="dashboard-header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="header-content">
-          <h1>Welcome back, {studentData?.fullName}</h1>
-          <button onClick={handleLogout} className="logout-button">
+          <motion.h1
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            Welcome back, {studentData?.fullName}
+          </motion.h1>
+          <motion.button
+            onClick={handleLogout}
+            className="logout-button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Logout
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
       <div className="dashboard-container">
         <motion.div 
@@ -202,16 +243,14 @@ const PassportDashboard = () => {
                     key={tierName} 
                     className={`timeline-item ${tierName === currentTier ? 'active' : ''} ${totalEvents >= tierDef.min ? 'completed' : ''}`}
                   >
-                    <div 
+                    <div
                       className="timeline-icon"
-                      style={{ 
+                      style={{
                         backgroundColor: totalEvents >= tierDef.min ? tierDef.color : '#e0e0e0',
                         color: totalEvents >= tierDef.min ? 'white' : '#999'
                       }}
                     >
-                      <span className="material-icons-outlined">
-                        {tierDef.icon}
-                      </span>
+                      <Icon name={tierDef.icon} size={20} />
                     </div>
                     <span className="timeline-label">{tierName}</span>
                     {index < Object.keys(TIER_DEFINITIONS).length - 1 && (
@@ -223,9 +262,7 @@ const PassportDashboard = () => {
               
               <div className="current-tier">
                 <div className="tier-icon-wrapper">
-                  <span className="material-icons-outlined tier-icon">
-                    {TIER_DEFINITIONS[currentTier]?.icon}
-                  </span>
+                  <Icon name={TIER_DEFINITIONS[currentTier]?.icon} size={28} className="tier-icon" />
                 </div>
                 <div className="tier-info">
                   <span className="tier-label">Current Tier</span>
@@ -355,7 +392,7 @@ const PassportDashboard = () => {
                   </div>
                   
                   <div className="event-details">
-                    <p className="event-location">📍 {participation.event?.location || 'Location TBD'}</p>
+                    <p className="event-location"><Icon name="MapPin" size={14} /> {participation.event?.location || 'Location TBD'}</p>
                     <p className="event-description">
                       {truncateDescription(participation.event?.description)}
                     </p>
@@ -392,38 +429,27 @@ const PassportDashboard = () => {
           </div>
         </motion.div>
 
-        <div className="export-section">
-          <h3>Export Options</h3>
-          <div className="export-buttons">
-            <button className="export-button" disabled>
-              Generate PDF (Coming Soon)
-            </button>
-            <button className="export-button" disabled>
-              Share Link (Coming Soon)
-            </button>
-            <button className="export-button" disabled>
-              QR Code (Coming Soon)
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Event Details Modal */}
-      {showEventModal && selectedEventModal && (
-        <motion.div
-          className="event-modal-passport"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          onClick={closeEventModal}
-        >
+      <AnimatePresence>
+        {showEventModal && selectedEventModal && (
           <motion.div
-            className="event-modal-content-passport"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            className="event-modal-passport"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={closeEventModal}
           >
+            <motion.div
+              className="event-modal-content-passport"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ duration: 0.3, type: 'spring', stiffness: 300, damping: 30 }}
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="event-modal-header-passport">
               <h2>{selectedEventModal.event?.name || 'Event Details'}</h2>
               <button onClick={closeEventModal} className="close-modal-btn">×</button>
@@ -432,7 +458,7 @@ const PassportDashboard = () => {
             <div className="event-modal-body-passport">
               <div className="modal-event-info">
                 <div className="modal-info-item">
-                  <span className="modal-info-label">📅 Date:</span>
+                  <span className="modal-info-label"><Icon name="Calendar" size={16} /> Date:</span>
                   <span className="modal-info-value">
                     {(() => {
                       const date = selectedEventModal.event?.date;
@@ -463,12 +489,12 @@ const PassportDashboard = () => {
                 </div>
 
                 <div className="modal-info-item">
-                  <span className="modal-info-label">📍 Location:</span>
+                  <span className="modal-info-label"><Icon name="MapPin" size={16} /> Location:</span>
                   <span className="modal-info-value">{selectedEventModal.event?.location || 'Location TBD'}</span>
                 </div>
 
                 <div className="modal-info-item">
-                  <span className="modal-info-label">🎯 Participation:</span>
+                  <span className="modal-info-label"><Icon name="Target" size={16} /> Participation:</span>
                   <span className="modal-participation-badge">{selectedEventModal.participationType}</span>
                 </div>
               </div>
@@ -492,7 +518,7 @@ const PassportDashboard = () => {
               {selectedEventModal.pointsAwarded > 0 && (
                 <div className="modal-section">
                   <div className="modal-points-awarded">
-                    <span className="points-icon">⭐</span>
+                    <span className="points-icon"><Icon name="Star" size={20} /></span>
                     <span className="points-label">Points Earned:</span>
                     <span className="points-value">+{selectedEventModal.pointsAwarded}</span>
                   </div>
@@ -507,15 +533,16 @@ const PassportDashboard = () => {
                     rel="noopener noreferrer"
                     className="modal-certificate-link"
                   >
-                    <span className="material-icons-outlined">workspace_premium</span>
+                    <Icon name="Award" size={18} />
                     View Certificate
                   </a>
                 </div>
               )}
             </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

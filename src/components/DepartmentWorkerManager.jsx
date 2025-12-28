@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  getAllWorkers, 
-  createWorker, 
-  updateWorker, 
-  deleteWorker 
+import {
+  getAllWorkers,
+  createWorker,
+  updateWorker,
+  deleteWorker
 } from '../services/database';
+import Icon from './shared/Icon';
 import './DepartmentWorkerManager.css';
 
 const DepartmentWorkerManager = () => {
@@ -18,17 +19,26 @@ const DepartmentWorkerManager = () => {
     lastName: '',
     email: '',
     password: '',
-    departments: []
+    university: 'JUST',
+    units: []
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const departments = [
-    { id: 'operations-logistics', name: 'Operations & Logistics', emoji: '⚙️' },
-    { id: 'academic', name: 'Academic', emoji: '📚' },
-    { id: 'global-outreach', name: 'Global Outreach', emoji: '🌍' },
-    { id: 'student-engagement', name: 'Student Engagement', emoji: '🤝' },
-    { id: 'media-communications', name: 'Media & Communications', emoji: '📢' }
+  // Pipeline units (replacing departments)
+  const units = [
+    { id: 'academic', name: 'Academic Unit', icon: 'BookOpen', color: '#4CAF50' },
+    { id: 'programs', name: 'Programs Unit', icon: 'ClipboardList', color: '#2196F3' },
+    { id: 'operations', name: 'Operations Unit', icon: 'Settings', color: '#607D8B' },
+    { id: 'external', name: 'External Approvals', icon: 'Building2', color: '#9C27B0' },
+    { id: 'systems', name: 'Systems Unit', icon: 'Monitor', color: '#FF5722' },
+    { id: 'passport', name: 'Passport Unit', icon: 'Ticket', color: '#009688' }
+  ];
+
+  // Universities
+  const universities = [
+    { id: 'JUST', name: 'Jordan University of Science & Technology' },
+    { id: 'YU', name: 'Yarmouk University' }
   ];
 
   useEffect(() => {
@@ -64,8 +74,8 @@ const DepartmentWorkerManager = () => {
       return;
     }
 
-    if (formData.departments.length === 0) {
-      setError('Please select at least one department');
+    if (formData.units.length === 0) {
+      setError('Please select at least one unit');
       return;
     }
 
@@ -75,7 +85,8 @@ const DepartmentWorkerManager = () => {
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
-          departments: formData.departments,
+          university: formData.university,
+          units: formData.units,
           ...(formData.password ? { password: formData.password } : {})
         });
 
@@ -92,7 +103,8 @@ const DepartmentWorkerManager = () => {
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
-          departments: formData.departments
+          university: formData.university,
+          units: formData.units
         });
 
         if (result.success) {
@@ -115,7 +127,8 @@ const DepartmentWorkerManager = () => {
       lastName: worker.lastName,
       email: worker.email,
       password: '',
-      departments: worker.departments
+      university: worker.university || 'JUST',
+      units: worker.units || []
     });
     setShowAddForm(true);
   };
@@ -138,12 +151,12 @@ const DepartmentWorkerManager = () => {
     }
   };
 
-  const handleDepartmentToggle = (deptId) => {
+  const handleUnitToggle = (unitId) => {
     setFormData(prev => ({
       ...prev,
-      departments: prev.departments.includes(deptId)
-        ? prev.departments.filter(d => d !== deptId)
-        : [...prev.departments, deptId]
+      units: prev.units.includes(unitId)
+        ? prev.units.filter(u => u !== unitId)
+        : [...prev.units, unitId]
     }));
   };
 
@@ -153,7 +166,8 @@ const DepartmentWorkerManager = () => {
       lastName: '',
       email: '',
       password: '',
-      departments: []
+      university: 'JUST',
+      units: []
     });
     setEditingWorker(null);
     setShowAddForm(false);
@@ -175,13 +189,15 @@ const DepartmentWorkerManager = () => {
       transition={{ duration: 0.5 }}
     >
       <div className="manager-header">
-        <h2>Department Workers</h2>
-        <button 
-          className="add-worker-btn"
-          onClick={() => setShowAddForm(true)}
-        >
-          Add New Worker
-        </button>
+        <h2>Unit Workers</h2>
+        <div className="header-actions">
+          <button
+            className="add-worker-btn"
+            onClick={() => setShowAddForm(true)}
+          >
+            Add New Worker
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -265,18 +281,36 @@ const DepartmentWorkerManager = () => {
               </div>
 
               <div className="form-group">
-                <label>Assigned Departments *</label>
-                <div className="departments-grid">
-                  {departments.map(dept => (
-                    <label key={dept.id} className="department-checkbox">
+                <label>University *</label>
+                <div className="university-selector">
+                  {universities.map(uni => (
+                    <label key={uni.id} className="university-radio">
+                      <input
+                        type="radio"
+                        name="university"
+                        value={uni.id}
+                        checked={formData.university === uni.id}
+                        onChange={(e) => setFormData({...formData, university: e.target.value})}
+                      />
+                      <span className="radio-label">{uni.id}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Assigned Units *</label>
+                <div className="units-grid">
+                  {units.map(unit => (
+                    <label key={unit.id} className="unit-checkbox" style={{ '--unit-color': unit.color }}>
                       <input
                         type="checkbox"
-                        checked={formData.departments.includes(dept.id)}
-                        onChange={() => handleDepartmentToggle(dept.id)}
+                        checked={formData.units.includes(unit.id)}
+                        onChange={() => handleUnitToggle(unit.id)}
                       />
                       <span className="checkbox-label">
-                        <span className="dept-emoji">{dept.emoji}</span>
-                        {dept.name}
+                        <span className="unit-icon"><Icon name={unit.icon} size={16} /></span>
+                        {unit.name}
                       </span>
                     </label>
                   ))}
@@ -312,7 +346,7 @@ const DepartmentWorkerManager = () => {
                 transition={{ duration: 0.3 }}
               >
                 <div className="worker-header">
-                  <div 
+                  <div
                     className="worker-avatar"
                     style={{ backgroundColor: worker.profileColor }}
                   >
@@ -322,17 +356,21 @@ const DepartmentWorkerManager = () => {
                     <h4>{worker.firstName} {worker.lastName}</h4>
                     <p>{worker.email}</p>
                   </div>
+                  <span className="university-badge">{worker.university || 'JUST'}</span>
                 </div>
 
-                <div className="worker-departments">
-                  {worker.departments.map(deptId => {
-                    const dept = departments.find(d => d.id === deptId);
-                    return dept ? (
-                      <span key={deptId} className="department-tag">
-                        {dept.emoji} {dept.name}
+                <div className="worker-units">
+                  {(worker.units && worker.units.length > 0 ? worker.units : []).map(unitId => {
+                    const unit = units.find(u => u.id === unitId);
+                    return unit ? (
+                      <span key={unitId} className="unit-tag" style={{ backgroundColor: unit.color }}>
+                        <Icon name={unit.icon} size={14} /> {unit.name}
                       </span>
                     ) : null;
                   })}
+                  {(!worker.units || worker.units.length === 0) && worker.departments && worker.departments.length > 0 && (
+                    <span className="legacy-notice">Legacy departments - needs migration</span>
+                  )}
                 </div>
 
                 <div className="worker-meta">

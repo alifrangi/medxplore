@@ -1,5 +1,6 @@
 import React from 'react';
 import { TIER_DEFINITIONS } from '../services/database';
+import Icon from './shared/Icon';
 
 const TierProgressBar = ({ currentTier, totalEvents }) => {
   // Get current tier info
@@ -62,20 +63,20 @@ const TierProgressBar = ({ currentTier, totalEvents }) => {
       {/* Progress Header */}
       <div className="progress-header">
         <div className="current-tier-info">
-          <span className="material-icons-outlined tier-icon" style={{ color: currentColor }}>
-            {currentTierInfo.icon}
+          <span className="tier-icon" style={{ color: currentColor }}>
+            <Icon name={currentTierInfo.icon} size={24} />
           </span>
           <div className="tier-details">
             <span className="tier-name">{currentTier}</span>
             <span className="events-count">{current} events</span>
           </div>
         </div>
-        
+
         <div className="next-tier-info">
           <span className="next-label">Next:</span>
           <div className="next-tier-details">
-            <span className="material-icons-outlined next-tier-icon" style={{ color: nextTierColor }}>
-              {TIER_DEFINITIONS[nextTier].icon}
+            <span className="next-tier-icon" style={{ color: nextTierColor }}>
+              <Icon name={TIER_DEFINITIONS[nextTier].icon} size={20} />
             </span>
             <span className="next-tier-name">{nextTier}</span>
           </div>

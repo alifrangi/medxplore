@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { getAllEvents } from '../services/database'
+import Icon from '../components/shared/Icon'
 import './Events.css'
 
 const Events = () => {
@@ -184,7 +185,7 @@ const Events = () => {
 
                     <div className="event-details">
                       <div className="event-detail">
-                        <span className="detail-icon">📅</span>
+                        <span className="detail-icon"><Icon name="Calendar" size={18} /></span>
                         <div className="detail-content">
                           <span className="detail-label">Date</span>
                           <span className="detail-value">{formatDate(event.date)}</span>
@@ -192,7 +193,7 @@ const Events = () => {
                       </div>
 
                       <div className="event-detail">
-                        <span className="detail-icon">📍</span>
+                        <span className="detail-icon"><Icon name="MapPin" size={18} /></span>
                         <div className="detail-content">
                           <span className="detail-label">Location</span>
                           <span className="detail-value">{event.location}</span>
@@ -201,7 +202,7 @@ const Events = () => {
 
                       {event.maxParticipants && (
                         <div className="event-detail">
-                          <span className="detail-icon">👥</span>
+                          <span className="detail-icon"><Icon name="Users" size={18} /></span>
                           <div className="detail-content">
                             <span className="detail-label">Max Participants</span>
                             <span className="detail-value">{event.maxParticipants}</span>
@@ -275,7 +276,7 @@ const Events = () => {
                 <h2 className="event-modal-title">{selectedEvent.name}</h2>
               </div>
               <button className="modal-close-btn" onClick={closeModal}>
-                <span className="material-icons-outlined">close</span>
+                <Icon name="X" size={20} />
               </button>
             </div>
 
@@ -289,7 +290,7 @@ const Events = () => {
                 <h3>Event Details</h3>
                 <div className="modal-details-grid">
                   <div className="modal-detail-item">
-                    <span className="detail-icon">📅</span>
+                    <span className="detail-icon"><Icon name="Calendar" size={18} /></span>
                     <div>
                       <span className="detail-label">Date</span>
                       <span className="detail-value">{formatDate(selectedEvent.date)}</span>
@@ -297,7 +298,7 @@ const Events = () => {
                   </div>
 
                   <div className="modal-detail-item">
-                    <span className="detail-icon">⏰</span>
+                    <span className="detail-icon"><Icon name="Clock" size={18} /></span>
                     <div>
                       <span className="detail-label">Time</span>
                       <span className="detail-value">{formatTime(selectedEvent.date)}</span>
@@ -305,7 +306,7 @@ const Events = () => {
                   </div>
 
                   <div className="modal-detail-item">
-                    <span className="detail-icon">📍</span>
+                    <span className="detail-icon"><Icon name="MapPin" size={18} /></span>
                     <div>
                       <span className="detail-label">Location</span>
                       <span className="detail-value">{selectedEvent.location}</span>
@@ -314,7 +315,7 @@ const Events = () => {
 
                   {selectedEvent.maxParticipants && (
                     <div className="modal-detail-item">
-                      <span className="detail-icon">👥</span>
+                      <span className="detail-icon"><Icon name="Users" size={18} /></span>
                       <div>
                         <span className="detail-label">Max Participants</span>
                         <span className="detail-value">{selectedEvent.maxParticipants}</span>

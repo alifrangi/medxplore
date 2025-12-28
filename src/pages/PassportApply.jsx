@@ -16,18 +16,19 @@ const PassportApply = () => {
     fullName: '',
     dateOfBirth: '',
     nationality: '',
-    
+
     // Academic Details
     university: '',
+    otherUniversity: '', // For "Other" option
     studentId: '',
     program: '',
     yearOfStudy: '',
-    
+
     // Contact Information
     email: '',
     countryCode: '+962',
     phone: '',
-    
+
     // Medical Interests
     preferredSpecialties: '',
     careerGoals: ''
@@ -63,6 +64,9 @@ const PassportApply = () => {
         break;
       case 2:
         if (!formData.university) newErrors.university = 'University is required';
+        if (formData.university === 'Other' && !formData.otherUniversity) {
+          newErrors.otherUniversity = 'Please specify your university';
+        }
         if (!formData.studentId) newErrors.studentId = 'Student ID is required';
         if (!formData.program) newErrors.program = 'Program is required';
         if (!formData.yearOfStudy) newErrors.yearOfStudy = 'Year of study is required';
@@ -417,34 +421,29 @@ const PassportApply = () => {
                     className={errors.university ? 'error' : ''}
                   >
                     <option value="">Select university</option>
-                    <option value="University of Jordan">University of Jordan</option>
-                    <option value="Jordan University of Science and Technology (JUST)">Jordan University of Science and Technology</option>
-                    <option value="Yarmouk University">Yarmouk University</option>
-                    <option value="Mu'tah University">Mu'tah University</option>
-                    <option value="Hashemite University">Hashemite University</option>
-                    <option value="Al al-Bayt University">Al al-Bayt University</option>
-                    <option value="Al-Balqa Applied University">Al-Balqa Applied University</option>
-                    <option value="Tafila Technical University">Tafila Technical University</option>
-                    <option value="Al-Hussein Bin Talal University">Al-Hussein Bin Talal University</option>
-                    <option value="German Jordanian University">German Jordanian University</option>
-                    <option value="Princess Sumaya University for Technology">Princess Sumaya University for Technology</option>
-                    <option value="Jordan University of Science and Arts">Jordan University of Science and Arts</option>
-                    <option value="Applied Science Private University">Applied Science Private University</option>
-                    <option value="Philadelphia University">Philadelphia University</option>
-                    <option value="Zarqa University">Zarqa University</option>
-                    <option value="Al-Zaytoonah University of Jordan">Al-Zaytoonah University of Jordan</option>
-                    <option value="Petra University">Petra University</option>
-                    <option value="Jerash University">Jerash University</option>
-                    <option value="Irbid National University">Irbid National University</option>
-                    <option value="Jadara University">Jadara University</option>
-                    <option value="Ajloun National University">Ajloun National University</option>
-                    <option value="Al-Ahliyya Amman University">Al-Ahliyya Amman University</option>
-                    <option value="Middle East University">Middle East University</option>
-                    <option value="Amman Arab University">Amman Arab University</option>
-                    <option value="World Islamic Sciences and Education University">World Islamic Sciences and Education University</option>
+                    <option value="JUST">Jordan University of Science and Technology (JUST)</option>
+                    <option value="YU">Yarmouk University (YU)</option>
+                    <option value="HU">Hashemite University (HU)</option>
+                    <option value="Other">Other University</option>
                   </select>
                   {errors.university && <span className="error-text">{errors.university}</span>}
                 </div>
+
+                {formData.university === 'Other' && (
+                  <div className="form-group">
+                    <label>Specify University *</label>
+                    <input
+                      type="text"
+                      name="otherUniversity"
+                      value={formData.otherUniversity}
+                      onChange={handleInputChange}
+                      className={errors.otherUniversity ? 'error' : ''}
+                      placeholder="Enter your university name"
+                    />
+                    {errors.otherUniversity && <span className="error-text">{errors.otherUniversity}</span>}
+                    <p className="field-hint">Applications from other universities will be reviewed by the admin team.</p>
+                  </div>
+                )}
                 
                 <div className="form-group">
                   <label>Student ID *</label>

@@ -403,24 +403,60 @@ color: var(--accent-color);
   .navbar__desktop {
     display: none;
   }
-  
+
   .navbar__mobile-toggle {
     display: flex;
   }
-  
+
   .navbar__logo-text {
     font-size: 1.5rem;
   }
-  
+
   .navbar__logo-image {
     height: 32px;
   }
-  
+
   .navbar {
     height: 60px;
   }
-  
+
   :root {
     --navbar-height: 60px;
   }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+:root.dark-mode .navbar {
+  background: rgba(30, 30, 30, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+:root.dark-mode .navbar--scrolled {
+  background: rgba(30, 30, 30, 0.98);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .navbar__mobile-toggle span {
+  background: #f5f5f5;
+}
+
+:root.dark-mode .navbar__dropdown-menu {
+  background: #1e1e1e;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .navbar__dropdown-item {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .navbar__dropdown-item:hover {
+  background: #2d2d2d;
+}
+
+:root.dark-mode .navbar__dropdown-divider {
+  background: #3d3d3d;
+}
+
+:root.dark-mode .navbar__dropdown-item--worker:hover {
+  background: rgba(0, 188, 212, 0.15);
 }

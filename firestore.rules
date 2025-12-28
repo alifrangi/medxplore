@@ -1,157 +1,180 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // Admin check - checks for Firebase Auth users with admin email domain
     function isAdmin() {
-      return request.auth != null && 
+      return request.auth != null &&
              request.auth.token.email != null &&
              (request.auth.token.email.matches('.*@medxplore\\.com'));
     }
-    
+
     // Helper function to validate student data
     function isValidStudentData() {
-      return request.resource.data.keys().hasAll(['fullName', 'email', 'university', 'passportNumber']) &&
+      return request.resource.data.keys().hasAll(['fullName', 'email', 'university',
+'passportNumber']) &&
              request.resource.data.fullName is string &&
              request.resource.data.email is string &&
              request.resource.data.university is string;
     }
-    
-    // Helper function to validate application data
-    function isValidApplicationData() {
-      return request.resource.data.keys().hasAll(['fullName', 'email', 'phone', 'university', 'yearOfStudy', 'major']) &&
-             request.resource.data.fullName is string &&
+
+    // Helper function to validate worker data
+    function isValidWorkerData() {
+      return request.resource.data.keys().hasAll(['firstName', 'lastName', 'email',
+'departments']) &&
+             request.resource.data.firstName is string &&
+             request.resource.data.lastName is string &&
              request.resource.data.email is string &&
-             request.resource.data.phone is string &&
-             request.resource.data.university is string &&
-             request.resource.data.yearOfStudy is string &&
-             request.resource.data.major is string;
+             request.resource.data.departments is list &&
+             request.resource.data.firstName.size() > 0 &&
+             request.resource.data.lastName.size() > 0;
     }
-    
+
     // Students collection
     match /students/{passportNumber} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if true;
     }
-    
+
     // Applications collection
     match /applications/{applicationId} {
       allow create: if true;
-      allow read, update, delete: if isAdmin();
+      allow read, update, delete: if true;
     }
-    
+
     // Events collection
     match /events/{eventId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      // Allow workers to create/update events (for publishing from pipeline)
+      // Access control is handled at application level since workers don't use Firebase Auth
+      allow create, update: if true;
+      allow delete: if true;
     }
-    
+
     // Participations collection
     match /participations/{participationId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if true;
     }
-    
+
     // Admins collection
     match /admins/{adminId} {
       allow read: if true;
       allow write: if false;
     }
-    
+
     // News collection
     match /news/{newsId} {
       allow read: if true;
-      allow create, update, delete: if isAdmin();
+      allow create, update, delete: if true;
     }
-    
+
     // Workers collection (department workers - no Firebase Auth)
     match /workers/{workerId} {
-      // Allow public read for worker authentication
+      // Allow public read for worker authentication and leaderboard display
       allow read: if true;
 
-      // Allow workers to update their own session data (login/logout)
-      // This allows updating only sessionToken, tokenExpiry, and lastLogin fields
-      allow update: if request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(['sessionToken', 'tokenExpiry', 'lastLogin']) ||
-        // Allow updating points and departments for leaderboard management
-        request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(['points', 'departments']) ||
-        request.resource.data.diff(resource.data).affectedKeys()
-        .hasOnly(['points']);
+      // Allow all updates (access control handled at app level)
+      allow update: if true;
 
-      // Allow creating workers (for seeding leaderboard)
+      // Allow creating workers
       allow create: if true;
 
-      // Only admins can delete workers
-      allow delete: if isAdmin();
+      // Allow delete (access control handled at app level for worker login system)
+      allow delete: if true;
     }
-    
+
+    // Worker Points History collection (tracks point awards)
+    match /workerPointsHistory/{historyId} {
+      // Allow public read to see who earned points
+      allow read: if true;
+
+      // Allow creating point history records
+      allow create: if true;
+
+      // Allow updates and deletes
+      allow update, delete: if true;
+    }
+
     // Department collections
     match /departments/{departmentId} {
       // Public read for department info
       allow read: if true;
-      
-      // Only admins can manage departments
-      allow create, update, delete: if isAdmin();
-      
-      // Department messages
+
+      // Allow manage departments
+      allow create, update, delete: if true;
+
+      // Department messages - Allow workers to create messages
       match /messages/{messageId} {
-        // Allow anyone to read messages
         allow read: if true;
-        // Allow anyone to create messages (workers and admins)
         allow create: if true;
-        // Allow only the message sender to update their own messages or admins
-        allow update: if isAdmin() || 
-          (resource.data.senderId == request.resource.data.senderId);
-        // Allow only admins or message sender to delete
-        allow delete: if isAdmin() || 
-          (resource.data.senderId == request.auth.uid);
-      }
-      
-      // Department ideas
-      match /ideas/{ideaId} {
-        // Allow anyone to read ideas
-        allow read: if true;
-        // Allow anyone to create ideas
-        allow create: if true;
-        // Allow users to update their own ideas or admins
-        allow update: if isAdmin() || 
-          (resource.data.authorId == request.resource.data.authorId);
-        // Allow users to delete their own ideas or admins
-        allow delete: if isAdmin() || 
-          (resource.data.authorId == request.auth.uid);
-      }
-      
-      // Department files
-      match /files/{fileId} {
-        // Allow anyone to read files
-        allow read: if true;
-        // Allow anyone to create files (workers can upload without Firebase Auth)
-        allow create: if true;
-        // Allow anyone to delete files (access control handled at app level)
-        // This is necessary because workers don't use Firebase Auth
         allow delete: if true;
-        // Allow updates only by admins
-        allow update: if isAdmin();
+        allow update: if true;
+      }
+
+      // Department ideas - Allow workers to create and manage ideas
+      match /ideas/{ideaId} {
+        allow read: if true;
+        allow create: if true;
+        allow update: if true;
+        allow delete: if true;
+      }
+
+      // Department files - Allow workers to upload and manage files
+      match /files/{fileId} {
+        allow read: if true;
+        allow create: if true;
+        allow delete: if true;
+        allow update: if true;
       }
     }
-    
+
+    // Ideas collection (Pipeline system - top-level)
+    match /ideas/{ideaId} {
+      // Anyone can read ideas (for tracking submissions)
+      allow read: if true;
+
+      // Anyone can create ideas (public submission via Ideas Board)
+      allow create: if true;
+
+      // Workers can update ideas (approve, reject, return)
+      // Access control is handled at application level since workers don't use Firebase Auth
+      allow update: if true;
+
+      // Allow delete
+      allow delete: if true;
+    }
+
+    // Feedback collection (user feedback submissions)
+    match /feedback/{feedbackId} {
+      // Anyone can create feedback
+      allow create: if true;
+
+      // Allow read for admin dashboard (access control at app level)
+      allow read: if true;
+
+      // Allow updates and deletes (access control at app level)
+      allow update, delete: if true;
+    }
+
+    // Access Codes collection (for Ideas Board authentication)
+    match /accessCodes/{codeId} {
+      // Allow read for code validation
+      allow read: if true;
+
+      // Allow all operations (access control at app level - admin only UI)
+      allow create, update, delete: if true;
+    }
+
     // Other collections
     match /achievements/{achievementId} {
       allow read: if true;
-      allow write: if isAdmin();
-    }
-    
-    match /tiers/{tierId} {
-      allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true;
     }
 
-    // Worker Points History collection
-    match /workerPointsHistory/{historyId} {
+    match /tiers/{tierId} {
       allow read: if true;
-      allow create: if true;
-      allow update, delete: if isAdmin();
+      allow write: if true;
     }
   }
 }

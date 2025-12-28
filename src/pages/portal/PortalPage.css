@@ -1,0 +1,238 @@
+.portal-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FAF8F1;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-background {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.portal-bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.portal-bg-shape.shape-1 {
+  width: 600px;
+  height: 600px;
+  background: linear-gradient(135deg, #94bed5 0%, #a8d5e5 100%);
+  top: -200px;
+  right: -100px;
+}
+
+.portal-bg-shape.shape-2 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+  bottom: -150px;
+  left: -100px;
+}
+
+.portal-bg-shape.shape-3 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #2196F3 0%, #64B5F6 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.portal-container {
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.portal-header {
+  margin-bottom: 3rem;
+}
+
+.portal-logo {
+  margin-bottom: 1rem;
+}
+
+.portal-logo .logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: 0.05em;
+}
+
+.portal-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.portal-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+.portal-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.portal-card {
+  position: relative;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.portal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.portal-card:hover::before {
+  border-color: var(--card-color);
+}
+
+.portal-card:hover {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.portal-card:hover .card-icon-wrapper {
+  transform: scale(1.05);
+}
+
+.portal-icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.portal-card h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.75rem 0;
+}
+
+.portal-card p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.card-arrow {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.portal-card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.card-arrow svg {
+  width: 20px;
+  height: 20px;
+  color: var(--card-color);
+}
+
+.portal-footer {
+  margin-top: 1rem;
+}
+
+.back-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.back-home-link:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .portal-page {
+    padding: 1rem;
+  }
+
+  .portal-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .portal-logo .logo-text {
+    font-size: 2rem;
+  }
+
+  .portal-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .portal-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

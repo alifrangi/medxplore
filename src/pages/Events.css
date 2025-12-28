@@ -654,3 +654,78 @@
     font-size: 0.95rem;
   }
 }
+
+/* ===== DARK MODE SUPPORT ===== */
+:root.dark-mode .events-page {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a1a 100%);
+}
+
+:root.dark-mode .events-card {
+  background: #1e1e1e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .events-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .events-socials {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+:root.dark-mode .events-footer {
+  background: rgba(30, 30, 30, 0.5);
+}
+
+:root.dark-mode .event-card {
+  background: #1e1e1e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .event-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .event-footer {
+  border-top-color: rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .no-events-card {
+  background: #1e1e1e;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .no-events-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .event-modal-content {
+  background: #1e1e1e;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+:root.dark-mode .event-modal-header {
+  background: #1e1e1e;
+  border-bottom-color: rgba(169, 211, 216, 0.15);
+}
+
+:root.dark-mode .modal-close-btn {
+  color: #888;
+}
+
+:root.dark-mode .modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent-color);
+}
+
+:root.dark-mode .modal-detail-item {
+  background: rgba(169, 211, 216, 0.05);
+  border-color: rgba(169, 211, 216, 0.1);
+}
+
+:root.dark-mode .modal-footer-actions {
+  border-top-color: rgba(169, 211, 216, 0.15);
+}

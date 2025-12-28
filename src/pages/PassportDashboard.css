@@ -1738,3 +1738,286 @@
     min-width: auto;
   }
 }
+
+/* ===== DARK MODE SUPPORT ===== */
+:root.dark-mode .passport-dashboard {
+  background-color: #1a1a1a;
+}
+
+:root.dark-mode .passport-dashboard.theme-explorer,
+:root.dark-mode .passport-dashboard.theme-scholar,
+:root.dark-mode .passport-dashboard.theme-mentor {
+  background-color: #1a1a1a;
+}
+
+:root.dark-mode .dashboard-header {
+  background: rgba(30, 30, 30, 0.95);
+  border-bottom-color: #3d3d3d;
+}
+
+:root.dark-mode .dashboard-header h1 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .passport-card {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: #4d4d4d;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .passport-header-section h2 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .passport-header-section {
+  border-bottom-color: #3d3d3d;
+}
+
+:root.dark-mode .passport-number {
+  color: var(--tier-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--tier-primary);
+}
+
+:root.dark-mode .passport-info {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.05) 100%);
+  border-color: #4d4d4d;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .passport-info .info-item label {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .passport-info .info-item p {
+  color: #f5f5f5;
+  text-shadow: none;
+}
+
+:root.dark-mode .tier-section {
+  background: #252525;
+  border-color: #3d3d3d;
+}
+
+:root.dark-mode .tier-header h3 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .tier-description {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .tier-benefits {
+  background: #252525;
+  border-color: #4d4d4d;
+}
+
+:root.dark-mode .tier-benefits h4 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .tier-benefits li {
+  color: #e0e0e0;
+}
+
+:root.dark-mode .tier-progress {
+  background: #2d2d2d;
+  border-color: #4d4d4d;
+}
+
+:root.dark-mode .progress-text {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .progress-count {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .progress-bar {
+  background-color: #3d3d3d;
+}
+
+:root.dark-mode .max-tier-reached {
+  background: linear-gradient(135deg, #2d2d2d 0%, #252525 100%);
+}
+
+:root.dark-mode .max-tier-reached p {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .next-tier-preview h5 {
+  color: #888;
+}
+
+:root.dark-mode .next-tier-preview {
+  border-top-color: #3d3d3d;
+}
+
+:root.dark-mode .preview-benefits li {
+  color: #888;
+}
+
+:root.dark-mode .events-section {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: #4d4d4d;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .section-header h2 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .stat-item {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .filter-buttons button {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border: 1px solid #4d4d4d;
+}
+
+:root.dark-mode .event-card {
+  background-color: #2d2d2d;
+  border: 1px solid #3d3d3d;
+}
+
+:root.dark-mode .event-card:hover {
+  background-color: #353535;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .event-header h3 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .event-date,
+:root.dark-mode .event-location {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .event-description {
+  background-color: #252525;
+  color: #b0b0b0;
+}
+
+:root.dark-mode .event-footer {
+  border-top-color: #3d3d3d;
+}
+
+:root.dark-mode .no-events {
+  color: #888;
+}
+
+:root.dark-mode .export-section {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: #4d4d4d;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .export-section h3 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .participation-admin-notes {
+  background-color: rgba(148, 190, 213, 0.1);
+  border-left-color: var(--tier-primary);
+}
+
+:root.dark-mode .participation-admin-notes label {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .participation-admin-notes p {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .participation-points-awarded {
+  background: linear-gradient(135deg, rgba(243, 156, 18, 0.15) 0%, rgba(243, 156, 18, 0.1) 100%);
+  border-color: rgba(243, 156, 18, 0.3);
+}
+
+/* Dark mode tier progress card */
+:root.dark-mode .tier-progress-card {
+  background: rgba(45, 45, 45, 0.95);
+  border-color: #4d4d4d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .tier-name,
+:root.dark-mode .next-tier-name {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .events-count {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .next-label {
+  color: #888;
+}
+
+:root.dark-mode .progress-track {
+  background: #3d3d3d;
+}
+
+:root.dark-mode .progress-markers {
+  color: #888;
+}
+
+:root.dark-mode .events-needed,
+:root.dark-mode .ready-message {
+  color: #b0b0b0;
+}
+
+/* Dark mode modal */
+:root.dark-mode .event-modal-content-passport {
+  background: #1e1e1e;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+:root.dark-mode .event-modal-header-passport {
+  border-bottom-color: #3d3d3d;
+}
+
+:root.dark-mode .event-modal-header-passport h2 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .close-modal-btn {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .close-modal-btn:hover {
+  background-color: #2d2d2d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .modal-event-info {
+  background: #252525;
+  border-color: #4d4d4d;
+}
+
+:root.dark-mode .modal-info-label {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .modal-info-value {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .modal-section h3 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .modal-description {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .modal-admin-notes {
+  background-color: rgba(148, 190, 213, 0.1);
+}
+
+:root.dark-mode .modal-admin-notes p {
+  color: #e0e0e0;
+}

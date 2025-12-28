@@ -680,3 +680,123 @@
     line-height: 1.6;
   }
 }
+
+/* ===== DARK MODE SUPPORT ===== */
+:root.dark-mode .hero {
+  background: #1a1a1a;
+}
+
+:root.dark-mode .hero__title {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .hero__subtitle {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .hero__description {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .btn--secondary {
+  color: #f5f5f5;
+  border-color: #f5f5f5;
+}
+
+:root.dark-mode .btn--secondary:hover {
+  background: #f5f5f5;
+  color: #1a1a1a;
+}
+
+:root.dark-mode .features {
+  background: #1a1a1a;
+}
+
+:root.dark-mode .features__header h2 {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .features__header p {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .feature-card {
+  background: #1e1e1e;
+  border-color: #3d3d3d;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .feature-card:hover {
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .feature-card__title {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .feature-card__description {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .team {
+  background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+}
+
+:root.dark-mode .team__title {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .team__title-script {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .team__team-title {
+  background: linear-gradient(135deg, rgba(169, 211, 216, 0.1) 0%, rgba(30, 30, 30, 0.8) 50%, rgba(169, 211, 216, 0.1) 100%);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border-color: rgba(169, 211, 216, 0.2);
+  color: #f5f5f5;
+}
+
+:root.dark-mode .team__member-circle {
+  background: #1e1e1e;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+:root.dark-mode .team__avatar-placeholder {
+  background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%);
+}
+
+:root.dark-mode .team__avatar-placeholder::before,
+:root.dark-mode .team__avatar-placeholder::after {
+  background: #555;
+}
+
+:root.dark-mode .team__member-name {
+  color: #f5f5f5;
+}
+
+:root.dark-mode .team__member-description {
+  color: #b0b0b0;
+}
+
+:root.dark-mode .contact-cta {
+  background: #2d2d2d;
+}
+
+:root.dark-mode .contact-cta .btn--primary {
+  background: #94bed5;
+  color: #1a1a1a;
+  border-color: #94bed5;
+}
+
+:root.dark-mode .contact-cta .btn--primary:hover {
+  background: #7aacca;
+}
+
+@media (max-width: 768px) {
+  :root.dark-mode .team__member {
+    background: #1e1e1e;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(169, 211, 216, 0.15);
+  }
+}
