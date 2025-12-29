@@ -9,7 +9,7 @@ import {
 import Icon from './shared/Icon';
 import './DepartmentWorkerManager.css';
 
-const DepartmentWorkerManager = () => {
+const DepartmentWorkerManager = ({ university: userUniversity }) => {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -19,7 +19,7 @@ const DepartmentWorkerManager = () => {
     lastName: '',
     email: '',
     password: '',
-    university: 'JUST',
+    university: userUniversity || 'JUST',
     units: []
   });
   const [error, setError] = useState('');
@@ -43,14 +43,18 @@ const DepartmentWorkerManager = () => {
 
   useEffect(() => {
     loadWorkers();
-  }, []);
+  }, [userUniversity]);
 
   const loadWorkers = async () => {
     setLoading(true);
     try {
       const result = await getAllWorkers();
       if (result.success) {
-        setWorkers(result.workers);
+        // Filter workers by university if userUniversity is provided
+        const filteredWorkers = userUniversity
+          ? result.workers.filter(worker => worker.university === userUniversity)
+          : result.workers;
+        setWorkers(filteredWorkers);
       }
     } catch (error) {
       setError('Failed to load workers');
@@ -121,13 +125,14 @@ const DepartmentWorkerManager = () => {
   };
 
   const handleEdit = (worker) => {
+    if (!worker) return;
     setEditingWorker(worker);
     setFormData({
-      firstName: worker.firstName,
-      lastName: worker.lastName,
-      email: worker.email,
+      firstName: worker.firstName || '',
+      lastName: worker.lastName || '',
+      email: worker.email || '',
       password: '',
-      university: worker.university || 'JUST',
+      university: worker.university || userUniversity || 'JUST',
       units: worker.units || []
     });
     setShowAddForm(true);
@@ -166,7 +171,7 @@ const DepartmentWorkerManager = () => {
       lastName: '',
       email: '',
       password: '',
-      university: 'JUST',
+      university: userUniversity || 'JUST',
       units: []
     });
     setEditingWorker(null);
@@ -280,23 +285,33 @@ const DepartmentWorkerManager = () => {
                 />
               </div>
 
-              <div className="form-group">
-                <label>University *</label>
-                <div className="university-selector">
-                  {universities.map(uni => (
-                    <label key={uni.id} className="university-radio">
-                      <input
-                        type="radio"
-                        name="university"
-                        value={uni.id}
-                        checked={formData.university === uni.id}
-                        onChange={(e) => setFormData({...formData, university: e.target.value})}
-                      />
-                      <span className="radio-label">{uni.id}</span>
-                    </label>
-                  ))}
+              {/* Only show university selector if user can manage all universities */}
+              {!userUniversity ? (
+                <div className="form-group">
+                  <label>University *</label>
+                  <div className="university-selector">
+                    {universities.map(uni => (
+                      <label key={uni.id} className="university-radio">
+                        <input
+                          type="radio"
+                          name="university"
+                          value={uni.id}
+                          checked={formData.university === uni.id}
+                          onChange={(e) => setFormData({...formData, university: e.target.value})}
+                        />
+                        <span className="radio-label">{uni.id}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="form-group">
+                  <label>University</label>
+                  <div className="university-display">
+                    <span className="university-badge-large">{userUniversity}</span>
+                  </div>
+                </div>
+              )}
 
               <div className="form-group">
                 <label>Assigned Units *</label>
@@ -350,11 +365,11 @@ const DepartmentWorkerManager = () => {
                     className="worker-avatar"
                     style={{ backgroundColor: worker.profileColor }}
                   >
-                    {worker.firstName[0]}{worker.lastName[0]}
+                    {(worker.firstName?.[0] || '?')}{(worker.lastName?.[0] || '?')}
                   </div>
                   <div className="worker-info">
-                    <h4>{worker.firstName} {worker.lastName}</h4>
-                    <p>{worker.email}</p>
+                    <h4>{worker.firstName || 'Unknown'} {worker.lastName || ''}</h4>
+                    <p>{worker.email || 'No email'}</p>
                   </div>
                   <span className="university-badge">{worker.university || 'JUST'}</span>
                 </div>

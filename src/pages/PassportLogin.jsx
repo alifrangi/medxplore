@@ -19,19 +19,51 @@ const PassportLogin = () => {
     }
   }, [isStudent, navigate]);
 
+  const handlePassportChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, ''); // Only allow digits
+
+    // Limit to 8 digits (YYYY + XXXX)
+    if (value.length > 8) {
+      value = value.slice(0, 8);
+    }
+
+    // Auto-insert dash after first 4 digits
+    if (value.length > 4) {
+      value = value.slice(0, 4) + '-' + value.slice(4);
+    }
+
+    setPassportNumber(value);
+  };
+
+  const getFullPassportNumber = () => {
+    return `MXP-${passportNumber}`;
+  };
+
+  const isValidFormat = () => {
+    // Check if we have exactly 8 digits (YYYY-XXXX format without the dash)
+    const digitsOnly = passportNumber.replace(/-/g, '');
+    return digitsOnly.length === 8;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!isValidFormat()) {
+      setError('Please enter all 8 digits (YYYY-XXXX)');
+      return;
+    }
+
     setLoading(true);
 
-    const result = await loginWithPassport(passportNumber.toUpperCase());
-    
+    const result = await loginWithPassport(getFullPassportNumber().toUpperCase());
+
     if (result.success) {
       navigate('/passport/dashboard');
     } else {
       setError(result.error || 'Invalid passport number');
     }
-    
+
     setLoading(false);
   };
 
@@ -50,17 +82,19 @@ const PassportLogin = () => {
           <form onSubmit={handleSubmit} className="passport-form">
             <div className="form-group">
               <label htmlFor="passport">Enter Your Passport Number</label>
-              <input
-                type="text"
-                id="passport"
-                placeholder="MXP-2025-XXXX"
-                value={passportNumber}
-                onChange={(e) => setPassportNumber(e.target.value)}
-                required
-                pattern="MXP-\d{4}-\d{4}"
-                className="passport-input"
-              />
-              <small className="input-hint">Format: MXP-YYYY-XXXX</small>
+              <div className="passport-input-wrapper">
+                <span className="passport-prefix">MXP-</span>
+                <input
+                  type="text"
+                  id="passport"
+                  placeholder="2025-XXXX"
+                  value={passportNumber}
+                  onChange={handlePassportChange}
+                  className="passport-input"
+                  maxLength={9}
+                />
+              </div>
+              <small className="input-hint">Enter the 8 digits after MXP-</small>
             </div>
 
             {error && (

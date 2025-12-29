@@ -232,17 +232,38 @@ const SystemsContent = ({
                     </div>
                     {event.eventData?.date && (
                       <p className="event-card__date">
-                        {new Date(event.eventData.date).toLocaleDateString('en-US', {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
+                        {(() => {
+                          try {
+                            const date = event.eventData.date;
+                            // Handle Firestore Timestamp
+                            const dateObj = date?.toDate ? date.toDate() :
+                                           date?.seconds ? new Date(date.seconds * 1000) :
+                                           new Date(date);
+                            return dateObj.toLocaleDateString('en-US', {
+                              weekday: 'short',
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            });
+                          } catch {
+                            return 'Date TBD';
+                          }
+                        })()}
                       </p>
                     )}
                     <p className="event-card__published">
                       Published {event.publishedAt
-                        ? new Date(event.publishedAt).toLocaleDateString()
+                        ? (() => {
+                            try {
+                              const date = event.publishedAt;
+                              const dateObj = date?.toDate ? date.toDate() :
+                                             date?.seconds ? new Date(date.seconds * 1000) :
+                                             new Date(date);
+                              return dateObj.toLocaleDateString();
+                            } catch {
+                              return 'recently';
+                            }
+                          })()
                         : 'recently'}
                     </p>
                     <div className="event-card__actions">
@@ -273,7 +294,7 @@ const SystemsContent = ({
 
       {activeSection === 'workers' && (
         <div className="workers-section">
-          <DepartmentWorkerManager />
+          <DepartmentWorkerManager university={university} />
         </div>
       )}
 

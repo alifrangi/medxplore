@@ -478,6 +478,21 @@
   margin-left: auto;
 }
 
+/* University display (locked/read-only) */
+.university-display {
+  padding: 10px 0;
+}
+
+.university-badge-large {
+  display: inline-block;
+  background: #333;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 /* Worker units display */
 .worker-units {
   display: flex;
@@ -677,6 +692,11 @@
 }
 
 :root.dark-mode .university-badge {
+  background: #4d4d4d;
+  color: #f5f5f5;
+}
+
+:root.dark-mode .university-badge-large {
   background: #4d4d4d;
   color: #f5f5f5;
 }
