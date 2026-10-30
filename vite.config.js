@@ -51,7 +51,12 @@ export default defineConfig({
           // Split vendor chunks
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
-          'animation': ['framer-motion', 'canvas-confetti'],
+          // framer-motion is used by Navbar, which renders on every page, so it
+          // is legitimately part of the first paint. canvas-confetti is used
+          // by exactly one lazily-loaded route (PassportApply) and was only
+          // reaching first paint because this entry dragged it in alongside
+          // framer-motion. Left out, it lands in that route's own chunk.
+          'animation': ['framer-motion'],
         },
       },
     },

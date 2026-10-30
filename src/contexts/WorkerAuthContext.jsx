@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { db } from '../services/firebase';
-import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { loadFirebase, loadFirestore } from '../services/firebaseLazy';
 import { verifyPassword, generateSecureToken, generateTokenExpiry, isTokenExpired, decryptEmail } from '../utils/crypto';
 
 const WorkerAuthContext = createContext();
@@ -22,6 +21,8 @@ export const WorkerAuthProvider = ({ children }) => {
     const loadWorker = async () => {
       try {
         const storedWorker = localStorage.getItem('workerSession');
+        // No stored worker session means no reason to pull in Firebase at all,
+        // which is the common case for every public visitor.
         if (storedWorker) {
           const workerData = JSON.parse(storedWorker);
           
@@ -31,6 +32,10 @@ export const WorkerAuthProvider = ({ children }) => {
             setWorker(null);
           } else {
             // Verify token with database
+            const [{ db }, { collection, query, where, getDocs }] = await Promise.all([
+              loadFirebase(),
+              loadFirestore(),
+            ]);
             const workerDoc = await getDocs(
               query(collection(db, 'workers'), where('sessionToken', '==', workerData.sessionToken))
             );
@@ -56,6 +61,11 @@ export const WorkerAuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      const [{ db }, { collection, getDocs, updateDoc, doc }] = await Promise.all([
+        loadFirebase(),
+        loadFirestore(),
+      ]);
+
       // Query workers by email (encrypted)
       const workersRef = collection(db, 'workers');
       const workersSnapshot = await getDocs(workersRef);
@@ -130,6 +140,10 @@ export const WorkerAuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       if (worker) {
+        const [{ db }, { updateDoc, doc }] = await Promise.all([
+          loadFirebase(),
+          loadFirestore(),
+        ]);
         // Clear session token in database
         await updateDoc(doc(db, 'workers', worker.id), {
           sessionToken: null,

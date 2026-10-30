@@ -1,23 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../services/firebase';
-import {
-  submitIdea as dbSubmitIdea,
-  approveIdea as dbApproveIdea,
-  returnIdea as dbReturnIdea,
-  rejectIdea as dbRejectIdea,
-  publishIdea as dbPublishIdea,
-  updateIdeaDriveLink as dbUpdateDriveLink,
-  getIdeasByUnit as dbGetIdeasByUnit,
-  getIdeasByStatus as dbGetIdeasByStatus,
-  getIdeasByUniversity as dbGetIdeasByUniversity,
-  getIdeaById as dbGetIdeaById,
-  getPendingCountForUnit as dbGetPendingCountForUnit,
-  getActiveIdeas as dbGetActiveIdeas,
-  getPublishedIdeas as dbGetPublishedIdeas,
-  getRejectedIdeas as dbGetRejectedIdeas,
-  PIPELINE_STAGES as DB_PIPELINE_STAGES
-} from '../services/database';
+import { loadFirebase, loadFirestore, loadDatabase } from '../services/firebaseLazy';
 import {
   initialMockAnnouncements,
   PIPELINE_STAGES,
@@ -37,6 +19,11 @@ export const usePipeline = () => {
   if (!context) {
     throw new Error('usePipeline must be used within a PipelineProvider');
   }
+  // Calling this hook is what declares that this component reads `ideas`, so
+  // it is also what starts the Firestore subscription. See the comment on the
+  // listener in PipelineProvider.
+  const { __retain } = context;
+  useEffect(() => __retain(), [__retain]);
   return context;
 };
 
@@ -64,11 +51,50 @@ export const PipelineProvider = ({ children }) => {
   // Announcements state (still mock for now)
   const [announcements] = useState(initialMockAnnouncements);
 
+  // This provider wraps the entire app, including the public homepage, but
+  // every component that reads `ideas` lives behind a lazily-loaded admin,
+  // worker or pipeline route. The listener below used to open on every page
+  // load, which both pulled the Firebase SDK into the first paint and ran a
+  // Firestore read for visitors who never saw an idea.
+  //
+  // `usePipeline` now retains the provider while a consumer is mounted, so the
+  // subscription (and the SDK download behind it) starts on the first real
+  // reader and stops when the last one unmounts.
+  const [readers, setReaders] = useState(0);
+  const retain = useCallback(() => {
+    setReaders((n) => n + 1);
+    return () => setReaders((n) => n - 1);
+  }, []);
+  const hasReaders = readers > 0;
+
   // Set up real-time listener for ideas from Firebase
   useEffect(() => {
+    if (!hasReaders) return undefined;
+
+    let cancelled = false;
+    let unsubscribe = null;
+
     setIdeasLoading(true);
 
-    const unsubscribe = onSnapshot(
+    (async () => {
+      let collection;
+      let onSnapshot;
+      let db;
+      try {
+        const [firebase, firestore] = await Promise.all([
+          loadFirebase(),
+          loadFirestore(),
+        ]);
+        ({ db } = firebase);
+        ({ collection, onSnapshot } = firestore);
+      } catch (error) {
+        console.error('Error loading Firebase for ideas listener:', error);
+        if (!cancelled) setIdeasLoading(false);
+        return;
+      }
+      if (cancelled) return;
+
+    unsubscribe = onSnapshot(
       collection(db, 'ideas'),
       (snapshot) => {
         const fetchedIdeas = snapshot.docs.map(doc => {
@@ -90,17 +116,23 @@ export const PipelineProvider = ({ children }) => {
           return dateB - dateA;
         });
 
+        if (cancelled) return;
         setIdeas(fetchedIdeas);
         setIdeasLoading(false);
       },
       (error) => {
         console.error('Error listening to ideas:', error);
-        setIdeasLoading(false);
+        if (!cancelled) setIdeasLoading(false);
       }
     );
 
-    return () => unsubscribe();
-  }, []);
+    })();
+
+    return () => {
+      cancelled = true;
+      if (unsubscribe) unsubscribe();
+    };
+  }, [hasReaders]);
 
   // Set user directly (for Firebase worker authentication)
   const setUserDirectly = useCallback((user) => {
@@ -136,6 +168,7 @@ export const PipelineProvider = ({ children }) => {
   // Submit new idea to Firebase
   const submitIdea = useCallback(async (ideaData) => {
     try {
+      const { submitIdea: dbSubmitIdea } = await loadDatabase();
       const result = await dbSubmitIdea(ideaData);
       if (result.success) {
         return result.idea;
@@ -150,6 +183,7 @@ export const PipelineProvider = ({ children }) => {
   // Approve idea (move to next stage) - Firebase
   const approveIdea = useCallback(async (ideaId, notes = '') => {
     try {
+      const { approveIdea: dbApproveIdea } = await loadDatabase();
       const result = await dbApproveIdea(ideaId, notes, currentUser?.name || 'System');
       if (!result.success) {
         throw new Error(result.error || 'Failed to approve idea');
@@ -164,6 +198,7 @@ export const PipelineProvider = ({ children }) => {
   // Return idea to previous unit - Firebase
   const returnIdea = useCallback(async (ideaId, reason) => {
     try {
+      const { returnIdea: dbReturnIdea } = await loadDatabase();
       const result = await dbReturnIdea(ideaId, reason, currentUser?.name || 'System');
       if (!result.success) {
         throw new Error(result.error || 'Failed to return idea');
@@ -178,6 +213,7 @@ export const PipelineProvider = ({ children }) => {
   // Reject idea - Firebase
   const rejectIdea = useCallback(async (ideaId, reason) => {
     try {
+      const { rejectIdea: dbRejectIdea } = await loadDatabase();
       const result = await dbRejectIdea(ideaId, reason, currentUser?.name || 'System');
       if (!result.success) {
         throw new Error(result.error || 'Failed to reject idea');
@@ -192,6 +228,7 @@ export const PipelineProvider = ({ children }) => {
   // Update drive link - Firebase
   const updateDriveLink = useCallback(async (ideaId, driveLink) => {
     try {
+      const { updateIdeaDriveLink: dbUpdateDriveLink } = await loadDatabase();
       const result = await dbUpdateDriveLink(ideaId, driveLink);
       if (!result.success) {
         throw new Error(result.error || 'Failed to update drive link');
@@ -206,6 +243,7 @@ export const PipelineProvider = ({ children }) => {
   // Publish idea (Systems unit - converts idea to event) - Firebase
   const publishIdea = useCallback(async (ideaId, eventData = {}) => {
     try {
+      const { publishIdea: dbPublishIdea } = await loadDatabase();
       const result = await dbPublishIdea(ideaId, eventData, currentUser?.name || 'Systems Unit');
       if (!result.success) {
         throw new Error(result.error || 'Failed to publish idea');
@@ -314,6 +352,9 @@ export const PipelineProvider = ({ children }) => {
 
   // Context value
   const value = {
+    // Internal: lets usePipeline tell the provider that a consumer is mounted.
+    __retain: retain,
+
     // User
     currentUser,
     logoutUser,

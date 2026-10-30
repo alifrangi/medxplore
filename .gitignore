@@ -33,3 +33,6 @@ dist-ssr
 .firebase/
 firebase-debug.logcrew-lobby/
 teamslobby-original/
+
+# Netlify CLI working directory (generated, holds absolute local paths)
+.netlify

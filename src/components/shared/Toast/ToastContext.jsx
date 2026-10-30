@@ -1,6 +1,26 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Icon from '../Icon';
+// Imported by name rather than through the shared <Icon> component.
+//
+// <Icon> does `import * as LucideIcons from 'lucide-react'` and looks the icon
+// up by a runtime string, which defeats tree-shaking and pulls all ~1,600
+// lucide icons into whatever chunk reaches it. ToastProvider wraps the whole
+// app, so that used to be the first-paint chunk. Named imports shake down to
+// just these five. Every other <Icon> consumer sits behind a lazy route.
+import {
+  CheckCircle as CheckCircleIcon,
+  AlertCircle as AlertCircleIcon,
+  AlertTriangle as AlertTriangleIcon,
+  Info as InfoIcon,
+  X as XIcon,
+} from 'lucide-react';
+
+const TOAST_ICONS = {
+  CheckCircle: CheckCircleIcon,
+  AlertCircle: AlertCircleIcon,
+  AlertTriangle: AlertTriangleIcon,
+  Info: InfoIcon,
+};
 import './Toast.css';
 
 const ToastContext = createContext(null);
@@ -148,7 +168,10 @@ const Toast = ({ toast, onDismiss }) => {
       role="alert"
     >
       <span className="toast-icon">
-        <Icon name={config.icon} size={20} />
+        {(() => {
+          const ToastIcon = TOAST_ICONS[config.icon] || InfoIcon;
+          return <ToastIcon size={20} strokeWidth={2} className="lucide-icon" />;
+        })()}
       </span>
 
       <div className="toast-content">
@@ -161,7 +184,7 @@ const Toast = ({ toast, onDismiss }) => {
         onClick={onDismiss}
         aria-label="Dismiss notification"
       >
-        <Icon name="X" size={16} />
+        <XIcon size={16} strokeWidth={2} className="lucide-icon" />
       </button>
     </motion.div>
   );

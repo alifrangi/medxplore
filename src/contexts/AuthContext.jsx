@@ -1,11 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth } from '../services/firebase';
-import { 
-  signInWithEmailAndPassword, 
-  signOut as firebaseSignOut,
-  onAuthStateChanged 
-} from 'firebase/auth';
-import { getStudentByPassport, checkAdminAccess } from '../services/database';
+import { loadFirebase, loadFirebaseAuth, loadDatabase } from '../services/firebaseLazy';
 
 const AuthContext = createContext({});
 
@@ -28,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const loginWithPassport = async (passportNumber) => {
     try {
       setLoading(true);
+      const { getStudentByPassport } = await loadDatabase();
       const result = await getStudentByPassport(passportNumber);
       
       if (result.success) {
@@ -54,6 +49,8 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       
+      const { checkAdminAccess } = await loadDatabase();
+
       // First check if user is registered as admin
       const adminCheck = await checkAdminAccess(email);
       if (!adminCheck.success) {
@@ -61,6 +58,10 @@ export const AuthProvider = ({ children }) => {
       }
 
       // Sign in with Firebase Auth
+      const [{ auth }, { signInWithEmailAndPassword }] = await Promise.all([
+        loadFirebase(),
+        loadFirebaseAuth(),
+      ]);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
       setAdminData(adminCheck.data);
@@ -92,8 +93,14 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      if (authType === 'admin' && auth.currentUser) {
-        await firebaseSignOut(auth);
+      if (authType === 'admin') {
+        const [{ auth }, { signOut: firebaseSignOut }] = await Promise.all([
+          loadFirebase(),
+          loadFirebaseAuth(),
+        ]);
+        if (auth.currentUser) {
+          await firebaseSignOut(auth);
+        }
       }
       
       setCurrentUser(null);
@@ -113,35 +120,71 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Check for existing session on mount
+  // Check for existing session on mount.
+  //
+  // The old version of this effect called onAuthStateChanged unconditionally,
+  // which is why every visitor to the homepage downloaded the whole Firebase
+  // SDK before the app would render anything: this provider gates `children`
+  // behind `loading`. The listener only ever did anything when sessionStorage
+  // already said `authType === 'admin'`, so checking that first is behaviour
+  // preserving, and a visitor with no session now never touches Firebase.
   useEffect(() => {
-    const checkSession = async () => {
-      const storedAuthType = sessionStorage.getItem('authType');
-      const storedPassport = sessionStorage.getItem('passportNumber');
-      
-      if (storedAuthType === 'student' && storedPassport) {
-        await loginWithPassport(storedPassport);
-      }
-      
+    const storedAuthType = sessionStorage.getItem('authType');
+    const storedPassport = sessionStorage.getItem('passportNumber');
+
+    // No session to restore. Render immediately, load nothing.
+    if (storedAuthType !== 'admin' && storedAuthType !== 'student') {
       setLoading(false);
-    };
+      return;
+    }
 
-    // Listen for Firebase auth state changes (for admin)
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user && sessionStorage.getItem('authType') === 'admin') {
-        const adminCheck = await checkAdminAccess(user.email);
-        if (adminCheck.success) {
-          setCurrentUser(user);
-          setAdminData(adminCheck.data);
-          setAuthType('admin');
-        }
-        setLoading(false);
+    if (storedAuthType === 'student') {
+      if (storedPassport) {
+        // loginWithPassport owns setLoading in its finally block.
+        loginWithPassport(storedPassport);
       } else {
-        checkSession();
+        setLoading(false);
       }
-    });
+      return;
+    }
 
-    return unsubscribe;
+    // storedAuthType === 'admin': this is the only path that needs the SDK.
+    let cancelled = false;
+    let unsubscribe = null;
+
+    (async () => {
+      try {
+        const [{ auth }, { onAuthStateChanged }, { checkAdminAccess }] = await Promise.all([
+          loadFirebase(),
+          loadFirebaseAuth(),
+          loadDatabase(),
+        ]);
+        if (cancelled) return;
+
+        unsubscribe = onAuthStateChanged(auth, async (user) => {
+          if (cancelled) return;
+          if (user && sessionStorage.getItem('authType') === 'admin') {
+            const adminCheck = await checkAdminAccess(user.email);
+            if (cancelled) return;
+            if (adminCheck.success) {
+              setCurrentUser(user);
+              setAdminData(adminCheck.data);
+              setAuthType('admin');
+            }
+          }
+          setLoading(false);
+        });
+      } catch (error) {
+        // Never leave the app stuck behind the loading gate if the chunk or
+        // the Firebase init fails.
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const value = {
